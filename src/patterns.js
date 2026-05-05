@@ -6,15 +6,19 @@
  *
  * Architecture:
  *   - Each pattern is an object with id, name, category, description,
- *     weight (1-5), and a detect(text) function
+ *     weight (1-5), detect(text) function, and langs array
  *   - detect() returns [{ match, index, line, column, suggestion, confidence }]
- *   - The registry holds all patterns and provides query methods
- *   - Vocabulary is sourced from vocabulary.js (500+ words/phrases)
+ *   - createPatterns(lang) filters patterns by language
+ *   - English patterns are built-in (langs: ['en'])
+ *   - Spanish patterns are in patterns-es.js (langs: ['es'])
+ *
+ * Language handling:
+ *   - createPatterns('en') — returns English patterns only
+ *   - createPatterns('es') — returns Spanish patterns only (via patterns-es.js)
+ *   - Default is Spanish (empty array until patterns-es.js is implemented)
  */
 
 const { TIER_1, TIER_2, TIER_3, AI_PHRASES } = require('./vocabulary');
-// Stats imported for cross-module analysis when needed
-// const { tokenize } = require('./stats');
 
 // ─── Helpers ─────────────────────────────────────────────
 
@@ -233,6 +237,7 @@ const patterns = [
     id: 1,
     name: 'Significance inflation',
     category: 'content',
+    langs: ['en'],
     description:
       'Inflated claims about significance, legacy, or broader trends. LLMs puff up importance of mundane things.',
     weight: 4,
@@ -256,6 +261,7 @@ const patterns = [
     id: 2,
     name: 'Notability name-dropping',
     category: 'content',
+    langs: ['en'],
     description:
       'Listing media outlets or sources to claim notability without providing context or specific claims.',
     weight: 3,
@@ -300,6 +306,7 @@ const patterns = [
     id: 3,
     name: 'Superficial -ing analyses',
     category: 'content',
+    langs: ['en'],
     description: 'Tacking "-ing" participial phrases onto sentences to fake depth.',
     weight: 4,
     detect(text) {
@@ -318,6 +325,7 @@ const patterns = [
     id: 4,
     name: 'Promotional language',
     category: 'content',
+    langs: ['en'],
     description: 'Ad-copy language that sounds like a tourism brochure or press release.',
     weight: 3,
     detect(text) {
@@ -340,6 +348,7 @@ const patterns = [
     id: 5,
     name: 'Vague attributions',
     category: 'content',
+    langs: ['en'],
     description: 'Attributing claims to unnamed experts, industry reports, or vague authorities.',
     weight: 4,
     detect(text) {
@@ -362,6 +371,7 @@ const patterns = [
     id: 6,
     name: 'Formulaic challenges',
     category: 'content',
+    langs: ['en'],
     description: 'Boilerplate "Despite challenges... continues to thrive" sections.',
     weight: 3,
     detect(text) {
@@ -386,6 +396,7 @@ const patterns = [
     id: 7,
     name: 'AI vocabulary',
     category: 'language',
+    langs: ['en'],
     description:
       'Words and phrases that appear far more frequently in AI-generated text. 500+ words tracked across 3 tiers.',
     weight: 5,
@@ -435,6 +446,7 @@ const patterns = [
     id: 8,
     name: 'Copula avoidance',
     category: 'language',
+    langs: ['en'],
     description:
       'Using "serves as", "functions as", "boasts" instead of simple "is", "has", "are".',
     weight: 3,
@@ -453,6 +465,7 @@ const patterns = [
     id: 9,
     name: 'Negative parallelisms',
     category: 'language',
+    langs: ['en'],
     description:
       '"It\'s not just X, it\'s Y" or "Not only X but Y" constructions — overused by LLMs.',
     weight: 3,
@@ -481,6 +494,7 @@ const patterns = [
     id: 10,
     name: 'Rule of three',
     category: 'language',
+    langs: ['en'],
     description: 'Forcing ideas into groups of three. LLMs love triads that sound "comprehensive".',
     weight: 2,
     detect(text) {
@@ -539,6 +553,7 @@ const patterns = [
     id: 11,
     name: 'Synonym cycling',
     category: 'language',
+    langs: ['en'],
     description:
       'Referring to the same thing by different names in consecutive sentences to avoid repetition.',
     weight: 2,
@@ -589,6 +604,7 @@ const patterns = [
     id: 12,
     name: 'False ranges',
     category: 'language',
+    langs: ['en'],
     description: '"From X to Y" where X and Y aren\'t on a meaningful scale.',
     weight: 2,
     detect(text) {
@@ -621,6 +637,7 @@ const patterns = [
     id: 13,
     name: 'Em dash overuse',
     category: 'style',
+    langs: ['en'],
     description: 'LLMs overuse em dashes (—) as a crutch for punchy writing.',
     weight: 2,
     detect(text) {
@@ -644,6 +661,7 @@ const patterns = [
     id: 14,
     name: 'Boldface overuse',
     category: 'style',
+    langs: ['en'],
     description:
       'Mechanical emphasis of phrases in bold. AI uses **bold** as a highlighting crutch.',
     weight: 2,
@@ -665,6 +683,7 @@ const patterns = [
     id: 15,
     name: 'Inline-header lists',
     category: 'style',
+    langs: ['en'],
     description: 'Lists where each item starts with a bolded header followed by a colon.',
     weight: 3,
     detect(text) {
@@ -686,6 +705,7 @@ const patterns = [
     id: 16,
     name: 'Title Case headings',
     category: 'style',
+    langs: ['en'],
     description: 'Capitalizing Every Main Word In Headings. AI chatbots default to this.',
     weight: 1,
     detect(text) {
@@ -723,6 +743,7 @@ const patterns = [
     id: 17,
     name: 'Emoji overuse',
     category: 'style',
+    langs: ['en'],
     description: 'Decorating headings or bullet points with emojis in professional/technical text.',
     weight: 2,
     detect(text) {
@@ -743,6 +764,7 @@ const patterns = [
     id: 18,
     name: 'Curly quotes',
     category: 'style',
+    langs: ['en'],
     description:
       'ChatGPT uses Unicode curly quotes (\u201C\u201D\u2018\u2019) instead of straight quotes.',
     weight: 1,
@@ -762,6 +784,7 @@ const patterns = [
     id: 19,
     name: 'Chatbot artifacts',
     category: 'communication',
+    langs: ['en'],
     description:
       'Leftover chatbot phrases: "I hope this helps!", "Let me know if...", "Here is an overview".',
     weight: 5,
@@ -780,6 +803,7 @@ const patterns = [
     id: 20,
     name: 'Cutoff disclaimers',
     category: 'communication',
+    langs: ['en'],
     description: 'AI knowledge-cutoff disclaimers left in text.',
     weight: 4,
     detect(text) {
@@ -800,6 +824,7 @@ const patterns = [
     id: 21,
     name: 'Sycophantic tone',
     category: 'communication',
+    langs: ['en'],
     description:
       'Overly positive, people-pleasing language: "Great question!", "You\'re absolutely right!".',
     weight: 4,
@@ -825,6 +850,7 @@ const patterns = [
     id: 22,
     name: 'Filler phrases',
     category: 'filler',
+    langs: ['en'],
     description:
       'Wordy filler that can be shortened: "in order to" → "to", "due to the fact that" → "because".',
     weight: 3,
@@ -856,6 +882,7 @@ const patterns = [
     id: 23,
     name: 'Excessive hedging',
     category: 'filler',
+    langs: ['en'],
     description: 'Stacking qualifiers: "could potentially possibly", "might arguably perhaps".',
     weight: 3,
     detect(text) {
@@ -878,6 +905,7 @@ const patterns = [
     id: 24,
     name: 'Generic conclusions',
     category: 'filler',
+    langs: ['en'],
     description: 'Vague upbeat endings: "The future looks bright", "Exciting times lie ahead".',
     weight: 3,
     detect(text) {
@@ -902,6 +930,7 @@ const patterns = [
     id: 25,
     name: 'Reasoning chain artifacts',
     category: 'communication',
+    langs: ['en'],
     description:
       'Exposed chain-of-thought reasoning: "Let me think...", "Step 1:", "Breaking this down..."',
     weight: 4,
@@ -936,6 +965,7 @@ const patterns = [
     id: 26,
     name: 'Excessive structure',
     category: 'style',
+    langs: ['en'],
     description:
       'Over-formatted responses: too many headers, nested bullets, or numbered lists for simple content.',
     weight: 3,
@@ -992,6 +1022,7 @@ const patterns = [
     id: 27,
     name: 'Confidence calibration',
     category: 'communication',
+    langs: ['en'],
     description:
       'Artificially hedged or over-confident phrasing: "I\'m confident that...", "It\'s worth noting..."',
     weight: 3,
@@ -1023,6 +1054,7 @@ const patterns = [
     id: 28,
     name: 'Acknowledgment loops',
     category: 'communication',
+    langs: ['en'],
     description: 'Restating the question before answering: "You\'re asking about X. X is..."',
     weight: 4,
     detect(text) {
@@ -1048,6 +1080,7 @@ const patterns = [
     id: 29,
     name: 'Invisible unicode obfuscation',
     category: 'style',
+    langs: ['en'],
     description:
       'Hidden unicode characters (zero-width chars, soft hyphens, non-breaking spaces) used to evade detectors or distort text.',
     weight: 4,
@@ -1147,10 +1180,32 @@ class PatternRegistry {
 // Singleton registry
 const registry = new PatternRegistry();
 
+// ─── Language-aware Pattern Factory ─────────────────────
+
+let esPatterns = null;
+
+function createPatterns(lang = 'es') {
+  if (lang === 'en') {
+    return patterns.map((p) => ({ ...p, langs: ['en'] }));
+  }
+  if (lang === 'es') {
+    if (!esPatterns) {
+      try {
+        esPatterns = require('./patterns-es');
+      } catch {
+        esPatterns = [];
+      }
+    }
+    return esPatterns.map((p) => ({ ...p, langs: ['es'] }));
+  }
+  return [];
+}
+
 // ─── Exports ─────────────────────────────────────────────
 
 module.exports = {
   patterns,
+  createPatterns,
   registry,
   PatternRegistry,
   findMatches,
@@ -1158,7 +1213,6 @@ module.exports = {
   wordCount,
   scanWordList,
   scanPhrases,
-  // Re-export vocabulary for backward compat
   TIER_1,
   TIER_2,
   TIER_3,

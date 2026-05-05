@@ -2445,6 +2445,69 @@ git commit -m "docs(skill): rewrite SKILL.md for bilingual v3.0 — Spanish prim
 
 ---
 
+## Post-Plan: Code Cleanup y Semántica
+
+Después de completar todas las tasks, hacer una revisión completa para asegurar consistencia en el naming:
+
+### 1. Funciones con prefijo de idioma
+
+Todas las funciones específicas de un idioma deben tener el prefijo correspondiente:
+
+| Función | Renombrar a | Idioma |
+|---------|-------------|--------|
+| `estimateSyllables` | `estimateSyllablesEN` | en |
+| `estimateSyllablesES` | `estimateSyllablesES` | es (ya OK) |
+
+Archivos a actualizar:
+- `src/stats.js` — definición
+- `tests/statistics.test.js` — imports y uso
+- Cualquier otro archivo que use la función
+
+### 2. Exports en locale files
+
+Verificar que todas las exports de cada locale sean consistentes:
+
+```
+src/locales/en.js — exports: TIER_1, TIER_2, TIER_3, AI_PHRASES, FUNCTION_WORDS
+src/locales/es.js — exports: TIER_1, TIER_2, TIER_3, AI_PHRASES, FUNCTION_WORDS, CONNECTORS
+```
+
+### 3. Nombre de variables consistente
+
+- Para texto en español: `text` o `textES`, no mixear con `esText`
+- Para texto en inglés: usar parámetro `lang: 'en'`
+- Para locale: `locale` o `localeES` / `localeEN` (evitar `es` como nombre de variable)
+
+### 4. Archivos .test.js
+
+Los tests en español deben estar en `tests/es/`:
+- `tests/es/vocabulary-es.test.js` ✓
+- `tests/es/patterns-es.test.js` (Task 5)
+- `tests/es/stats-es.test.js` (Task 6)
+- `tests/es/integration-es.test.js` (Task 11)
+
+### 5. Verificar que no haya código muerto
+
+- Buscar exports que no se usan
+- Buscar funciones helper duplicadas entre archivos
+- Verificar que `src/vocabulary.js` ya no se importa directamente (debería ser vía locales)
+
+### 6. Nombrado de variables en tests
+
+Ejemplo de naming consistente:
+
+```js
+// Bad
+const spanishStats = computeStats(text, 'es');
+const spanishLocale = getLocale('es');
+
+// Good
+const localeES = getLocale('es');
+const statsES = computeStats(text, 'es');
+```
+
+---
+
 **Plan complete and saved to `docs/superpowers/plans/2026-05-05-bilingual-humanizer.md`.**
 
 Two execution options:
