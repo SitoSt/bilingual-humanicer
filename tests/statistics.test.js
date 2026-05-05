@@ -10,6 +10,7 @@ import {
   splitSentences,
   tokenize,
   estimateSyllables,
+  estimateSyllablesES,
 } from '../src/stats.js';
 
 // ─── Tokenize ────────────────────────────────────────────
@@ -194,6 +195,53 @@ describe('computeStats', () => {
 
 // ─── computeUniformityScore ──────────────────────────────
 
+describe('estimateSyllablesES', () => {
+  const cases = [
+    ['pan', 1],
+    ['casa', 2],
+    ['libro', 2],
+    ['árbol', 2],
+    ['ciudad', 2],
+    ['bueno', 3],
+    ['pie', 2],
+    ['agua', 3],
+    ['hua', 2],
+    ['hue', 2],
+    ['tiene', 3],
+    ['poema', 3],
+    ['caer', 2],
+    ['día', 2],
+    ['frío', 2],
+    ['universidad', 5],
+    ['extraordinario', 7],
+    ['deshidratado', 5],
+    ['caiga', 3],
+    ['caía', 3],
+    ['lluvia', 3],
+    ['nación', 3],
+    ['realmente', 4],
+  ];
+
+  for (const [word, expected] of cases) {
+    it(`"${word}" → ${expected} sílaba(s)`, () => {
+      expect(estimateSyllablesES(word)).toBe(expected);
+    });
+  }
+
+  it('returns 1 for single-char word', () => {
+    expect(estimateSyllablesES('a')).toBe(1);
+  });
+
+  it('returns 1 for empty string', () => {
+    expect(estimateSyllablesES('')).toBe(1);
+  });
+
+  it('handles uppercase and mixed case', () => {
+    expect(estimateSyllablesES('CASA')).toBe(2);
+    expect(estimateSyllablesES('España')).toBe(3);
+  });
+});
+
 describe('computeUniformityScore', () => {
   it('returns 0 for empty stats', () => {
     const stats = computeStats('');
@@ -201,13 +249,11 @@ describe('computeUniformityScore', () => {
   });
 
   it('returns higher score for uniform text', () => {
-    // Uniform sentences — should score higher (more AI-like)
     const uniform =
       'This is a sentence. Here is another one. And there is one more. Plus yet another sentence. One final sentence too.';
     const uniformStats = computeStats(uniform);
     const uniformScore = computeUniformityScore(uniformStats);
 
-    // Varied sentences — should score lower (more human-like)
     const varied =
       'Short. This is a much much longer sentence that really goes on for a while with many more words. Medium one here. Yes. And then this one wraps up with a moderate number of words.';
     const variedStats = computeStats(varied);

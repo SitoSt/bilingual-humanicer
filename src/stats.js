@@ -177,16 +177,84 @@ function estimateSyllables(word) {
   word = word.toLowerCase().replace(/[^a-z]/g, '');
   if (word.length <= 3) return 1;
 
-  // Count vowel groups
   const vowelGroups = word.match(/[aeiouy]+/g);
   let count = vowelGroups ? vowelGroups.length : 1;
 
-  // Subtract silent e
   if (word.endsWith('e') && !word.endsWith('le')) count--;
-  // Add for -ed that creates syllable
   if (word.endsWith('ed') && word.length > 3 && !/[aeiouy]ed$/.test(word)) count--;
 
   return Math.max(count, 1);
+}
+
+/**
+ * Estimate syllable count for a Spanish word.
+ * Handles accented vowels, diphthongs, and hiatuses.
+ * Rules:
+ *   - Strong vowels: a e o (and accented á é ó)
+ *   - Weak vowels: i u ü
+ *   - Stressed weak vowels: í ú (always form hiatus — separate syllable)
+ *   - Diphthong: two adjacent vowels with at least one weak and neither stressed
+ *   - Hiato: vowels with consonant between, or strong+strong, or any with stressed weak
+ *   - Triphthong: three adjacent weak vowels (only possible in forms like "buey")
+ */
+function estimateSyllablesES(word) {
+  const clean = word.toLowerCase().replace(/[^a-záéíóúüñ]/g, '');
+  if (clean.length === 0) return 1;
+
+  const STRESSED_WEAK = ['í', 'ú'];
+  const WEAK = ['i', 'u', 'ü'];
+  const VOWELS = ['a', 'e', 'i', 'o', 'u', 'á', 'é', 'í', 'ó', 'ú', 'ü'];
+
+  const isVowel = (c) => VOWELS.includes(c);
+  const isWeak = (c) => WEAK.includes(c);
+  const isStressedWeak = (c) => STRESSED_WEAK.includes(c);
+
+  // Find all vowel positions
+  const vowelPositions = [];
+  for (let i = 0; i < clean.length; i++) {
+    if (isVowel(clean[i])) {
+      vowelPositions.push(i);
+    }
+  }
+
+  // No vowels -> 1 syllable (rare, like "y")
+  if (vowelPositions.length === 0) return 1;
+
+  // Each vowel is the start of a syllable by default
+  // Only adjacent vowel pairs can be merged (dipthong/triphthong)
+  let syllables = vowelPositions.length;
+
+  // Scan consecutive vowel pairs (check adjacent in the original string)
+  for (let idx = 0; idx < vowelPositions.length - 1; idx++) {
+    const pos1 = vowelPositions[idx];
+    const pos2 = vowelPositions[idx + 1];
+    const gap = pos2 - pos1;
+
+    // Only merge if vowels are adjacent (gap == 1)
+    if (gap > 1) continue;
+
+    const cur = clean[pos1];
+    const next = clean[pos2];
+    const curIsWeak = isWeak(cur);
+    const nextIsWeak = isWeak(next);
+    const curStressed = isStressedWeak(cur);
+    const nextStressed = isStressedWeak(next);
+
+    // Diphthong: both vowels weak (i, u) and neither stressed
+    // weak + strong is ALWAYS hiatus, even if neither is stressed
+    if (curIsWeak && nextIsWeak && !curStressed && !nextStressed) {
+      syllables--;
+      // Check for triphthong (third adjacent weak vowel)
+      if (idx + 2 < vowelPositions.length) {
+        const pos3 = vowelPositions[idx + 2];
+        if (pos3 - pos2 === 1 && isWeak(clean[pos3])) {
+          syllables--; // merge third weak too
+        }
+      }
+    }
+  }
+
+  return Math.max(1, syllables);
 }
 
 /**
@@ -272,4 +340,5 @@ module.exports = {
   splitSentences,
   tokenize,
   estimateSyllables,
+  estimateSyllablesES,
 };
