@@ -13,7 +13,7 @@
  *   - Paragraph structure statistics
  */
 
-const { FUNCTION_WORDS } = require('./vocabulary');
+const { getLocale } = require('./locales');
 
 // ─── Sentence Splitting ─────────────────────────────────
 
@@ -53,18 +53,20 @@ function tokenize(text) {
  * Compute all text statistics.
  *
  * @param {string} text — Input text
+ * @param {string} lang — Language code ('es' or 'en')
  * @returns {object}    — Statistics object
  */
-function computeStats(text) {
+function computeStats(text, lang = 'es') {
   if (!text || typeof text !== 'string' || text.trim().length === 0) {
-    return emptyStats();
+    return emptyStats(lang);
   }
 
+  const locale = getLocale(lang);
   const words = tokenize(text);
   const sentences = splitSentences(text);
   const paragraphs = text.split(/\n\s*\n/).filter((p) => p.trim().length > 0);
 
-  if (words.length === 0) return emptyStats();
+  if (words.length === 0) return emptyStats(lang);
 
   // ── Word-level stats ────────────────────────────────
   const wordCount = words.length;
@@ -108,8 +110,8 @@ function computeStats(text) {
     avgSentenceLength = sentenceLengths[0];
   }
 
-  // ── Function word ratio ─────────────────────────────
-  const functionWordSet = new Set(FUNCTION_WORDS);
+  // ── Function word ratio (locale-specific) ─────────────────
+  const functionWordSet = new Set(locale.FUNCTION_WORDS);
   const functionWordCount = words.filter((w) => functionWordSet.has(w)).length;
   const functionWordRatio = functionWordCount / wordCount;
 
@@ -123,12 +125,43 @@ function computeStats(text) {
       ? paragraphs.reduce((sum, p) => sum + tokenize(p).length, 0) / paragraphCount
       : 0;
 
-  // ── Readability (Flesch-Kincaid Grade Level approximation) ──
-  const syllableCount = words.reduce((sum, w) => sum + estimateSyllables(w), 0);
-  const fleschKincaid =
-    sentenceCount > 0
-      ? 0.39 * (wordCount / sentenceCount) + 11.8 * (syllableCount / wordCount) - 15.59
-      : 0;
+  // ── Readability (locale-specific) ─────────────────────
+  let fleschKincaid = null;
+  let ifsz = null;
+
+  if (lang === 'en') {
+    const syllableCount = words.reduce((sum, w) => sum + estimateSyllables(w), 0);
+    fleschKincaid =
+      sentenceCount > 0
+        ? 0.39 * (wordCount / sentenceCount) + 11.8 * (syllableCount / wordCount) - 15.59
+        : 0;
+  } else {
+    // IFSZ (Flesch-Szigriszt) — Spanish readability formula
+    const syllableCount = words.reduce((sum, w) => sum + estimateSyllablesES(w), 0);
+    const rawIfsz =
+      sentenceCount > 0
+        ? 206.835 - 62.3 * (syllableCount / wordCount) - (wordCount / sentenceCount)
+        : 0;
+    ifsz = Math.max(0, Math.min(100, rawIfsz));
+  }
+
+  // ── Hapax Legomena Rate ──────────────────────────────
+  const wordFreq = {};
+  for (const w of words) wordFreq[w] = (wordFreq[w] || 0) + 1;
+  const hapaxCount = Object.values(wordFreq).filter((c) => c === 1).length;
+  const hapaxLegomenaRate = uniqueWords.size > 0 ? hapaxCount / uniqueWords.size : 0;
+
+  // ── Connector Density (Spanish only) ────────────────
+  let connectorDensity = null;
+  if (lang === 'es' && locale.CONNECTORS && sentenceCount > 0) {
+    const textLower = text.toLowerCase();
+    const connectorHits = locale.CONNECTORS.reduce((count, connector) => {
+      const regex = new RegExp(`\\b${connector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'gi');
+      const matches = textLower.match(regex);
+      return count + (matches ? matches.length : 0);
+    }, 0);
+    connectorDensity = connectorHits / sentenceCount;
+  }
 
   return {
     wordCount,
@@ -138,13 +171,16 @@ function computeStats(text) {
     avgWordLength: round(avgWordLength),
     avgSentenceLength: round(avgSentenceLength),
     sentenceLengthStdDev: round(sentenceLengthStdDev),
-    sentenceLengthVariation: round(sentenceLengthVariation), // coefficient of variation
+    sentenceLengthVariation: round(sentenceLengthVariation),
     burstiness: round(burstiness),
     typeTokenRatio: round(typeTokenRatio),
     functionWordRatio: round(functionWordRatio),
     trigramRepetition: round(trigramRepetition),
     avgParagraphLength: round(avgParagraphLength),
-    fleschKincaid: round(fleschKincaid),
+    fleschKincaid: fleschKincaid !== null ? round(fleschKincaid) : null,
+    ifsz: ifsz !== null ? round(ifsz) : null,
+    hapaxLegomenaRate: round(hapaxLegomenaRate),
+    connectorDensity: connectorDensity !== null ? round(connectorDensity) : null,
     sentenceLengths,
   };
 }
@@ -261,53 +297,63 @@ function estimateSyllablesES(word) {
  * Compute a "uniformity score" from text stats.
  * Higher = more uniform/AI-like. Lower = more varied/human-like.
  * Range: 0-100.
+ *
+ * @param {object} stats — Statistics object from computeStats
+ * @param {string} lang — Language code ('es' or 'en')
  */
-function computeUniformityScore(stats) {
+function computeUniformityScore(stats, lang = 'es') {
   if (stats.wordCount === 0) return 0;
 
   let score = 0;
 
   // Low burstiness = more AI-like (max 25 points)
-  // Human burstiness is typically 0.5-1.0, AI is 0.1-0.3
   if (stats.burstiness < 0.2) score += 25;
   else if (stats.burstiness < 0.35) score += 18;
   else if (stats.burstiness < 0.5) score += 10;
   else if (stats.burstiness < 0.65) score += 5;
 
   // Low sentence length variation = more AI-like (max 25 points)
-  // Human CoV is typically 0.4-0.8, AI is 0.15-0.35
   if (stats.sentenceLengthVariation < 0.2) score += 25;
   else if (stats.sentenceLengthVariation < 0.35) score += 18;
   else if (stats.sentenceLengthVariation < 0.5) score += 10;
   else if (stats.sentenceLengthVariation < 0.65) score += 5;
 
   // Low type-token ratio = more repetitive/AI-like (max 20 points)
-  // But very short texts naturally have high TTR, so only penalize for longer texts
+  // Spanish has naturally higher TTR (~1.7x English)
   if (stats.wordCount > 100) {
-    if (stats.typeTokenRatio < 0.35) score += 20;
-    else if (stats.typeTokenRatio < 0.45) score += 12;
-    else if (stats.typeTokenRatio < 0.55) score += 5;
+    if (lang === 'es') {
+      if (stats.typeTokenRatio < 0.50) score += 20;
+      else if (stats.typeTokenRatio < 0.60) score += 12;
+      else if (stats.typeTokenRatio < 0.70) score += 5;
+    } else {
+      if (stats.typeTokenRatio < 0.35) score += 20;
+      else if (stats.typeTokenRatio < 0.45) score += 12;
+      else if (stats.typeTokenRatio < 0.55) score += 5;
+    }
   }
 
-  // High trigram repetition = more AI-like (max 15 points)
-  if (stats.trigramRepetition > 0.15) score += 15;
-  else if (stats.trigramRepetition > 0.1) score += 10;
-  else if (stats.trigramRepetition > 0.05) score += 5;
+  // High trigram repetition = more AI-like (max 10 points)
+  if (stats.trigramRepetition > 0.15) score += 10;
+  else if (stats.trigramRepetition > 0.1) score += 6;
+  else if (stats.trigramRepetition > 0.05) score += 3;
 
-  // Abnormally uniform paragraph lengths (max 15 points)
-  // Only check if we have multiple paragraphs
-  if (stats.paragraphCount >= 3 && stats.sentenceCount > 5) {
-    // Check if all paragraphs are similar length
-    // Use sentence length uniformity as a proxy for paragraph uniformity
-    if (stats.sentenceLengthStdDev < 3 && stats.avgSentenceLength > 10) {
-      score += 15; // Very uniform sentence lengths with moderate length = AI
-    }
+  // Low hapax legomena rate = more AI-like (max 10 points)
+  // AI text has systematically lower HLR than humans
+  if (stats.wordCount > 150) {
+    if (stats.hapaxLegomenaRate < 0.30) score += 10;
+    else if (stats.hapaxLegomenaRate < 0.45) score += 5;
+  }
+
+  // Connector density (Spanish only) (max 10 points)
+  if (lang === 'es' && stats.connectorDensity !== null) {
+    if (stats.connectorDensity > 0.5) score += 10;
+    else if (stats.connectorDensity > 0.35) score += 5;
   }
 
   return Math.min(score, 100);
 }
 
-function emptyStats() {
+function emptyStats(lang = 'es') {
   return {
     wordCount: 0,
     uniqueWordCount: 0,
@@ -322,7 +368,10 @@ function emptyStats() {
     functionWordRatio: 0,
     trigramRepetition: 0,
     avgParagraphLength: 0,
-    fleschKincaid: 0,
+    fleschKincaid: lang === 'en' ? 0 : null,
+    ifsz: lang === 'es' ? 0 : null,
+    hapaxLegomenaRate: 0,
+    connectorDensity: lang === 'es' ? 0 : null,
     sentenceLengths: [],
   };
 }

@@ -100,11 +100,11 @@ describe('computeNgramRepetition', () => {
 // ─── computeStats ────────────────────────────────────────
 
 describe('computeStats', () => {
-  it('returns valid structure for normal text', () => {
-    const text = 'This is a test. Another sentence here. And a third one too.';
-    const stats = computeStats(text);
+  // Use lang='en' for English tests (default is Spanish)
+  const text = 'The quick brown fox jumps over the lazy dog. The dog did not try to catch the fox.';
+const stats = computeStats(text, 'en');
 
-    expect(stats).toHaveProperty('wordCount');
+  it('returns all expected properties', () => {
     expect(stats).toHaveProperty('sentenceCount');
     expect(stats).toHaveProperty('burstiness');
     expect(stats).toHaveProperty('typeTokenRatio');
@@ -128,13 +128,13 @@ describe('computeStats', () => {
   // Sentence stats
   it('counts sentences correctly', () => {
     const text = 'First sentence. Second sentence. Third sentence.';
-    const stats = computeStats(text);
+    const stats = computeStats(text, 'en');
     expect(stats.sentenceCount).toBe(3);
   });
 
   it('computes average sentence length', () => {
     const text = 'Short one. This is a bit longer sentence.';
-    const stats = computeStats(text);
+    const stats = computeStats(text, 'en');
     expect(stats.avgSentenceLength).toBeGreaterThan(0);
   });
 
@@ -154,17 +154,17 @@ describe('computeStats', () => {
   // Vocabulary stats
   it('counts total and unique words', () => {
     const text = 'The cat and the dog and the bird.';
-    const stats = computeStats(text);
+    const stats = computeStats(text, 'en');
     expect(stats.wordCount).toBeGreaterThan(0);
     expect(stats.uniqueWordCount).toBeLessThanOrEqual(stats.wordCount);
   });
 
   it('computes type-token ratio', () => {
     const repetitive = 'the the the the dog the the the the cat';
-    const repStats = computeStats(repetitive);
+    const repStats = computeStats(repetitive, 'en');
 
     const diverse = 'cats dogs birds fish horses cows sheep goats pigs';
-    const divStats = computeStats(diverse);
+    const divStats = computeStats(diverse, 'en');
 
     expect(divStats.typeTokenRatio).toBeGreaterThan(repStats.typeTokenRatio);
   });
@@ -172,14 +172,14 @@ describe('computeStats', () => {
   // Paragraph stats
   it('counts paragraphs', () => {
     const text = 'Paragraph one.\n\nParagraph two.\n\nParagraph three.';
-    const stats = computeStats(text);
+    const stats = computeStats(text, 'en');
     expect(stats.paragraphCount).toBe(3);
   });
 
   // Readability
   it('computes Flesch-Kincaid grade level', () => {
     const text = 'The cat sat on the mat. The dog ate the bone. The bird flew away.';
-    const stats = computeStats(text);
+    const stats = computeStats(text, 'en');
     expect(stats.fleschKincaid).toBeDefined();
     expect(typeof stats.fleschKincaid).toBe('number');
   });
@@ -187,7 +187,7 @@ describe('computeStats', () => {
   // Function word ratio
   it('computes function word ratio', () => {
     const text = 'The cat is in the box with the hat on the mat.';
-    const stats = computeStats(text);
+    const stats = computeStats(text, 'en');
     expect(stats.functionWordRatio).toBeGreaterThan(0);
     expect(stats.functionWordRatio).toBeLessThan(1);
   });
@@ -264,7 +264,7 @@ describe('computeUniformityScore', () => {
 
   it('returns a number between 0 and 100', () => {
     const text = 'The cat sat. The dog ran. The bird flew. The fish swam.';
-    const stats = computeStats(text);
+    const stats = computeStats(text, 'en');
     const score = computeUniformityScore(stats);
     expect(score).toBeGreaterThanOrEqual(0);
     expect(score).toBeLessThanOrEqual(100);
