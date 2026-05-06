@@ -26,6 +26,7 @@ const { humanize, formatSuggestions } = require('./humanizer');
 const { computeStats } = require('./stats');
 const { scanPath, compareScanResults, compareFiles, normalizeExtensions } = require('./workflows');
 const { stripCodeSnippets } = require('./preprocess');
+const { scoreLabel } = require('./constants');
 
 // ─── Tiny Color Helper (no chalk dependency) ─────────────
 
@@ -69,19 +70,6 @@ function scoreBadge(s) {
   if (s <= 50) return color.yellow(`🟡 ${s}/100`);
   if (s <= 75) return color.magenta(`🟠 ${s}/100`);
   return color.red(`🔴 ${s}/100`);
-}
-
-/**
- * Get a score label based on score value.
- *
- * @param {number} s - Score value 0-100
- * @returns {string} Human-readable label
- */
-function scoreLabel(s) {
-  if (s <= 19) return 'Mostly human-sounding';
-  if (s <= 44) return 'Lightly AI-touched';
-  if (s <= 69) return 'Moderately AI-influenced';
-  return 'Heavily AI-generated';
 }
 
 /**
@@ -992,6 +980,7 @@ async function main() {
         autofix: flags.autofix,
         verbose: flags.verbose,
         ignoreCode: opts.ignoreCode,
+        lang: opts.lang,
       });
       if (flags.json) {
         console.log(JSON.stringify(result, null, 2));
@@ -1016,6 +1005,7 @@ async function main() {
       const result = humanize(text, {
         verbose: flags.verbose,
         ignoreCode: opts.ignoreCode,
+        lang: opts.lang,
       });
       if (flags.json) {
         console.log(JSON.stringify(result, null, 2));
@@ -1027,7 +1017,7 @@ async function main() {
 
     case 'stats': {
       const statsText = opts.ignoreCode ? stripCodeSnippets(text) : text;
-      const stats = computeStats(statsText);
+      const stats = computeStats(statsText, opts.lang);
       if (flags.json) {
         console.log(JSON.stringify(stats, null, 2));
       } else {
@@ -1044,6 +1034,7 @@ async function main() {
 
       const result = compareFiles(flags.before, flags.after, {
         ignoreCode: opts.ignoreCode,
+        lang: opts.lang,
       });
       if (flags.json) {
         console.log(JSON.stringify(result, null, 2));

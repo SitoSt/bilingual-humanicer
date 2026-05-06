@@ -15,6 +15,7 @@
  */
 
 const { analyze } = require('./analyzer');
+const { DEFAULT_LANG } = require('./constants');
 
 const HIDDEN_UNICODE_CHARS = /(?:\u200B|\u200C|\u200D|\u2060|\uFEFF|\u00AD)/;
 const HIDDEN_UNICODE_CHARS_GLOBAL = /(?:\u200B|\u200C|\u200D|\u2060|\uFEFF|\u00AD)/g;
@@ -128,7 +129,7 @@ function autoFix(text) {
  * @returns {object}       — Suggestions report
  */
 function humanize(text, opts = {}) {
-  const { autofix = false, includeStats = true, ignoreCode = false, lang = 'es' } = opts;
+  const { autofix = false, includeStats = true, ignoreCode = false, lang = DEFAULT_LANG } = opts;
 
   const analysis = analyze(text, { verbose: true, includeStats, ignoreCode, lang });
 

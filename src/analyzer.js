@@ -17,16 +17,7 @@
 const { createPatterns, wordCount } = require('./patterns');
 const { computeStats, computeUniformityScore } = require('./stats');
 const { stripCodeSnippets } = require('./preprocess');
-
-// ─── Category Labels ────────────────────────────────────
-
-const CATEGORY_LABELS = {
-  content: 'Content patterns',
-  language: 'Language & grammar',
-  style: 'Style patterns',
-  communication: 'Communication artifacts',
-  filler: 'Filler & hedging',
-};
+const { CATEGORY_LABELS, DEFAULT_LANG, scoreLabel } = require('./constants');
 
 const RELIABILITY_RECOMMENDED_WORDS = 150;
 
@@ -50,7 +41,7 @@ function analyze(text, opts = {}) {
     patternsToCheck = null,
     includeStats = true,
     ignoreCode = false,
-    lang = 'es',
+    lang = DEFAULT_LANG,
   } = opts;
 
   if (!text || typeof text !== 'string') {
@@ -459,13 +450,6 @@ function formatJSON(result) {
 }
 
 // ─── Label Helpers ───────────────────────────────────────
-
-function scoreLabel(s) {
-  if (s >= 70) return 'Heavily AI-generated';
-  if (s >= 45) return 'Moderately AI-influenced';
-  if (s >= 20) return 'Lightly AI-touched';
-  return 'Mostly human-sounding';
-}
 
 function burstinessLabel(b) {
   if (b >= 0.7) return '(high — human-like)';

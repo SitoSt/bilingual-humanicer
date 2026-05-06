@@ -1,24 +1,24 @@
 /**
  * patterns.js — AI writing pattern detection engine.
  *
- * 29 pattern detectors organized into 5 categories, with a registry
- * that supports dynamic add/remove and custom word lists.
+ * Pattern detector registry organized by language:
+ *   - PatternES-* (1-10): Spanish-specific patterns
+ *   - PatternEN-* (1-29): English-specific patterns + shared vocabulary detector
  *
  * Architecture:
- *   - Each pattern is an object with id, name, category, description,
- *     weight (1-5), detect(text) function, and langs array
+ *   - Each pattern has id, name, category, description, weight (1-5),
+ *     detect(text) function, and langs array
  *   - detect() returns [{ match, index, line, column, suggestion, confidence }]
- *   - createPatterns(lang) filters patterns by language
- *   - English patterns are built-in (langs: ['en'])
- *   - Spanish patterns are in patterns-es.js (langs: ['es'])
+ *   - createPatterns(lang) returns patterns for the target language
+ *   - Spanish (default): PatternES-01 to ES-10 + PatternEN-07 (locale-injected vocabulary)
+ *   - English: PatternEN-01 to EN-29
  *
- * Language handling:
- *   - createPatterns('en') — returns English patterns only
- *   - createPatterns('es') — returns Spanish patterns only (via patterns-es.js)
- *   - Default is Spanish (empty array until patterns-es.js is implemented)
+ * Language priority: Spanish is the default language (operates in español por defecto).
  */
 
 const { TIER_1, TIER_2, TIER_3, AI_PHRASES } = require('./vocabulary');
+const { DEFAULT_LANG } = require('./constants');
+const { getLocale } = require('./locales');
 
 // ─── Helpers ─────────────────────────────────────────────
 
@@ -231,10 +231,10 @@ const NON_BREAKING_SPACES = /(?:\u00A0|\u202F)/g;
 // ─── Pattern Definitions ─────────────────────────────────
 
 const patterns = [
-  // ── CONTENT PATTERNS (1-6) ──────────────────────────────
+  // ── CONTENT PATTERNS ────────────────────────────────────
 
   {
-    id: 1,
+    id: 'PatternEN-1',
     name: 'Significance inflation',
     category: 'content',
     langs: ['en'],
@@ -258,7 +258,7 @@ const patterns = [
   },
 
   {
-    id: 2,
+    id: 'PatternEN-2',
     name: 'Notability name-dropping',
     category: 'content',
     langs: ['en'],
@@ -303,7 +303,7 @@ const patterns = [
   },
 
   {
-    id: 3,
+    id: 'PatternEN-3',
     name: 'Superficial -ing analyses',
     category: 'content',
     langs: ['en'],
@@ -322,7 +322,7 @@ const patterns = [
   },
 
   {
-    id: 4,
+    id: 'PatternEN-4',
     name: 'Promotional language',
     category: 'content',
     langs: ['en'],
@@ -345,7 +345,7 @@ const patterns = [
   },
 
   {
-    id: 5,
+    id: 'PatternEN-5',
     name: 'Vague attributions',
     category: 'content',
     langs: ['en'],
@@ -368,7 +368,7 @@ const patterns = [
   },
 
   {
-    id: 6,
+    id: 'PatternEN-6',
     name: 'Formulaic challenges',
     category: 'content',
     langs: ['en'],
@@ -390,49 +390,51 @@ const patterns = [
     },
   },
 
-  // ── LANGUAGE PATTERNS (7-12) ────────────────────────────
+  // ── LANGUAGE PATTERNS ──────────────────────────────────
 
   {
-    id: 7,
+    id: 'PatternEN-7',
     name: 'AI vocabulary',
     category: 'language',
     langs: ['en'],
     description:
       'Words and phrases that appear far more frequently in AI-generated text. 500+ words tracked across 3 tiers.',
     weight: 5,
-    detect(text) {
+    detect(text, lang = 'en') {
+      const locale = getLocale(lang);
       const results = [];
       const words = wordCount(text);
 
       // Tier 1: always flag
-      results.push(...scanWordList(text, TIER_1, 'Tier 1 AI word', 'high'));
+      results.push(...scanWordList(text, locale.TIER_1, 'Tier 1 AI word', 'high'));
 
       // Tier 2: flag if 2+ tier-2 words appear
-      const tier2Matches = scanWordList(text, TIER_2, 'Tier 2 AI word', 'medium');
+      const tier2Matches = scanWordList(text, locale.TIER_2, 'Tier 2 AI word', 'medium');
       if (tier2Matches.length >= 2) {
         results.push(...tier2Matches);
       }
 
       // Tier 3: flag only at high density (>3% of words are tier-3)
       if (words > 50) {
-        const tier3Count = TIER_3.reduce((count, word) => {
+        const tier3Count = locale.TIER_3.reduce((count, word) => {
           const regex = wordRegex(word);
           return count + countMatches(text, regex);
         }, 0);
         const density = tier3Count / words;
         if (density > 0.03) {
-          results.push(...scanWordList(text, TIER_3, 'Tier 3 AI word (high density)', 'low'));
+          results.push(...scanWordList(text, locale.TIER_3, 'Tier 3 AI word (high density)', 'low'));
         }
       }
 
-      // AI phrases (from vocabulary.js)
+      // AI phrases (from locale)
       results.push(
         ...scanPhrases(
           text,
-          AI_PHRASES.filter(
+          (locale.AI_PHRASES || []).filter(
             (p) =>
               p.fix &&
               !p.fix.startsWith('(remove') &&
+              !p.fix.startsWith('(eliminar') &&
               !['to', 'because', 'now', 'if', 'can', 'first', 'finally'].includes(p.fix),
           ),
         ),
@@ -443,7 +445,7 @@ const patterns = [
   },
 
   {
-    id: 8,
+    id: 'PatternEN-8',
     name: 'Copula avoidance',
     category: 'language',
     langs: ['en'],
@@ -462,7 +464,7 @@ const patterns = [
   },
 
   {
-    id: 9,
+    id: 'PatternEN-9',
     name: 'Negative parallelisms',
     category: 'language',
     langs: ['en'],
@@ -491,7 +493,7 @@ const patterns = [
   },
 
   {
-    id: 10,
+    id: 'PatternEN-10',
     name: 'Rule of three',
     category: 'language',
     langs: ['en'],
@@ -550,7 +552,7 @@ const patterns = [
   },
 
   {
-    id: 11,
+    id: 'PatternEN-11',
     name: 'Synonym cycling',
     category: 'language',
     langs: ['en'],
@@ -601,7 +603,7 @@ const patterns = [
   },
 
   {
-    id: 12,
+    id: 'PatternEN-12',
     name: 'False ranges',
     category: 'language',
     langs: ['en'],
@@ -631,10 +633,10 @@ const patterns = [
     },
   },
 
-  // ── STYLE PATTERNS (13-18) ──────────────────────────────
+  // ── STYLE PATTERNS ──────────────────────────────────────
 
   {
-    id: 13,
+    id: 'PatternEN-13',
     name: 'Em dash overuse',
     category: 'style',
     langs: ['en'],
@@ -658,7 +660,7 @@ const patterns = [
   },
 
   {
-    id: 14,
+    id: 'PatternEN-14',
     name: 'Boldface overuse',
     category: 'style',
     langs: ['en'],
@@ -680,7 +682,7 @@ const patterns = [
   },
 
   {
-    id: 15,
+    id: 'PatternEN-15',
     name: 'Inline-header lists',
     category: 'style',
     langs: ['en'],
@@ -702,7 +704,7 @@ const patterns = [
   },
 
   {
-    id: 16,
+    id: 'PatternEN-16',
     name: 'Title Case headings',
     category: 'style',
     langs: ['en'],
@@ -740,7 +742,7 @@ const patterns = [
   },
 
   {
-    id: 17,
+    id: 'PatternEN-17',
     name: 'Emoji overuse',
     category: 'style',
     langs: ['en'],
@@ -761,7 +763,7 @@ const patterns = [
   },
 
   {
-    id: 18,
+    id: 'PatternEN-18',
     name: 'Curly quotes',
     category: 'style',
     langs: ['en'],
@@ -781,7 +783,7 @@ const patterns = [
   // ── COMMUNICATION PATTERNS (19-21) ─────────────────────
 
   {
-    id: 19,
+    id: 'PatternEN-19',
     name: 'Chatbot artifacts',
     category: 'communication',
     langs: ['en'],
@@ -800,7 +802,7 @@ const patterns = [
   },
 
   {
-    id: 20,
+    id: 'PatternEN-20',
     name: 'Cutoff disclaimers',
     category: 'communication',
     langs: ['en'],
@@ -821,7 +823,7 @@ const patterns = [
   },
 
   {
-    id: 21,
+    id: 'PatternEN-21',
     name: 'Sycophantic tone',
     category: 'communication',
     langs: ['en'],
@@ -847,7 +849,7 @@ const patterns = [
   // ── FILLER & HEDGING (22-24) ────────────────────────────
 
   {
-    id: 22,
+    id: 'PatternEN-22',
     name: 'Filler phrases',
     category: 'filler',
     langs: ['en'],
@@ -879,7 +881,7 @@ const patterns = [
   },
 
   {
-    id: 23,
+    id: 'PatternEN-23',
     name: 'Excessive hedging',
     category: 'filler',
     langs: ['en'],
@@ -902,7 +904,7 @@ const patterns = [
   },
 
   {
-    id: 24,
+    id: 'PatternEN-24',
     name: 'Generic conclusions',
     category: 'filler',
     langs: ['en'],
@@ -927,7 +929,7 @@ const patterns = [
   // ─── NEW PATTERNS (v2.2) ─────────────────────────────────
 
   {
-    id: 25,
+    id: 'PatternEN-25',
     name: 'Reasoning chain artifacts',
     category: 'communication',
     langs: ['en'],
@@ -962,7 +964,7 @@ const patterns = [
   },
 
   {
-    id: 26,
+    id: 'PatternEN-26',
     name: 'Excessive structure',
     category: 'style',
     langs: ['en'],
@@ -1019,7 +1021,7 @@ const patterns = [
   },
 
   {
-    id: 27,
+    id: 'PatternEN-27',
     name: 'Confidence calibration',
     category: 'communication',
     langs: ['en'],
@@ -1051,7 +1053,7 @@ const patterns = [
   },
 
   {
-    id: 28,
+    id: 'PatternEN-28',
     name: 'Acknowledgment loops',
     category: 'communication',
     langs: ['en'],
@@ -1077,7 +1079,7 @@ const patterns = [
   },
 
   {
-    id: 29,
+    id: 'PatternEN-29',
     name: 'Invisible unicode obfuscation',
     category: 'style',
     langs: ['en'],
@@ -1184,9 +1186,16 @@ const registry = new PatternRegistry();
 
 let esPatterns = null;
 
-function createPatterns(lang = 'es') {
+function createPatterns(lang = DEFAULT_LANG) {
   if (lang === 'en') {
-    return patterns.map((p) => ({ ...p, langs: ['en'] }));
+    return patterns
+      .filter((p) => p.langs.includes('en'))
+      .map((p) => {
+        if (p.id === 'PatternEN-7') {
+          return { ...p, detect: (text) => p.detect(text, 'en') };
+        }
+        return p;
+      });
   }
   if (lang === 'es') {
     if (!esPatterns) {
@@ -1196,7 +1205,12 @@ function createPatterns(lang = 'es') {
         esPatterns = [];
       }
     }
-    return esPatterns.map((p) => ({ ...p, langs: ['es'] }));
+    // Spanish uses PatternES-01 to ES-10 + PatternEN-7 (locale-injected vocabulary)
+    const enPattern7 = patterns.find((p) => p.id === 'PatternEN-7');
+    return [
+      { ...enPattern7, id: 'PatternEN-7', detect: (text) => enPattern7.detect(text, 'es') },
+      ...esPatterns,
+    ];
   }
   return [];
 }

@@ -14,6 +14,7 @@
  */
 
 const { getLocale } = require('./locales');
+const { DEFAULT_LANG } = require('./constants');
 
 // ─── Sentence Splitting ─────────────────────────────────
 
@@ -56,7 +57,7 @@ function tokenize(text) {
  * @param {string} lang — Language code ('es' or 'en')
  * @returns {object}    — Statistics object
  */
-function computeStats(text, lang = 'es') {
+function computeStats(text, lang = DEFAULT_LANG) {
   if (!text || typeof text !== 'string' || text.trim().length === 0) {
     return emptyStats(lang);
   }
@@ -130,7 +131,7 @@ function computeStats(text, lang = 'es') {
   let ifsz = null;
 
   if (lang === 'en') {
-    const syllableCount = words.reduce((sum, w) => sum + estimateSyllables(w), 0);
+    const syllableCount = words.reduce((sum, w) => sum + estimateSyllablesEN(w), 0);
     fleschKincaid =
       sentenceCount > 0
         ? 0.39 * (wordCount / sentenceCount) + 11.8 * (syllableCount / wordCount) - 15.59
@@ -209,7 +210,7 @@ function computeNgramRepetition(words, n) {
 /**
  * Estimate syllable count for a word (English heuristic).
  */
-function estimateSyllables(word) {
+function estimateSyllablesEN(word) {
   word = word.toLowerCase().replace(/[^a-z]/g, '');
   if (word.length <= 3) return 1;
 
@@ -301,7 +302,7 @@ function estimateSyllablesES(word) {
  * @param {object} stats — Statistics object from computeStats
  * @param {string} lang — Language code ('es' or 'en')
  */
-function computeUniformityScore(stats, lang = 'es') {
+function computeUniformityScore(stats, lang = DEFAULT_LANG) {
   if (stats.wordCount === 0) return 0;
 
   let score = 0;
@@ -353,7 +354,7 @@ function computeUniformityScore(stats, lang = 'es') {
   return Math.min(score, 100);
 }
 
-function emptyStats(lang = 'es') {
+function emptyStats(lang = DEFAULT_LANG) {
   return {
     wordCount: 0,
     uniqueWordCount: 0,
@@ -388,6 +389,6 @@ module.exports = {
   computeNgramRepetition,
   splitSentences,
   tokenize,
-  estimateSyllables,
+  estimateSyllablesEN,
   estimateSyllablesES,
 };

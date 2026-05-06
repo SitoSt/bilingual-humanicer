@@ -9,6 +9,7 @@
 const fs = require('fs');
 const path = require('path');
 const { analyze } = require('./analyzer');
+const { DEFAULT_LANG, scoreLabel } = require('./constants');
 
 const DEFAULT_SCAN_EXTENSIONS = ['.md', '.txt', '.rst', '.adoc'];
 const DEFAULT_IGNORE_DIRS = new Set([
@@ -114,7 +115,7 @@ function scanPath(targetPath, opts = {}) {
     ignoreDirs = null,
     includeDefaultIgnore = true,
     ignoreCode = false,
-    lang = 'es',
+    lang = DEFAULT_LANG,
   } = opts;
 
   const files = collectTextFiles(targetPath, { exts, ignoreDirs, includeDefaultIgnore });
@@ -353,7 +354,7 @@ function toPatternHistogram(result) {
  * Compare two text drafts and show score + pattern deltas.
  */
 function compareTexts(beforeText, afterText, opts = {}) {
-  const { ignoreCode = false, lang = 'es' } = opts;
+  const { ignoreCode = false, lang = DEFAULT_LANG } = opts;
   const before = analyze(beforeText, { verbose: true, includeStats: true, ignoreCode, lang });
   const after = analyze(afterText, { verbose: true, includeStats: true, ignoreCode, lang });
 
@@ -414,13 +415,6 @@ function compareFiles(beforePath, afterPath, opts = {}) {
   const beforeText = fs.readFileSync(path.resolve(beforePath), 'utf-8');
   const afterText = fs.readFileSync(path.resolve(afterPath), 'utf-8');
   return compareTexts(beforeText, afterText, opts);
-}
-
-function scoreLabel(s) {
-  if (s <= 19) return 'Mostly human-sounding';
-  if (s <= 44) return 'Lightly AI-touched';
-  if (s <= 69) return 'Moderately AI-influenced';
-  return 'Heavily AI-generated';
 }
 
 module.exports = {
