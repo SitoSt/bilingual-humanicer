@@ -13,14 +13,15 @@ describe('createPatterns', () => {
     expect(patterns[0]).toHaveProperty('detect');
   });
 
-  it('returns empty array for lang=es (ES patterns are in patterns-es.js)', () => {
+  it('returns Spanish patterns for lang=es', () => {
     const patterns = createPatterns('es');
-    expect(patterns).toEqual([]);
+    expect(patterns.length).toBeGreaterThan(0);
+    expect(patterns.some(p => String(p.id).startsWith('ES-'))).toBe(true);
   });
 
-  it('defaults to empty array (Spanish is default)', () => {
+  it('defaults to Spanish patterns', () => {
     const patterns = createPatterns();
-    expect(patterns).toEqual([]);
+    expect(patterns.length).toBeGreaterThan(0);
   });
 
   it('each English pattern has langs property', () => {
