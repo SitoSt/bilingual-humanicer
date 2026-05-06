@@ -124,6 +124,7 @@ const flags = {
   ignoreDirs: null,
   includeDefaultIgnore: null,
   ignoreCode: null,
+  lang: 'es',
 };
 
 // Parse -f / --file flag
@@ -232,6 +233,18 @@ if (args.includes('--no-default-ignore')) {
 
 if (args.includes('--ignore-code')) {
   flags.ignoreCode = true;
+}
+
+// Parse --lang flag (analysis language: en or es, default: es)
+const langIdx = args.indexOf('--lang');
+if (langIdx !== -1 && args[langIdx + 1]) {
+  const rawLang = args[langIdx + 1].toLowerCase();
+  if (['en', 'es'].includes(rawLang)) {
+    flags.lang = rawLang;
+  } else {
+    console.error(color.red(`Error: unsupported language "${rawLang}". Use --lang en or --lang es.`));
+    process.exit(1);
+  }
 }
 
 // ─── Scan Config Resolution ──────────────────────────────
@@ -950,6 +963,7 @@ async function main() {
     verbose: flags.verbose,
     patternsToCheck: flags.patterns,
     ignoreCode: flags.ignoreCode === true,
+    lang: flags.lang,
   };
 
   switch (command) {
@@ -1056,6 +1070,7 @@ async function main() {
         ignoreDirs: scanOptions.ignoreDirs,
         includeDefaultIgnore: scanOptions.includeDefaultIgnore,
         ignoreCode: scanOptions.ignoreCode,
+        lang: flags.lang,
       });
 
       let baselineComparison = null;

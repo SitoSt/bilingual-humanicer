@@ -4,6 +4,11 @@ import os from 'os';
 import path from 'path';
 import { spawnSync } from 'child_process';
 
+/*
+ * NOTE: Tests use '--lang en' to work around missing --lang flag (Task 9 pending).
+ * After implementing --lang in CLI, update tests to verify lang parameter flows correctly.
+ */
+
 const CLI_PATH = path.resolve(process.cwd(), 'src', 'cli.js');
 
 function runCli(args) {
@@ -106,7 +111,7 @@ describe('scan config handling', () => {
       ),
     );
 
-    const run = runCli(['scan', target, '--config', configPath]);
+    const run = runCli(['scan', target, '--config', configPath, '--lang', 'en']);
 
     expect(run.status).toBe(2);
     expect(run.stdout).toContain('REPO SCAN');
@@ -142,7 +147,7 @@ describe('scan config handling', () => {
       ),
     );
 
-    const run = runCli(['scan', target, '--json', '--config', configPath]);
+    const run = runCli(['scan', target, '--json', '--config', configPath, '--lang', 'en']);
     expect(run.status).toBe(0);
 
     const payload = JSON.parse(run.stdout);
@@ -195,7 +200,7 @@ describe('scan config handling', () => {
       ),
     );
 
-    const run = runCli(['scan', target, '--json', '--config', configPath]);
+    const run = runCli(['scan', target, '--json', '--config', configPath, '--lang', 'en']);
 
     expect(run.status).toBe(3);
 

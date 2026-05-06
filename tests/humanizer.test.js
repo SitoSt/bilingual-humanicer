@@ -98,7 +98,7 @@ describe('autoFix', () => {
 
 describe('humanize', () => {
   it('returns a valid suggestion object', () => {
-    const result = humanize('This is a testament to great things.');
+    const result = humanize('This is a testament to great things.', { lang: "en" });
     expect(result).toHaveProperty('score');
     expect(result).toHaveProperty('reliability');
     expect(result).toHaveProperty('critical');
@@ -111,40 +111,40 @@ describe('humanize', () => {
 
   it('categorizes issues by severity', () => {
     const text = loadFixture('ai-sample-1.txt');
-    const result = humanize(text);
+    const result = humanize(text, { lang: "en" });
     expect(result.critical.length).toBeGreaterThan(0);
     expect(result.important.length).toBeGreaterThan(0);
   });
 
   it('provides guidance tips', () => {
     const text = loadFixture('ai-sample-1.txt');
-    const result = humanize(text);
+    const result = humanize(text, { lang: "en" });
     expect(result.guidance.length).toBeGreaterThan(0);
     expect(result.guidance.some((g) => typeof g === 'string' && g.length > 10)).toBe(true);
   });
 
   it('returns autofix results when requested', () => {
     const text = 'In order to help, I hope this helps!';
-    const result = humanize(text, { autofix: true });
+    const result = humanize(text, { lang: "en",  autofix: true });
     expect(result.autofix).not.toBeNull();
     expect(result.autofix.text).not.toContain('In order to');
     expect(result.autofix.fixes.length).toBeGreaterThan(0);
   });
 
   it('returns null autofix when not requested', () => {
-    const result = humanize('Some text here.', { autofix: false });
+    const result = humanize('Some text here.', { lang: "en",  autofix: false });
     expect(result.autofix).toBeNull();
   });
 
   it('scores human text low', () => {
     const text = loadFixture('human-sample-1.txt');
-    const result = humanize(text);
+    const result = humanize(text, { lang: "en" });
     expect(result.score).toBeLessThan(30);
   });
 
   it('each suggestion has required fields', () => {
     const text = loadFixture('ai-sample-1.txt');
-    const result = humanize(text);
+    const result = humanize(text, { lang: "en" });
     const allSuggestions = [...result.critical, ...result.important, ...result.minor];
     for (const s of allSuggestions) {
       expect(s).toHaveProperty('pattern');
@@ -157,7 +157,7 @@ describe('humanize', () => {
 
   it('includes style tips for AI-like text', () => {
     const text = loadFixture('ai-sample-1.txt');
-    const result = humanize(text);
+    const result = humanize(text, { lang: "en" });
     expect(result.styleTips).toBeDefined();
     expect(Array.isArray(result.styleTips)).toBe(true);
   });
@@ -168,7 +168,7 @@ describe('humanize', () => {
 describe('formatSuggestions', () => {
   it('produces readable output', () => {
     const text = loadFixture('ai-sample-1.txt');
-    const result = humanize(text);
+    const result = humanize(text, { lang: "en" });
     const output = formatSuggestions(result);
     expect(typeof output).toBe('string');
     expect(output).toContain('HUMANIZATION SUGGESTIONS');
@@ -178,7 +178,7 @@ describe('formatSuggestions', () => {
 
   it('includes guidance section', () => {
     const text = loadFixture('ai-sample-1.txt');
-    const result = humanize(text);
+    const result = humanize(text, { lang: "en" });
     const output = formatSuggestions(result);
     expect(output).toContain('GUIDANCE');
   });

@@ -19,7 +19,7 @@ function loadFixture(name) {
 
 describe('analyze', () => {
   it('returns a valid result object', () => {
-    const result = analyze('Hello world.');
+    const result = analyze('Hello world.', { lang: "en" });
     expect(result).toHaveProperty('score');
     expect(result).toHaveProperty('patternScore');
     expect(result).toHaveProperty('uniformityScore');
@@ -33,31 +33,31 @@ describe('analyze', () => {
   });
 
   it('handles empty input gracefully', () => {
-    const result = analyze('');
+    const result = analyze('', { lang: "en" });
     expect(result.score).toBe(0);
     expect(result.totalMatches).toBe(0);
   });
 
   it('handles null/undefined input', () => {
-    expect(analyze(null).score).toBe(0);
-    expect(analyze(undefined).score).toBe(0);
+    expect(analyze(null, { lang: "en" }).score).toBe(0);
+    expect(analyze(undefined, { lang: "en" }).score).toBe(0);
   });
 
   it('scores clean human text low', () => {
     const text = loadFixture('human-sample-1.txt');
-    const result = analyze(text);
+    const result = analyze(text, { lang: "en" });
     expect(result.score).toBeLessThan(25);
   });
 
   it('scores obvious AI text high', () => {
     const text = loadFixture('ai-sample-1.txt');
-    const result = analyze(text);
+    const result = analyze(text, { lang: "en" });
     expect(result.score).toBeGreaterThan(50);
   });
 
   it('detects multiple categories in AI text', () => {
     const text = loadFixture('ai-sample-1.txt');
-    const result = analyze(text);
+    const result = analyze(text, { lang: "en" });
     const hitCategories = Object.entries(result.categories)
       .filter(([, v]) => v.matches > 0)
       .map(([k]) => k);
@@ -66,7 +66,7 @@ describe('analyze', () => {
 
   it('includes stats in result', () => {
     const text = 'The cat sat on the mat. The dog ran fast. The bird flew away.';
-    const result = analyze(text);
+    const result = analyze(text, { lang: "en" });
     expect(result.stats).not.toBeNull();
     expect(result.stats).toHaveProperty('burstiness');
     expect(result.stats).toHaveProperty('typeTokenRatio');
@@ -81,15 +81,15 @@ describe('analyze', () => {
       'Actual summary: shipped bug fixes and reduced latency by 18%.',
     ].join('\n');
 
-    const regular = analyze(text);
-    const ignoreCode = analyze(text, { ignoreCode: true });
+    const regular = analyze(text, { lang: "en" });
+    const ignoreCode = analyze(text, { lang: "en",  ignoreCode: true });
 
     expect(regular.score).toBeGreaterThan(ignoreCode.score);
     expect(ignoreCode.summary.toLowerCase()).not.toContain('great question');
   });
 
   it('marks short samples as low confidence', () => {
-    const result = analyze('Great question! This helps.');
+    const result = analyze('Great question! This helps.', { lang: "en" });
     expect(result.reliability.level).toBe('low');
     expect(result.reliability.score).toBeLessThan(45);
     expect(result.reliability.reasons.length).toBeGreaterThan(0);
@@ -97,7 +97,7 @@ describe('analyze', () => {
 
   it('marks longer multi-paragraph text as higher confidence', () => {
     const text = loadFixture('human-sample-1.txt');
-    const result = analyze(text);
+    const result = analyze(text, { lang: "en" });
     expect(result.reliability.score).toBeGreaterThanOrEqual(45);
   });
 });
@@ -106,21 +106,21 @@ describe('analyze', () => {
 
 describe('score', () => {
   it('returns a number between 0 and 100', () => {
-    const s = score('This is a simple sentence.');
+    const s = score('This is a simple sentence.', { lang: "en" });
     expect(s).toBeGreaterThanOrEqual(0);
     expect(s).toBeLessThanOrEqual(100);
   });
 
   it('scores AI sample higher than human sample', () => {
-    const aiScore = score(loadFixture('ai-sample-1.txt'));
-    const humanScore = score(loadFixture('human-sample-1.txt'));
+    const aiScore = score(loadFixture('ai-sample-1.txt'), { lang: 'en' });
+    const humanScore = score(loadFixture('human-sample-1.txt'), { lang: 'en' });
     expect(aiScore).toBeGreaterThan(humanScore);
   });
 
   it('accepts analysis options', () => {
     const text = '```md\nGreat question!\n```\nShipped bug fixes yesterday.';
-    const regular = score(text);
-    const ignoreCode = score(text, { ignoreCode: true });
+    const regular = score(text, { lang: "en" });
+    const ignoreCode = score(text, { lang: "en",  ignoreCode: true });
     expect(regular).toBeGreaterThan(ignoreCode);
   });
 });
@@ -130,8 +130,8 @@ describe('score', () => {
 describe('pattern filtering', () => {
   it('can check only specific patterns', () => {
     const text = 'Additionally, this serves as a testament to excellence.';
-    const full = analyze(text);
-    const filtered = analyze(text, { patternsToCheck: [7] }); // Only AI vocab
+    const full = analyze(text, { lang: "en" });
+    const filtered = analyze(text, { lang: "en",  patternsToCheck: [7] }); // Only AI vocab
     expect(filtered.findings.length).toBeLessThanOrEqual(full.findings.length);
     expect(filtered.findings.every((f) => f.patternId === 7)).toBe(true);
   });
@@ -141,7 +141,7 @@ describe('pattern filtering', () => {
 
 describe('formatting', () => {
   it('formatReport produces a string', () => {
-    const result = analyze('This is a testament to great things.');
+    const result = analyze('This is a testament to great things.', { lang: "en" });
     const report = formatReport(result);
     expect(typeof report).toBe('string');
     expect(report).toContain('AI WRITING PATTERN ANALYSIS');
@@ -150,14 +150,14 @@ describe('formatting', () => {
   });
 
   it('formatJSON produces valid JSON', () => {
-    const result = analyze('This is a testament to great things.');
+    const result = analyze('This is a testament to great things.', { lang: "en" });
     const json = formatJSON(result);
     const parsed = JSON.parse(json);
     expect(parsed).toHaveProperty('score');
   });
 
   it('formatMarkdown produces markdown', () => {
-    const result = analyze('This is a testament to great things.');
+    const result = analyze('This is a testament to great things.', { lang: "en" });
     const md = formatMarkdown(result);
     expect(typeof md).toBe('string');
     expect(md).toContain('# AI writing pattern analysis');
@@ -173,7 +173,7 @@ describe('pattern detection', () => {
   it('detects significance inflation', () => {
     const text =
       'This moment marks a pivotal shift in the evolution of technology, setting the stage for a key turning point.';
-    const result = analyze(text, { patternsToCheck: [1] });
+    const result = analyze(text, { lang: "en",  patternsToCheck: [1] });
     expect(result.findings.length).toBeGreaterThan(0);
     expect(result.findings[0].patternId).toBe(1);
   });
@@ -181,7 +181,7 @@ describe('pattern detection', () => {
   // 2. Notability name-dropping
   it('detects notability name-dropping', () => {
     const text = 'She maintains an active social media presence with millions of followers.';
-    const result = analyze(text, { patternsToCheck: [2] });
+    const result = analyze(text, { lang: "en",  patternsToCheck: [2] });
     expect(result.findings.length).toBeGreaterThan(0);
   });
 
@@ -189,7 +189,7 @@ describe('pattern detection', () => {
   it('detects superficial -ing analyses', () => {
     const text =
       "The building uses modern materials, showcasing the architect's vision and reflecting the community's values.";
-    const result = analyze(text, { patternsToCheck: [3] });
+    const result = analyze(text, { lang: "en",  patternsToCheck: [3] });
     expect(result.findings.length).toBeGreaterThan(0);
   });
 
@@ -197,7 +197,7 @@ describe('pattern detection', () => {
   it('detects promotional language', () => {
     const text =
       'Nestled in the heart of downtown, this stunning venue boasts breathtaking views and renowned cuisine.';
-    const result = analyze(text, { patternsToCheck: [4] });
+    const result = analyze(text, { lang: "en",  patternsToCheck: [4] });
     expect(result.findings.length).toBeGreaterThan(0);
     expect(result.totalMatches).toBeGreaterThanOrEqual(3);
   });
@@ -206,7 +206,7 @@ describe('pattern detection', () => {
   it('detects vague attributions', () => {
     const text =
       'Experts believe this is important. Industry reports suggest continued growth. Studies show improvement.';
-    const result = analyze(text, { patternsToCheck: [5] });
+    const result = analyze(text, { lang: "en",  patternsToCheck: [5] });
     expect(result.findings.length).toBeGreaterThan(0);
     expect(result.totalMatches).toBeGreaterThanOrEqual(2);
   });
@@ -215,7 +215,7 @@ describe('pattern detection', () => {
   it('detects formulaic challenges', () => {
     const text =
       'Despite its challenges, the city continues to thrive. Despite these obstacles, the future outlook remains positive.';
-    const result = analyze(text, { patternsToCheck: [6] });
+    const result = analyze(text, { lang: "en",  patternsToCheck: [6] });
     expect(result.findings.length).toBeGreaterThan(0);
   });
 
@@ -223,7 +223,7 @@ describe('pattern detection', () => {
   it('detects AI vocabulary words', () => {
     const text =
       'Additionally, this showcases the vibrant tapestry of the evolving landscape, a testament to enduring innovation.';
-    const result = analyze(text, { patternsToCheck: [7] });
+    const result = analyze(text, { lang: "en",  patternsToCheck: [7] });
     expect(result.findings.length).toBeGreaterThan(0);
     expect(result.totalMatches).toBeGreaterThanOrEqual(4);
   });
@@ -232,7 +232,7 @@ describe('pattern detection', () => {
   it('detects copula avoidance', () => {
     const text =
       'The gallery serves as a space for art. The building boasts over 3000 square feet. It functions as a hub.';
-    const result = analyze(text, { patternsToCheck: [8] });
+    const result = analyze(text, { lang: "en",  patternsToCheck: [8] });
     expect(result.findings.length).toBeGreaterThan(0);
     expect(result.totalMatches).toBeGreaterThanOrEqual(2);
   });
@@ -241,7 +241,7 @@ describe('pattern detection', () => {
   it('detects negative parallelisms', () => {
     const text =
       "It's not just a tool, it's a revolution. Not only does it save time but also transforms workflows.";
-    const result = analyze(text, { patternsToCheck: [9] });
+    const result = analyze(text, { lang: "en",  patternsToCheck: [9] });
     expect(result.findings.length).toBeGreaterThan(0);
   });
 
@@ -249,7 +249,7 @@ describe('pattern detection', () => {
   it('detects rule of three with abstract nouns', () => {
     const text =
       'The event promotes innovation, inspiration, and collaboration for increased motivation, dedication, and education.';
-    const result = analyze(text, { patternsToCheck: [10] });
+    const result = analyze(text, { lang: "en",  patternsToCheck: [10] });
     expect(result.findings.length).toBeGreaterThan(0);
   });
 
@@ -257,7 +257,7 @@ describe('pattern detection', () => {
   it('detects em dash overuse', () => {
     const text =
       'The project — which started last year — has grown significantly — reaching new heights — and the team — a dedicated group — continues to push forward.';
-    const result = analyze(text, { patternsToCheck: [13] });
+    const result = analyze(text, { lang: "en",  patternsToCheck: [13] });
     expect(result.findings.length).toBeGreaterThan(0);
   });
 
@@ -265,7 +265,7 @@ describe('pattern detection', () => {
   it('detects boldface overuse', () => {
     const text =
       'The **team** worked on **three** key **projects** using **modern** tools for **better** results.';
-    const result = analyze(text, { patternsToCheck: [14] });
+    const result = analyze(text, { lang: "en",  patternsToCheck: [14] });
     expect(result.findings.length).toBeGreaterThan(0);
   });
 
@@ -273,7 +273,7 @@ describe('pattern detection', () => {
   it('detects inline-header lists', () => {
     const text =
       '- **Speed:** Loading is faster now.\n- **Quality:** Output quality improved.\n- **Adoption:** More users joined.';
-    const result = analyze(text, { patternsToCheck: [15] });
+    const result = analyze(text, { lang: "en",  patternsToCheck: [15] });
     expect(result.findings.length).toBeGreaterThan(0);
   });
 
@@ -281,7 +281,7 @@ describe('pattern detection', () => {
   it('detects Title Case headings', () => {
     const text =
       '## Strategic Negotiations And Global Partnerships\n\nSome content here.\n\n## Building A Better Tomorrow Today';
-    const result = analyze(text, { patternsToCheck: [16] });
+    const result = analyze(text, { lang: "en",  patternsToCheck: [16] });
     expect(result.findings.length).toBeGreaterThan(0);
   });
 
@@ -289,7 +289,7 @@ describe('pattern detection', () => {
   it('detects emoji overuse in professional text', () => {
     const text =
       '🚀 Launch phase complete\n💡 Key insights discovered\n✅ Next steps defined\n🎯 Goals aligned';
-    const result = analyze(text, { patternsToCheck: [17] });
+    const result = analyze(text, { lang: "en",  patternsToCheck: [17] });
     expect(result.findings.length).toBeGreaterThan(0);
   });
 
@@ -297,7 +297,7 @@ describe('pattern detection', () => {
   it('detects curly quotes', () => {
     const text =
       'He said \u201Cthe project is on track\u201D but she replied \u201CI\u2019m not so sure.\u201D';
-    const result = analyze(text, { patternsToCheck: [18] });
+    const result = analyze(text, { lang: "en",  patternsToCheck: [18] });
     expect(result.findings.length).toBeGreaterThan(0);
     expect(result.totalMatches).toBeGreaterThanOrEqual(3);
   });
@@ -306,7 +306,7 @@ describe('pattern detection', () => {
   it('detects chatbot artifacts', () => {
     const text =
       'Here is an overview of the topic. I hope this helps! Let me know if you would like me to expand on any section.';
-    const result = analyze(text, { patternsToCheck: [19] });
+    const result = analyze(text, { lang: "en",  patternsToCheck: [19] });
     expect(result.findings.length).toBeGreaterThan(0);
     expect(result.totalMatches).toBeGreaterThanOrEqual(2);
   });
@@ -315,7 +315,7 @@ describe('pattern detection', () => {
   it('detects cutoff disclaimers', () => {
     const text =
       'While specific details are limited, based on available information the company was founded in the 1990s. As of my last training update, this was accurate.';
-    const result = analyze(text, { patternsToCheck: [20] });
+    const result = analyze(text, { lang: "en",  patternsToCheck: [20] });
     expect(result.findings.length).toBeGreaterThan(0);
   });
 
@@ -323,7 +323,7 @@ describe('pattern detection', () => {
   it('detects sycophantic tone', () => {
     const text =
       "Great question! You're absolutely right that this is complex. That's an excellent point about the economy.";
-    const result = analyze(text, { patternsToCheck: [21] });
+    const result = analyze(text, { lang: "en",  patternsToCheck: [21] });
     expect(result.findings.length).toBeGreaterThan(0);
     expect(result.totalMatches).toBeGreaterThanOrEqual(2);
   });
@@ -332,7 +332,7 @@ describe('pattern detection', () => {
   it('detects filler phrases', () => {
     const text =
       'In order to achieve this goal, due to the fact that resources are limited, the team has the ability to adapt.';
-    const result = analyze(text, { patternsToCheck: [22] });
+    const result = analyze(text, { lang: "en",  patternsToCheck: [22] });
     expect(result.findings.length).toBeGreaterThan(0);
     expect(result.totalMatches).toBeGreaterThanOrEqual(2);
   });
@@ -341,7 +341,7 @@ describe('pattern detection', () => {
   it('detects excessive hedging', () => {
     const text =
       'It could potentially be true. One might possibly agree that things could conceivably improve.';
-    const result = analyze(text, { patternsToCheck: [23] });
+    const result = analyze(text, { lang: "en",  patternsToCheck: [23] });
     expect(result.findings.length).toBeGreaterThan(0);
   });
 
@@ -349,7 +349,7 @@ describe('pattern detection', () => {
   it('detects generic conclusions', () => {
     const text =
       'The future looks bright for the company. Exciting times lie ahead as they continue their journey toward excellence.';
-    const result = analyze(text, { patternsToCheck: [24] });
+    const result = analyze(text, { lang: "en",  patternsToCheck: [24] });
     expect(result.findings.length).toBeGreaterThan(0);
     expect(result.totalMatches).toBeGreaterThanOrEqual(2);
   });
@@ -358,7 +358,7 @@ describe('pattern detection', () => {
   it('detects hidden unicode obfuscation characters', () => {
     const text =
       'This looks normal but has hidden chars: de\u200Btector and eva\u00ADsion with two\u00A0spaces\u00A0here.';
-    const result = analyze(text, { patternsToCheck: [29] });
+    const result = analyze(text, { lang: "en",  patternsToCheck: [29] });
     expect(result.findings.length).toBeGreaterThan(0);
     expect(result.findings[0].patternId).toBe(29);
     expect(result.totalMatches).toBeGreaterThanOrEqual(3);
@@ -370,7 +370,7 @@ describe('pattern detection', () => {
 describe('full AI sample analysis', () => {
   it('detects many patterns in ai-sample-1.txt', () => {
     const text = loadFixture('ai-sample-1.txt');
-    const result = analyze(text, { verbose: true });
+    const result = analyze(text, { lang: "en",  verbose: true });
     const categories = Object.entries(result.categories).filter(([, v]) => v.matches > 0);
     expect(categories.length).toBeGreaterThanOrEqual(4);
     expect(result.score).toBeGreaterThan(50);
@@ -379,7 +379,7 @@ describe('full AI sample analysis', () => {
 
   it('detects many patterns in ai-sample-2.txt', () => {
     const text = loadFixture('ai-sample-2.txt');
-    const result = analyze(text);
+    const result = analyze(text, { lang: "en" });
     expect(result.score).toBeGreaterThan(30);
     expect(result.totalMatches).toBeGreaterThan(5);
   });

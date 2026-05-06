@@ -14,7 +14,7 @@
  *   - StyloAI 31-feature stylometric analysis
  */
 
-const { patterns, wordCount } = require('./patterns');
+const { createPatterns, wordCount } = require('./patterns');
 const { computeStats, computeUniformityScore } = require('./stats');
 const { stripCodeSnippets } = require('./preprocess');
 
@@ -45,7 +45,13 @@ const RELIABILITY_RECOMMENDED_WORDS = 150;
  * @returns {object}     — Full analysis result
  */
 function analyze(text, opts = {}) {
-  const { verbose = false, patternsToCheck = null, includeStats = true, ignoreCode = false } = opts;
+  const {
+    verbose = false,
+    patternsToCheck = null,
+    includeStats = true,
+    ignoreCode = false,
+    lang = 'es',
+  } = opts;
 
   if (!text || typeof text !== 'string') {
     return emptyResult();
@@ -58,10 +64,9 @@ function analyze(text, opts = {}) {
   const words = wordCount(trimmed);
 
   // ── Compute text statistics ────────────────────────
-  const stats = includeStats ? computeStats(trimmed) : null;
-  // Only compute uniformity for text with enough structure to be meaningful
+  const stats = includeStats ? computeStats(trimmed, lang) : null;
   const uniformityScore =
-    stats && stats.wordCount >= 20 && stats.sentenceCount >= 3 ? computeUniformityScore(stats) : 0;
+    stats && stats.wordCount >= 20 && stats.sentenceCount >= 3 ? computeUniformityScore(stats, lang) : 0;
 
   // ── Run pattern detectors ──────────────────────────
   const findings = [];
@@ -70,11 +75,12 @@ function analyze(text, opts = {}) {
     categoryScores[cat] = { matches: 0, weightedScore: 0, patterns: [] };
   }
 
-  const activePatterns = patternsToCheck
-    ? patterns.filter((p) => patternsToCheck.includes(p.id))
-    : patterns;
+  const activePatterns = createPatterns(lang);
+  const patternsToRun = patternsToCheck
+    ? activePatterns.filter((p) => patternsToCheck.includes(p.id))
+    : activePatterns;
 
-  for (const pattern of activePatterns) {
+  for (const pattern of patternsToRun) {
     const matches = pattern.detect(trimmed);
     if (matches.length > 0) {
       const finding = {

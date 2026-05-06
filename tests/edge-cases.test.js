@@ -12,40 +12,40 @@ import { computeStats } from '../src/stats.js';
 
 describe('empty and minimal input', () => {
   it('handles empty string', () => {
-    const result = analyze('');
+    const result = analyze('', { lang: "en" });
     expect(result.score).toBe(0);
     expect(result.totalMatches).toBe(0);
     expect(result.wordCount).toBe(0);
   });
 
   it('handles whitespace-only string', () => {
-    const result = analyze('   \n\n\t  ');
+    const result = analyze('   \n\n\t  ', { lang: "en" });
     expect(result.score).toBe(0);
   });
 
   it('handles null', () => {
-    const result = analyze(null);
+    const result = analyze(null, { lang: "en" });
     expect(result.score).toBe(0);
   });
 
   it('handles undefined', () => {
-    const result = analyze(undefined);
+    const result = analyze(undefined, { lang: "en" });
     expect(result.score).toBe(0);
   });
 
   it('handles single word — score is low', () => {
-    const result = analyze('hello');
+    const result = analyze('hello', { lang: "en" });
     expect(result.score).toBeLessThanOrEqual(15);
     expect(result.wordCount).toBe(1);
   });
 
   it('handles single character — score is low', () => {
-    const result = analyze('x');
+    const result = analyze('x', { lang: "en" });
     expect(result.score).toBeLessThanOrEqual(15);
   });
 
   it('handles number-only input — score is low', () => {
-    const result = analyze('12345');
+    const result = analyze('12345', { lang: "en" });
     expect(result.score).toBeLessThanOrEqual(15);
   });
 
@@ -66,39 +66,39 @@ describe('empty and minimal input', () => {
 
 describe('unicode and special characters', () => {
   it('handles emoji text', () => {
-    const result = analyze('🎉 Hello world! 🚀 Great day! ✅ Done!');
+    const result = analyze('🎉 Hello world! 🚀 Great day! ✅ Done!', { lang: "en" });
     expect(result.score).toBeGreaterThanOrEqual(0);
     expect(result.score).toBeLessThanOrEqual(100);
   });
 
   it('handles Chinese text', () => {
-    const result = analyze('这是一个测试。人工智能正在改变世界。');
+    const result = analyze('这是一个测试。人工智能正在改变世界。', { lang: "en" });
     expect(result.score).toBeGreaterThanOrEqual(0);
   });
 
   it('handles Japanese text', () => {
-    const result = analyze('これはテストです。AIは世界を変えています。');
+    const result = analyze('これはテストです。AIは世界を変えています。', { lang: "en" });
     expect(result.score).toBeGreaterThanOrEqual(0);
   });
 
   it('handles Arabic text', () => {
-    const result = analyze('هذا اختبار. الذكاء الاصطناعي يغير العالم.');
+    const result = analyze('هذا اختبار. الذكاء الاصطناعي يغير العالم.', { lang: "en" });
     expect(result.score).toBeGreaterThanOrEqual(0);
   });
 
   it('handles mixed unicode and ASCII', () => {
     const text = 'The café is très bien. Über cool. Naïve approach.';
-    const result = analyze(text);
+    const result = analyze(text, { lang: "en" });
     expect(result.score).toBeGreaterThanOrEqual(0);
   });
 
   it('handles HTML entities', () => {
-    const result = analyze('This &amp; that &lt;tag&gt; content.');
+    const result = analyze('This &amp; that &lt;tag&gt; content.', { lang: "en" });
     expect(result.score).toBeGreaterThanOrEqual(0);
   });
 
   it('handles special whitespace characters', () => {
-    const result = analyze('Hello\u00A0world\u2003test\u200Bhidden');
+    const result = analyze('Hello\u00A0world\u2003test\u200Bhidden', { lang: "en" });
     expect(result.score).toBeGreaterThanOrEqual(0);
   });
 
@@ -113,14 +113,14 @@ describe('unicode and special characters', () => {
 describe('very long text', () => {
   it('handles 1000 identical sentences', () => {
     const text = Array(1000).fill('The cat sat on the mat.').join(' ');
-    const result = analyze(text);
+    const result = analyze(text, { lang: "en" });
     expect(result.score).toBeGreaterThanOrEqual(0);
     expect(result.score).toBeLessThanOrEqual(100);
   });
 
   it('handles text with thousands of newlines', () => {
     const text = Array(500).fill('Line of text.\n').join('');
-    const result = analyze(text);
+    const result = analyze(text, { lang: "en" });
     expect(result.score).toBeGreaterThanOrEqual(0);
   });
 
@@ -136,32 +136,32 @@ describe('very long text', () => {
 
 describe('malformed input', () => {
   it('handles text with only punctuation — score is low', () => {
-    const result = analyze('...!!!???---');
+    const result = analyze('...!!!???---', { lang: "en" });
     expect(result.score).toBeLessThanOrEqual(15);
   });
 
   it('handles extremely long single word', () => {
     const word = 'a'.repeat(10000);
-    const result = analyze(word);
+    const result = analyze(word, { lang: "en" });
     expect(result.score).toBeGreaterThanOrEqual(0);
   });
 
   it('handles text with excessive whitespace', () => {
-    const result = analyze('Hello     world     this     is     spaced');
+    const result = analyze('Hello     world     this     is     spaced', { lang: "en" });
     expect(result.wordCount).toBeGreaterThanOrEqual(4);
   });
 
   it('handles markdown-heavy text', () => {
     const text =
       '# Heading\n\n**bold** _italic_ ~~strike~~ `code`\n\n- item 1\n- item 2\n- item 3\n\n> blockquote\n\n```\ncode block\n```';
-    const result = analyze(text);
+    const result = analyze(text, { lang: "en" });
     expect(result.score).toBeGreaterThanOrEqual(0);
   });
 
   it('handles text with URLs', () => {
     const text =
       'Check out https://example.com and http://test.org/path?query=1&foo=bar for more info.';
-    const result = analyze(text);
+    const result = analyze(text, { lang: "en" });
     expect(result.score).toBeGreaterThanOrEqual(0);
   });
 });
@@ -179,7 +179,7 @@ describe('score bounds', () => {
     ];
 
     for (const input of inputs) {
-      const s = score(input);
+      const s = score(input, { lang: "en" });
       expect(s).toBeGreaterThanOrEqual(0);
       expect(s).toBeLessThanOrEqual(100);
     }
@@ -194,7 +194,7 @@ Experts believe it plays a crucial role. Studies show improvement. Industry repo
 
 In order to help, due to the fact that you asked, at this point in time, it is important to note that the future looks bright. Exciting times lie ahead. I hope this helps! Let me know if you'd like me to expand.`;
 
-    const s = score(text);
+    const s = score(text, { lang: "en" });
     expect(s).toBeLessThanOrEqual(100);
     expect(s).toBeGreaterThanOrEqual(60);
   });

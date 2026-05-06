@@ -106,7 +106,7 @@ describe('scanPath', () => {
     fs.writeFileSync(path.join(tmp, 'ai.md'), aiText);
     fs.writeFileSync(path.join(tmp, 'human.md'), humanText);
 
-    const result = scanPath(tmp, { exts: ['md'], minWords: 3 });
+    const result = scanPath(tmp, { lang: "en",  exts: ['md'], minWords: 3 });
 
     expect(result.summary.scannedFiles).toBe(2);
     expect(result.files.length).toBe(2);
@@ -128,7 +128,7 @@ describe('scanPath', () => {
     fs.writeFileSync(path.join(tmp, 'one.md'), repeated1);
     fs.writeFileSync(path.join(tmp, 'two.md'), repeated2);
 
-    const result = scanPath(tmp, { exts: ['md'], minWords: 3 });
+    const result = scanPath(tmp, { lang: "en",  exts: ['md'], minWords: 3 });
 
     expect(result.patternHotspots.length).toBeGreaterThan(0);
     const sharedPattern = result.patternHotspots.find((p) => p.affectedFiles >= 2);
@@ -151,7 +151,7 @@ describe('scanPath', () => {
       'Great question! This serves as a testament to innovation. I hope this helps!',
     );
 
-    const result = scanPath(tmp, {
+    const result = scanPath(tmp, { lang: "en", 
       exts: ['md'],
       minWords: 3,
       ignoreDirs: ['generated'],
@@ -174,8 +174,8 @@ describe('scanPath', () => {
 
     fs.writeFileSync(path.join(tmp, 'notes.md'), content);
 
-    const regular = scanPath(tmp, { exts: ['md'], minWords: 3, ignoreCode: false });
-    const ignoreCode = scanPath(tmp, { exts: ['md'], minWords: 3, ignoreCode: true });
+    const regular = scanPath(tmp, { lang: "en",  exts: ['md'], minWords: 3, ignoreCode: false });
+    const ignoreCode = scanPath(tmp, { lang: "en",  exts: ['md'], minWords: 3, ignoreCode: true });
 
     expect(regular.files[0].score).toBeGreaterThan(ignoreCode.files[0].score);
   });
@@ -188,7 +188,7 @@ describe('compareTexts and compareFiles', () => {
     const after =
       'The release fixes three bugs and reduces API latency by 18%. We shipped it on Monday and monitored error rates overnight.';
 
-    const result = compareTexts(before, after);
+    const result = compareTexts(before, after, { lang: "en" });
 
     expect(result.delta.score).toBeLessThan(0);
     expect(result.delta.matches).toBeLessThan(0);
@@ -213,8 +213,8 @@ describe('compareTexts and compareFiles', () => {
     const before = '```md\nGreat question!\n```\nShipped bug fixes.';
     const after = '```md\nGreat question!\n```\nShipped bug fixes and lowered latency.';
 
-    const regular = compareTexts(before, after);
-    const codeAware = compareTexts(before, after, { ignoreCode: true });
+    const regular = compareTexts(before, after, { lang: "en" });
+    const codeAware = compareTexts(before, after, { lang: "en",  ignoreCode: true });
 
     expect(regular.before.score).toBeGreaterThan(codeAware.before.score);
   });
