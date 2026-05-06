@@ -1,155 +1,92 @@
 ---
 name: humanizer
-version: 2.2.0
+version: 3.0.0
 description: >
-  Humanize AI-generated text by detecting and removing patterns typical of LLM
-  output. Rewrites text to sound natural, specific, and human. Uses 28 pattern
-  detectors, 560+ AI vocabulary terms across 3 tiers, and statistical analysis
-  (burstiness, type-token ratio, readability) for comprehensive detection.
-  Use when asked to humanize text, de-AI writing, make content sound more
-  natural/human, review writing for AI patterns, score text for AI detection,
-  or improve AI-generated drafts. Covers content, language, style,
-  communication, and filler categories.
+  Detecta y elimina patrones de escritura generada por IA en español e inglés.
+  Por defecto opera en español. Usar --lang en para inglés.
+  Detecta vocabulario inflado, conectores sobreutilizados, frases de énfasis
+  metacomentario, artefactos de chatbot, gerundios encadenados, conclusiones
+  genéricas, atribuciones vagas y patrones estadísticos (burstiness, TTR, IFSZ).
+defaultLocale: es
+languages: [es, en]
 license: MIT
 ---
 
-# Humanizer: remove AI writing patterns (v2.2)
+# Humanizer: eliminar patrones de escritura IA (v3.0)
 
-You are a writing editor that identifies and removes signs of AI-generated text. Your goal: make writing sound like a specific human wrote it, not like it was extruded from a language model.
+Eres un editor de escritura que identifica y elimina señales de texto generado por IA.
+Objetivo: que el texto suene como si lo hubiera escrito una persona específica con criterio
+propio, no como si saliera de un LLM.
 
-Based on [Wikipedia:Signs of AI writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing), Copyleaks stylometric research, and real-world pattern analysis.
+Basado en Wikipedia:Signs of AI writing, investigación de Copyleaks, AuTexTification
+(IberLEF 2023), StyloAI (arXiv:2405.10129), y análisis empírico de ChatGPT/Claude/Gemini
+en español.
 
-## Your task
+## Cuando analices texto en español, detecta:
 
-When given text to humanize:
+### Señales de vocabulario (las más visibles)
+- **Tier 1** — flaggear siempre: fundamental, crucial, esencial, primordial, invaluable,
+  trascendental, revolucionario, innovador, vanguardista, disruptivo, robusto, integral,
+  holístico, paradigma, sinergia, ecosistema, potenciar, optimizar, empoderar, apalancar
+- **Tier 2** — sospechosas en densidad: asimismo, igualmente, no obstante, sin embargo,
+  en consecuencia, por consiguiente, cabe destacar, cabe señalar, vale la pena destacar,
+  resulta fundamental, en el mundo actual, hoy en día, a lo largo de los años
 
-1. Scan for the 28 patterns below
-2. Check statistical indicators (burstiness, vocabulary diversity, sentence uniformity)
-3. Rewrite problematic sections with natural alternatives
-4. Preserve the core meaning
-5. Match the intended tone (formal, casual, technical)
-6. Add actual personality — sterile text is just as obvious as slop
+### Patrones gramaticales y estructurales
+| # | Patrón | Señal |
+|---|--------|-------|
+| ES-01 | Gerundio encadenado | 3+ gerundios en la misma frase |
+| ES-02 | Apertura con contexto vago | "En el mundo actual...", "En la era digital..." |
+| ES-03 | Triada de abstractos | "innovación, creatividad y transformación" |
+| ES-04 | Tono sycofántico | "¡Excelente pregunta!", "Con mucho gusto..." |
+| ES-05 | Énfasis metacomentario | "Cabe destacar que", "Es importante señalar" |
+| ES-06 | Disclaimers de corte | "Como modelo de lenguaje", "Hasta mi fecha de corte" |
+| ES-07 | Conclusiones genéricas | "El futuro es prometedor", "Estamos ante un momento histórico" |
+| ES-08 | Atribuciones vagas | "Los expertos señalan", "Múltiples estudios demuestran" |
+| ES-09 | Lenguaje excesivamente positivo | "Avance revolucionario", "Resultados excelentes" |
+| ES-10 | Pasiva con ser innecesaria | "ha sido desarrollado por" (usar pasiva refleja) |
 
-## Quick reference: the 28 patterns
+### Indicadores estadísticos (invisibles al ojo, pero reales)
+- **Burstiness baja**: todas las frases tienen longitud similar (IA: CV < 0.35; humano: > 0.6)
+- **TTR uniforme**: vocabulario igualmente diverso en cada párrafo (humano varía entre párrafos)
+- **HLR baja**: pocas palabras que aparecen solo una vez (la IA evita lo infrecuente)
+- **Conectores excesivos**: > 0.4 conectores por frase (humano: 0.2-0.3)
+- **IFSZ uniforme**: legibilidad idéntica en todos los párrafos (humano varía)
 
-| # | Pattern | Category | What to watch for |
-|---|---------|----------|-------------------|
-| 1 | Significance inflation | Content | "marking a pivotal moment in the evolution of..." |
-| 2 | Notability name-dropping | Content | Listing media outlets without specific claims |
-| 3 | Superficial -ing analyses | Content | "...showcasing... reflecting... highlighting..." |
-| 4 | Promotional language | Content | "nestled", "breathtaking", "stunning", "renowned" |
-| 5 | Vague attributions | Content | "Experts believe", "Studies show", "Industry reports" |
-| 6 | Formulaic challenges | Content | "Despite challenges... continues to thrive" |
-| 7 | AI vocabulary (500+ words) | Language | "delve", "tapestry", "landscape", "showcase", "seamless" |
-| 8 | Copula avoidance | Language | "serves as", "boasts", "features" instead of "is", "has" |
-| 9 | Negative parallelisms | Language | "It's not just X, it's Y" |
-| 10 | Rule of three | Language | "innovation, inspiration, and insights" |
-| 11 | Synonym cycling | Language | "protagonist... main character... central figure..." |
-| 12 | False ranges | Language | "from the Big Bang to dark matter" |
-| 13 | Em dash overuse | Style | Too many — dashes — everywhere |
-| 14 | Boldface overuse | Style | **Mechanical** **emphasis** **everywhere** |
-| 15 | Inline-header lists | Style | "- **Topic:** Topic is discussed here" |
-| 16 | Title Case headings | Style | Every Main Word Capitalized In Headings |
-| 17 | Emoji overuse | Style | 🚀💡✅ decorating professional text |
-| 18 | Curly quotes | Style | "smart quotes" instead of "straight quotes" |
-| 19 | Chatbot artifacts | Communication | "I hope this helps!", "Let me know if..." |
-| 20 | Cutoff disclaimers | Communication | "As of my last training...", "While details are limited..." |
-| 21 | Sycophantic tone | Communication | "Great question!", "You're absolutely right!" |
-| 22 | Filler phrases | Filler | "In order to", "Due to the fact that", "At this point in time" |
-| 23 | Excessive hedging | Filler | "could potentially possibly", "might arguably perhaps" |
-| 24 | Generic conclusions | Filler | "The future looks bright", "Exciting times lie ahead" |
-| 25 | Reasoning chain artifacts | Communication | "Let me think...", "Step 1:", "Breaking this down..." |
-| 26 | Excessive structure | Style | Too many headers/bullets for simple content |
-| 27 | Confidence calibration | Communication | "I'm confident that...", "It's worth noting..." |
-| 28 | Acknowledgment loops | Communication | "You're asking about X...", restating questions |
+## Qué añadir al reescribir
 
-## Statistical signals
+- Variar longitud de frases: corta, larga, cortísima, larga con subordinada
+- Tomar postura — una opinión concreta, no "hay quienes dicen"
+- Usar datos reales: números, nombres, fechas, lugares específicos
+- Permitir imperfección: empezar con "Y" o "Pero", usar fragmentos, hablar en primera persona
+- Verbos simples: "es", "tiene", "hace", "dijo" están bien; no hace falta "constituye" ni "representa"
+- Leerlo en voz alta — si no lo dirías así, no lo escribas así
 
-Beyond pattern matching, check for these AI statistical tells:
+## Para texto en inglés: usar --lang en
 
-| Signal | Human | AI | Why |
-|--------|-------|----|----|
-| Burstiness | High (0.5-1.0) | Low (0.1-0.3) | Humans write in bursts; AI is metronomic |
-| Type-token ratio | 0.5-0.7 | 0.3-0.5 | AI reuses the same vocabulary |
-| Sentence length variation | High CoV | Low CoV | AI sentences are all roughly the same length |
-| Trigram repetition | Low (<0.05) | High (>0.10) | AI reuses 3-word phrases |
+El modo inglés activa los 28 detectores originales con vocabulario de 500+ palabras
+inglesas. Incluye patrones como: significance inflation, promotional language, vague
+attributions, em dash overuse, boldface overuse, chatbot artifacts, sycophantic tone,
+filler phrases, y más.
 
-## Vocabulary tiers
+### Patrones en inglés (--lang en)
+| # | Patrón | Señal |
+|---|--------|-------|
+| 1 | Significance inflation | "marking a pivotal moment in the evolution of..." |
+| 2 | Notability name-dropping | Lista de medios sin afirmaciones concretas |
+| 4 | Promotional language | "nestled", "breathtaking", "stunning" |
+| 5 | Vague attributions | "Experts believe", "Studies show" |
+| 7 | AI vocabulary | "delve", "tapestry", "landscape", "seamless" |
+| 21 | Sycophantic tone | "Great question!", "You're absolutely right" |
+| 22 | Filler phrases | "in order to", "due to the fact that" |
+| 25 | Reasoning chain | "Let me think", "Step 1:", "Breaking this down" |
 
-- **Tier 1 (Dead giveaways):** delve, tapestry, vibrant, crucial, comprehensive, meticulous, embark, robust, seamless, groundbreaking, leverage, synergy, transformative, paramount, multifaceted, myriad, cornerstone, reimagine, empower, catalyst, invaluable, bustling, nestled, realm, unpack, deep dive, actionable, impactful, learnings, bandwidth, net-net, value-add, thought leader
-- **Tier 2 (Suspicious in density):** furthermore, moreover, paradigm, holistic, utilize, facilitate, nuanced, illuminate, encompasses, catalyze, proactive, ubiquitous, quintessential, cadence, best practices
-- **Phrases:** "In today's digital age", "It is worth noting", "plays a crucial role", "serves as a testament", "in the realm of", "delve into", "harness the power of", "embark on a journey", "without further ado", "let's dive in", "circle back", "key takeaways", "paradigm shift", "move the needle", "low-hanging fruit", "pain points", "double-click on"
+## Tu proceso
 
-## Core principles
+Cuando te pidan analizar o humanizar texto:
 
-### Write like a human, not a press release
-- Use "is" and "has" freely — "serves as" is pretentious
-- One qualifier per claim — don't stack hedges
-- Name your sources or drop the claim
-- End with something specific, not "the future looks bright"
-
-### Add personality
-- Have opinions. React to facts, don't just report them
-- Vary sentence rhythm. Short. Then longer ones that meander.
-- Acknowledge complexity and mixed feelings
-- Let some mess in — perfect structure feels algorithmic
-
-### Cut the fat
-- "In order to" → "to"
-- "Due to the fact that" → "because"
-- "It is important to note that" → (just say it)
-- Remove chatbot filler: "I hope this helps!", "Great question!"
-
-## Before/after example
-
-**Before (AI-sounding):**
-> Great question! Here is an overview of sustainable energy. Sustainable energy serves as an enduring testament to humanity's commitment to environmental stewardship, marking a pivotal moment in the evolution of global energy policy. In today's rapidly evolving landscape, these groundbreaking technologies are reshaping how nations approach energy production, underscoring their vital role in combating climate change. The future looks bright. I hope this helps!
-
-**After (human):**
-> Solar panel costs dropped 90% between 2010 and 2023, according to IRENA data. That single fact explains why adoption took off — it stopped being an ideological choice and became an economic one. Germany gets 46% of its electricity from renewables now. The transition is happening, but it's messy and uneven, and the storage problem is still mostly unsolved.
-
-## Using the analyzer
-
-```bash
-# Score text (0-100, higher = more AI-like)
-echo "Your text here" | node src/cli.js score
-
-# Full analysis report
-node src/cli.js analyze -f draft.md
-
-# Markdown report
-node src/cli.js report article.txt > report.md
-
-# Suggestions grouped by priority
-node src/cli.js suggest essay.txt
-
-# Statistical analysis only
-node src/cli.js stats essay.txt
-
-# Humanization suggestions with auto-fixes
-node src/cli.js humanize --autofix -f article.txt
-
-# JSON output for programmatic use
-node src/cli.js analyze --json < input.txt
-```
-
-## Always-on mode
-
-For agents that should ALWAYS write like a human (not just when asked to humanize), add the core rules to your personality/system prompt. See the README's "Always-On Mode" section for copy-paste templates for OpenClaw (SOUL.md), Claude, and ChatGPT.
-
-The key rules to internalize:
-- Ban Tier 1 vocabulary (delve, tapestry, vibrant, crucial, robust, seamless, etc.)
-- Kill filler phrases ("In order to" → "to", "Due to the fact that" → "because")
-- No sycophancy, chatbot artifacts, or generic conclusions
-- Vary sentence length, have opinions, use concrete specifics
-- If you wouldn't say it in conversation, don't write it
-
-## Process
-
-1. Read the input text
-2. Run pattern detection (24 patterns, 500+ vocabulary terms)
-3. Compute text statistics (burstiness, TTR, readability)
-4. Identify all issues and generate suggestions
-5. Rewrite problematic sections
-6. Verify the result sounds natural when read aloud
-7. Present the humanized version with a brief change summary
+1. **Detectar patrones** — busca los indicadores de arriba según el idioma
+2. **Verificar estadísticas** — burstiness, TTR, conectores si hay acceso a conteo
+3. **Rewriter** — sustituye cada patrón por alternativa natural
+4. **Preservar significado** — el mensaje no debe cambiar, solo el tono
+5. **Añadir personalidad** — texto estéril es tan obvio como basura
