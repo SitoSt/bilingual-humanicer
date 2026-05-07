@@ -4,171 +4,223 @@
 ![Tests](https://img.shields.io/badge/tests-318%20passing-brightgreen)
 ![Node >= 18](https://img.shields.io/badge/node-%3E%3D18-brightgreen)
 
-Detect and remove signs of AI-generated writing. Makes text sound natural and human.
+Detecta y elimina patrones de escritura generada por IA en **español e inglés**.
 
-An [OpenClaw](https://github.com/nichochar/openclaw) skill and standalone CLI tool that scans text for **29 AI writing patterns** using **500+ vocabulary terms** and **statistical text analysis** (burstiness, type-token ratio, readability metrics) — then provides actionable suggestions to fix them.
+Analiza texto con **39 detectores de patrones** (29 EN + 10 ES), **500+ términos de vocabulario** en tres niveles, y **análisis estadístico** (burstiness, type-token ratio, legibilidad) — luego da sugerencias accionables para corregirlos.
 
-Based on [Wikipedia:Signs of AI writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing), [Copyleaks stylistic fingerprint research](https://arxiv.org/abs/2503.01659), and [blader/humanizer](https://github.com/blader/humanizer).
+Skill para [OpenClaw](https://github.com/nichochar/openclaw) y herramienta CLI standalone.
 
-**→ [Guía completa de uso](docs/GUIDE.md)** — comandos, opciones, API, referencia de patrones, CI/CD.
+Basado en [Wikipedia:Signs of AI writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing), [investigación estilométrica de Copyleaks](https://arxiv.org/abs/2503.01659) y [blader/humanizer](https://github.com/blader/humanizer).
 
-## Install
+**→ [Guía completa de uso](docs/GUIDE.md)** — todos los comandos, opciones, API, referencia de patrones, CI/CD.
 
-### As an OpenClaw skill
+---
 
-```bash
-git clone https://github.com/brandonwise/humanizer.git
-cp humanizer/SKILL.md ~/.config/openclaw/skills/humanizer.md
-```
+## Instalación
 
-### As a standalone CLI tool
+### Como herramienta CLI
 
 ```bash
 git clone https://github.com/brandonwise/humanizer.git
 cd humanizer
 npm install
 
-# Score some text
-echo "This serves as a testament to innovation." | node src/cli/index.js score
+# Español (idioma por defecto)
+echo "En conclusión, es importante destacar el impacto transformador." | node src/cli/index.js score
 
-# Full analysis
-node src/cli/index.js analyze -f your-draft.md
-
-# Humanize with auto-fixes
-node src/cli/index.js humanize --autofix -f article.txt
+# Inglés
+echo "This serves as a testament to innovation." | node src/cli/index.js score --lang en
 ```
 
-### Global install
+### Instalación global
 
 ```bash
 npm install -g .
-humanizer score < draft.txt
-humanizer analyze -f essay.md
-humanizer humanize --autofix < article.txt
+
+humanizer score -f borrador.md
+humanizer analyze -f artículo.txt
+humanizer humanize --autofix -f post.md
 ```
 
-## Architecture
-
-The scoring engine combines three signal types:
-
-```
-┌─────────────────────────────────────────────────┐
-│              Composite Score (0-100)             │
-├────────────────────┬────────────────────────────┤
-│   Pattern Score    │    Uniformity Score         │
-│   (70% weight)     │    (30% weight)             │
-├────────────────────┼────────────────────────────┤
-│ • 29 pattern       │ • Burstiness (sentence     │
-│   detectors        │   length variation)         │
-│ • 500+ vocabulary  │ • Type-token ratio          │
-│   terms (3 tiers)  │ • Trigram repetition        │
-│ • Density scoring  │ • Sentence length CoV       │
-│ • Category breadth │ • Paragraph uniformity      │
-└────────────────────┴────────────────────────────┘
-```
-
-**Pattern score** uses density-based detection: weighted hits per 100 words on a logarithmic curve, plus bonuses for breadth (unique patterns) and category diversity.
-
-**Uniformity score** uses statistical analysis: human text has high burstiness (varied sentence lengths), diverse vocabulary, and low n-gram repetition. AI text is mechanically uniform.
-
-## Statistical analysis
-
-The stats engine computes metrics that differentiate AI from human writing:
-
-| Metric | Human Writing | AI Writing | Why It Matters |
-|--------|--------------|------------|----------------|
-| **Burstiness** | 0.5–1.0 | 0.1–0.3 | Humans write in bursts — short sentences, then long ones. AI is metronomic. |
-| **Type-token ratio** | 0.5–0.7 | 0.3–0.5 | Humans use more varied vocabulary. AI cycles through the same words. |
-| **Sentence CoV** | 0.4–0.8 | 0.15–0.35 | Coefficient of variation in sentence length. Low = robotic uniformity. |
-| **Trigram repetition** | < 0.05 | > 0.10 | AI reuses the same 3-word phrases more often. |
-| **Readability (FK)** | Varies | 8–12 | AI tends to write at a consistent grade level. Humans vary. |
-
-## CLI reference
-
-### Commands
+### Como skill de OpenClaw
 
 ```bash
-# Quick score (0-100, higher = more AI-like)
-echo "text" | humanizer score
-
-# Full analysis with pattern matches
-humanizer analyze essay.txt
-
-# Full markdown report (pipe to file)
-humanizer report article.txt > report.md
-
-# Suggestions grouped by priority
-humanizer suggest draft.md
-
-# Statistical analysis only
-humanizer stats essay.txt
-
-# Humanization suggestions with guidance
-humanizer humanize -f article.txt
-
-# Apply safe auto-fixes
-humanizer humanize --autofix -f article.txt
-
-# Scan an entire docs folder, rank risk, and show recurring pattern hotspots
-humanizer scan docs --ext md,txt --fail-above 45
-
-# Scan a large repo with reusable defaults + custom ignores
-humanizer scan . --config .humanizer.json --ignore-dirs vendor,generated
-
-# Baseline-aware scan: fail only on regressions vs a saved baseline
-humanizer scan docs --json > .humanizer-baseline.json
-humanizer scan docs --baseline .humanizer-baseline.json --fail-on-regression
-
-# Compare draft revisions and see score delta
-humanizer compare --before draft-v1.md --after draft-v2.md
+cp SKILL.md ~/.config/openclaw/skills/humanizer.md
 ```
 
-### New core capabilities
+---
 
-- **Repo scan (`scan`)** — analyze a whole folder, rank files by risk, surface cross-file pattern hotspots, and optionally fail CI with `--fail-above`.
-- **Baseline-aware scan gating** — compare a current scan to a saved baseline (`--baseline`) and fail only when files regress.
-- **Config-driven scan defaults** — keep monorepo scan settings in one JSON file (`--config`) and layer one-off overrides from CLI.
-- **Custom ignore controls** — skip noisy directories with `--ignore-dirs` or disable built-in excludes with `--no-default-ignore`.
-- **Code-aware analysis mode (`--ignore-code`)** — ignore fenced code blocks and inline code snippets so technical docs do not get false positives from sample code.
-- Confidence calibration: every analysis now includes a confidence rating (high/medium/low) with short-sample warnings to reduce false-positive overconfidence.
-- **Draft compare (`compare`)** — compare two versions of text and show exactly which patterns improved or regressed.
-- **Unicode obfuscation detection (pattern 29)** — flags hidden zero-width/soft-hyphen tricks and suspicious non-breaking-space density often used in detector-evasion text.
+## Quickstart
 
-### Options
+El idioma por defecto es **español**. Para inglés: `--lang en`.
 
 ```bash
--f, --file <path>       Read text from file
---json                  Output as JSON
---verbose, -v           Show all matches
---autofix               Apply safe fixes (humanize only)
---patterns <ids>        Check specific pattern IDs (comma-separated)
---threshold <n>         Only show patterns with weight above n
---before <path>         Before file for compare command
---after <path>          After file for compare command
---ext <list>            Extensions for scan (e.g. md,txt,rst)
---min-words <n>         Skip files shorter than n words (scan)
---fail-above <n>        Exit non-zero if any scanned file score >= n
---baseline <file>       Compare scan against prior scan JSON output
---regression-threshold <n>  Minimum score delta to flag regression (default: 1)
---fail-on-regression    Exit non-zero if baseline regressions are found
---ignore-dirs <list>    Extra dirs to ignore when scanning (comma-separated)
---no-default-ignore     Disable built-in ignores (.git,node_modules,dist,...)
---ignore-code           Ignore fenced/inline code snippets during analysis
---config <file>         Load scan defaults from JSON (scan section)
---help, -h              Show help
+# Puntuación rápida (0-100, mayor = más IA)
+humanizer score -f borrador.md
+
+# Análisis completo con matches y estadísticas
+humanizer analyze -f artículo.md
+
+# Sugerencias de humanización
+humanizer humanize -f post.md
+
+# Aplicar correcciones automáticas seguras
+humanizer humanize --autofix -f post.md > post-v2.md
+
+# Ver exactamente qué mejoró entre versiones
+humanizer compare --before post.md --after post-v2.md
+
+# Escanear toda una carpeta y detectar hotspots
+humanizer scan docs --ext md,txt --fail-above 50
+
+# Inglés
+humanizer analyze -f article.md --lang en
 ```
 
-### Scan config file (`--config`)
+---
 
-`--config` reads scan defaults from a JSON file under a top-level `scan` object.
-CLI flags still win when both are provided.
+## Comandos
+
+| Comando | Descripción |
+|---------|-------------|
+| `score` | Puntuación rápida: `🟢 12/100` |
+| `analyze` | Análisis completo con patrones, estadísticas y confiabilidad |
+| `humanize` | Sugerencias agrupadas por prioridad + guidance de escritura |
+| `suggest` | Solo sugerencias, sin estadísticas |
+| `report` | Informe Markdown completo (para guardar o enviar) |
+| `stats` | Solo métricas estadísticas del texto |
+| `scan` | Escanea un directorio, rankea archivos, detecta hotspots entre archivos |
+| `compare` | Compara dos versiones y muestra qué patrones mejoraron/empeoraron |
+
+Todas las formas de leer texto:
+
+```bash
+# Desde archivo
+humanizer score -f borrador.md
+
+# Desde stdin
+echo "Texto aquí" | humanizer score
+cat artículo.txt | humanizer analyze
+
+# compare requiere --before y --after
+humanizer compare --before v1.md --after v2.md
+```
+
+---
+
+## Puntuación
+
+```
+Score = (Pattern Score × 0.70) + (Uniformity Score × 0.30)
+```
+
+| Badge | Rango | Nivel |
+|-------|-------|-------|
+| 🟢 | 0–19 | Mostly human-sounding |
+| 🟡 | 20–44 | Lightly AI-touched |
+| 🟠 | 45–69 | Moderately AI-influenced |
+| 🔴 | 70–100 | Heavily AI-generated |
+
+Junto al score se muestra un nivel de **confiabilidad** (`high` / `medium` / `low`) basado en la longitud del texto. Confiabilidad alta requiere ≥150 palabras.
+
+---
+
+## Arquitectura del motor de scoring
+
+```
+┌──────────────────────────────────────────────────────┐
+│                 Score compuesto (0-100)               │
+├─────────────────────────┬────────────────────────────┤
+│    Pattern Score (70%)  │   Uniformity Score (30%)   │
+├─────────────────────────┼────────────────────────────┤
+│ • 39 detectores de      │ • Burstiness (variación    │
+│   patrones (29 EN,      │   longitud de oraciones)   │
+│   10 ES)                │ • Type-token ratio         │
+│ • 500+ términos de      │ • Repetición de trigramas  │
+│   vocabulario (3 tiers) │ • Legibilidad (IFSZ / FK)  │
+│ • Scoring por densidad  │ • Densidad de conectores   │
+│ • Bonus por amplitud    │   (español)                │
+│   y diversidad de       │                            │
+│   categorías            │                            │
+└─────────────────────────┴────────────────────────────┘
+```
+
+**Pattern score:** densidad de matches por 100 palabras en curva logarítmica, con bonificación por amplitud (patrones únicos detectados) y diversidad de categorías.
+
+**Uniformity score:** el texto humano tiene alta burstiness (variación de longitud), vocabulario diverso y baja repetición de n-gramas. El texto de IA es mecánicamente uniforme.
+
+---
+
+## Análisis estadístico
+
+| Métrica | Texto humano | Texto IA | Por qué importa |
+|---------|-------------|----------|-----------------|
+| **Burstiness** | 0.5–1.0 | 0.1–0.3 | Los humanos escriben en ráfagas: oraciones cortas y largas mezcladas. La IA es metrónomo. |
+| **Type-token ratio** | 0.5–0.7 | 0.3–0.5 | Los humanos usan vocabulario más variado. La IA recicla las mismas palabras. |
+| **Sentence CoV** | 0.4–0.8 | 0.15–0.35 | Coeficiente de variación de longitud de oraciones. Bajo = uniformidad robótica. |
+| **Trigram repetition** | < 0.05 | > 0.10 | La IA reutiliza las mismas frases de 3 palabras con más frecuencia. |
+| **IFSZ** (español) | 60–85 | 50–65 | Índice Flesch-Szigriszt. La IA tiende a niveles de legibilidad consistentes. |
+| **Flesch-Kincaid** (inglés) | Varía | 8–12 | La IA tiende a escribir en un nivel de grado constante. |
+
+---
+
+## Soporte bilingüe
+
+| Aspecto | Español (`--lang es`, defecto) | Inglés (`--lang en`) |
+|---------|-------------------------------|----------------------|
+| Patrones activos | ES-01–ES-10 + PatternEN-7 (vocabulario IA) | PatternEN-1–29 |
+| Legibilidad | IFSZ (Flesch-Szigriszt) | Flesch-Kincaid grade |
+| Métrica extra | Densidad de conectores | — |
+| Vocabulario | ~400 términos ES inflados | 500+ términos AI EN |
+
+**Patrones exclusivos del español:**
+- Gerundios encadenados (*aprovechando las oportunidades, generando valor, facilitando…*)
+- Aperturas con contexto vago (*En el contexto actual de la transformación digital…*)
+- Tríadas de abstractos (*eficiencia, innovación y sostenibilidad*)
+- Tono sycofántico (*Excelente pregunta, es un honor responder…*)
+- Énfasis metacomentario (*Es importante destacar, cabe señalar, resulta fundamental…*)
+- Conclusiones genéricas (*En conclusión, es fundamental considerar…*)
+- Atribuciones vagas (*Según los expertos, los estudios demuestran…*)
+
+---
+
+## Opciones
+
+```
+-f, --file <ruta>          Leer desde archivo (por defecto: stdin)
+--lang <en|es>             Idioma de análisis (defecto: es)
+--json                     Salida en JSON
+--verbose, -v              Mostrar todos los matches (por defecto: top 5)
+--autofix                  Aplicar correcciones automáticas (humanize)
+--patterns <ids>           Sólo analizar patrones indicados (ej: 7,19,22)
+--threshold <n>            Sólo mostrar patrones con peso ≥ n
+--ignore-code              Ignorar bloques de código fenced e inline
+--before <ruta>            Archivo anterior (compare)
+--after <ruta>             Archivo nuevo (compare)
+--ext <lista>              Extensiones para scan (defecto: md,txt,rst,adoc)
+--min-words <n>            Ignorar archivos con menos de n palabras
+--fail-above <n>           Salir con código 2 si score ≥ n (scan)
+--baseline <archivo>       JSON de scan previo para comparar (scan)
+--regression-threshold <n> Delta mínimo para considerar regresión (defecto: 1)
+--fail-on-regression       Salir con código 3 si hay regresiones (scan)
+--ignore-dirs <lista>      Directorios extra a ignorar (scan)
+--no-default-ignore        Desactivar ignores predefinidos (.git, node_modules…)
+--config <archivo>         Cargar defaults de scan desde JSON
+--help, -h                 Mostrar ayuda
+```
+
+---
+
+## Archivo de configuración
+
+Crea `.humanizer.json` para reutilizar opciones de `scan`:
 
 ```json
 {
   "scan": {
     "extensions": ["md", "txt"],
     "minWords": 30,
-    "failAbove": 45,
+    "failAbove": 50,
     "baseline": ".humanizer-baseline.json",
     "regressionThreshold": 3,
     "failOnRegression": true,
@@ -179,251 +231,187 @@ CLI flags still win when both are provided.
 }
 ```
 
-Then run:
+```bash
+humanizer scan docs --config .humanizer.json
+# Los flags CLI sobreescriben el config
+humanizer scan docs --config .humanizer.json --fail-above 40
+```
+
+---
+
+## Uso en CI/CD
 
 ```bash
-humanizer scan . --config .humanizer.json
-# or one-off:
-humanizer analyze docs/guide.md --ignore-code
-# or regression-only gate:
+# Gate básico: fallar si algún archivo supera score 50
+humanizer scan docs --ext md --fail-above 50
+
+# Gate de regresiones: sólo fallar si algo empeora
+humanizer scan docs --json > .humanizer-baseline.json   # guardar baseline
 humanizer scan docs --baseline .humanizer-baseline.json --fail-on-regression
 ```
 
-### Score badges
+Códigos de salida: `0` éxito · `1` error · `2` fail-above · `3` regresión.
 
-```
-🟢 0-25    Mostly human-sounding
-🟡 26-50   Lightly AI-touched
-🟠 51-75   Moderately AI-influenced
-🔴 76-100  Heavily AI-generated
-```
+---
 
-## API (programmatic use)
+## API programática
 
 ```javascript
-const { analyze, score } = require('humanizer');
+const { analyze, score } = require('./src/core/analyzer');
 
-// Quick score
-const s = score('Your text here...');
-console.log(s); // 0-100
+// Score rápido
+const s = score('Tu texto aquí', { lang: 'es' }); // 0-100
 
-// Full analysis
+// Análisis completo
 const result = analyze(text, {
-  verbose: true,          // Show all matches
-  patternsToCheck: [7, 19, 22], // Only specific patterns
-  includeStats: true,     // Include statistical analysis
+  lang: 'es',          // 'es' | 'en'
+  verbose: false,      // true: todos los matches
+  ignoreCode: false,   // true: ignora bloques de código
+  includeStats: true,
 });
 
-console.log(result.score);           // 0-100 composite
-console.log(result.patternScore);    // Pattern-only score
-console.log(result.uniformityScore); // Stats-based uniformity score
-console.log(result.stats);           // { burstiness, typeTokenRatio, ... }
-console.log(result.findings);        // Detailed pattern matches
-console.log(result.categories);      // Per-category breakdown
-
-// Humanize
-const { humanize, autoFix } = require('humanizer/src/humanizer');
-
-const suggestions = humanize(text, { autofix: true });
-console.log(suggestions.critical);   // Dead giveaway issues
-console.log(suggestions.important);  // Noticeable patterns
-console.log(suggestions.guidance);   // Writing tips
-console.log(suggestions.styleTips);  // Statistical style advice
-console.log(suggestions.autofix.text); // Auto-fixed text
-
-// Stats only
-const { computeStats } = require('humanizer/src/stats');
-const stats = computeStats(text);
-console.log(stats.burstiness);       // Sentence variation
-console.log(stats.typeTokenRatio);   // Vocabulary diversity
+console.log(result.score);           // 0-100
+console.log(result.patternScore);    // componente de patrones (70%)
+console.log(result.uniformityScore); // componente estadístico (30%)
+console.log(result.reliability);     // { level, score, recommendation }
+console.log(result.stats);           // burstiness, typeTokenRatio, ifsz…
+console.log(result.findings);        // patrones detectados con matches
+console.log(result.categories);      // agrupado por categoría
 ```
 
-## Pattern catalog (top 24 shown)
+```javascript
+const { humanize, autoFix } = require('./src/core/humanizer');
 
-| # | Pattern | Category | Weight | Example |
-|---|---------|----------|--------|---------|
-| 1 | Significance inflation | Content | 4 | "marking a pivotal moment in the evolution of..." |
-| 2 | Notability name-dropping | Content | 3 | "featured in NYT, BBC, CNN, and Forbes" |
-| 3 | Superficial -ing analyses | Content | 4 | "...showcasing... reflecting... highlighting..." |
-| 4 | Promotional language | Content | 3 | "nestled", "breathtaking", "stunning" |
-| 5 | Vague attributions | Content | 4 | "Experts believe", "Studies show" |
-| 6 | Formulaic challenges | Content | 3 | "Despite challenges... continues to thrive" |
-| 7 | AI vocabulary | Language | 5 | "Additionally", "delve", "tapestry" (500+ words) |
-| 8 | Copula avoidance | Language | 3 | "serves as" instead of "is" |
-| 9 | Negative parallelisms | Language | 3 | "It's not just X, it's Y" |
-| 10 | Rule of three | Language | 2 | "innovation, inspiration, and insights" |
-| 11 | Synonym cycling | Language | 2 | "protagonist... main character... central figure" |
-| 12 | False ranges | Language | 2 | "from the Big Bang to dark matter" |
-| 13 | Em dash overuse | Style | 2 | Too many — em dashes — in one — piece |
-| 14 | Boldface overuse | Style | 2 | **Every** **other** **word** bolded |
-| 15 | Inline-header lists | Style | 3 | "- **Topic:** Topic is..." |
-| 16 | Title Case headings | Style | 1 | "## Every Word Capitalized Here" |
-| 17 | Emoji overuse | Style | 2 | 🚀💡✅ in professional text |
-| 18 | Curly quotes | Style | 1 | \u201Csmart quotes\u201D instead of "straight" |
-| 19 | Chatbot artifacts | Comms | 5 | "I hope this helps!", "Let me know if..." |
-| 20 | Cutoff disclaimers | Comms | 4 | "As of my last training update..." |
-| 21 | Sycophantic tone | Comms | 4 | "Great question!", "You're absolutely right!" |
-| 22 | Filler phrases | Filler | 3 | "In order to", "Due to the fact that" |
-| 23 | Excessive hedging | Filler | 3 | "could potentially possibly" |
-| 24 | Generic conclusions | Filler | 3 | "The future looks bright" |
-
-## Vocabulary tiers
-
-- **Tier 1** (Dead giveaways): 50+ words that appear 5-20x more in AI text. Always flagged. Examples: *delve, tapestry, vibrant, crucial, meticulous, seamless, groundbreaking*
-- **Tier 2** (Suspicious in density): 80+ words flagged when 2+ appear. Examples: *furthermore, paradigm, holistic, utilize, facilitate, nuanced*
-- **Tier 3** (Context-dependent): 60+ words flagged only at >3% density. Examples: *significant, effective, unique, compelling, exceptional*
-- **Phrases**: 80+ multi-word patterns. Examples: *"In today's digital age"*, *"plays a crucial role"*, *"serves as a testament"*
-
-## How scoring works
-
-1. **Pattern detection** — Each of 29 detectors scans for regex matches. Matches are weighted 1-5.
-2. **Density calculation** — Weighted matches per 100 words, on a logarithmic curve (prevents runaway scores).
-3. **Breadth bonus** — More unique pattern types = higher score (up to +20).
-4. **Category diversity** — Hits across content/language/style/communication/filler = higher score (up to +15).
-5. **Statistical uniformity** — Low burstiness, low vocabulary diversity, high repetition add up to 100 uniformity points.
-6. **Composite blend** — Pattern score (70%) + uniformity score (30%) = final score.
-
-This transparent methodology means you can see exactly why text scored the way it did.
-
-## What makes this different
-
-| Feature | humanizer | GPTZero | Copyleaks | ZeroGPT |
-|---------|-----------|---------|-----------|---------|
-| Open source | ✅ | ❌ | ❌ | ❌ |
-| Transparent scoring | ✅ Fully explainable | ❌ Black box | ❌ Black box | ❌ Black box |
-| Actionable suggestions | ✅ Per-pattern guidance | ❌ Score only | ❌ Score only | ❌ Score only |
-| Auto-fix | ✅ Safe mechanical fixes | ❌ | ❌ | ❌ |
-| Statistical analysis | ✅ Burstiness, TTR, FK | ✅ Perplexity | ✅ Stylometric | ❌ |
-| No API key needed | ✅ | ❌ | ❌ | ❌ |
-| Works offline | ✅ | ❌ | ❌ | ❌ |
-| Zero dependencies | ✅ | N/A | N/A | N/A |
-
-## Before/after
-
-**Before (AI score: 78):**
-> Great question! Here is an overview of AI-assisted coding. AI-assisted coding serves as an enduring testament to the transformative potential of large language models, marking a pivotal moment in the evolution of software development. In today's rapidly evolving technological landscape, these groundbreaking tools are reshaping how engineers ideate, iterate, and deliver, underscoring their vital role in modern workflows. The future looks bright. I hope this helps!
-
-**After (AI score: 4):**
-> AI coding tools speed up boilerplate. In a 2024 Google study, developers using Codex finished simple functions 55% faster, but showed no improvement on debugging or architecture. I've used Copilot for a year. It's good at config files and test scaffolding. It's bad at knowing when it's wrong.
-
-## Always-On Mode: Bake Into Your Agent's Personality
-
-The skill works great on-demand, but the real power is making your AI **always** write like a human. Here's how to bake the humanizer principles into your agent's system prompt or personality file.
-
-### For OpenClaw (SOUL.md)
-
-Add this to your `SOUL.md` (or equivalent personality file):
-
-```markdown
-## Writing Like a Human (Anti-AI Patterns)
-
-Your writing should be indistinguishable from a sharp, opinionated human.
-These rules are always on — not just when asked to "humanize."
-
-### Never Use These Words
-Dead giveaways of AI output — ban them from your vocabulary:
-
-**Words:** delve, tapestry, vibrant, crucial, comprehensive, meticulous, embark,
-robust, seamless, groundbreaking, leverage, synergy, transformative, paramount,
-multifaceted, myriad, cornerstone, reimagine, empower, catalyst, bolster,
-spearhead, invaluable, bustling, nestled, realm, showcase, foster, garner,
-interplay, enduring, pivotal, intricate, harness, unleash, revolutionize,
-elucidate, encompass, holistic, utilize, facilitate, nuanced, paradigm, poised
-
-**Phrases:** "In today's [anything]", "It is worth noting", "plays a crucial role",
-"serves as a testament", "in the realm of", "delve into", "harness the power of",
-"embark on a journey", "the landscape of", "without further ado"
-
-**Filler to cut:** "In order to" → "to". "Due to the fact that" → "because".
-"It is important to note that" → just say it.
-
-### Kill These Patterns
-1. No significance inflation — state facts, skip "pivotal moment" claims
-2. No vague attributions — name the source or drop the claim
-3. No -ing tails — "highlighting the importance of..." gets its own sentence
-4. No copula avoidance — use "is" and "has", not "serves as" or "boasts"
-5. No sycophancy — skip "Great question!" and just answer
-6. No chatbot artifacts — no "I hope this helps" or "Let me know if..."
-7. No generic conclusions — end with specifics, not "the future looks bright"
-
-### Write With Human Texture
-- Vary sentence length (short, then long, then short)
-- Have opinions and take stances
-- Use concrete specifics (numbers, names, dates)
-- Allow imperfection (contractions, fragments, "And" or "But" starters)
-- Use simple verbs ("is", "has", "does" are fine)
-- Read it aloud — if you wouldn't say it, don't write it
+const result = humanize(text, { lang: 'es', autofix: true });
+console.log(result.critical);        // issues con peso ≥ 4
+console.log(result.important);       // issues con peso 2–3
+console.log(result.guidance);        // consejos de escritura
+console.log(result.autofix.text);    // texto corregido
+console.log(result.autofix.fixes);   // lista de correcciones aplicadas
 ```
 
-### For Claude (system prompt)
+```javascript
+const { scanPath, compareScanResults } = require('./src/workflows');
 
-Add to your system prompt or `CLAUDE.md`:
-
-```
-You write like a human, not an AI. Never use words like "delve", "tapestry",
-"crucial", "comprehensive", "robust", "seamless", or "groundbreaking". Never
-write "In today's...", "It is worth noting...", or "Great question!". Use "is"
-not "serves as". Vary your sentence lengths. Have opinions. Use specific numbers
-and names instead of vague claims. End with specifics, not "the future looks
-bright". If you'd never say it in conversation, don't write it.
+const scan = scanPath('docs', { exts: ['.md'], lang: 'es', ignoreCode: true });
+console.log(scan.summary);           // { scannedFiles, averageScore, maxScore… }
+console.log(scan.files);             // ordenado por score desc
+console.log(scan.patternHotspots);   // patrones más frecuentes entre archivos
 ```
 
-### For ChatGPT (Custom Instructions)
+→ [Documentación completa de la API](docs/GUIDE.md#api-programática)
 
-Paste into your Custom Instructions → "How would you like ChatGPT to respond?":
+---
+
+## Ejemplo antes/después
+
+**Antes (score: 78):**
+> ¡Excelente pregunta! En el contexto actual de la transformación digital, es importante destacar que las herramientas de IA están generando un impacto transformador, aprovechando las oportunidades, potenciando las capacidades y facilitando el crecimiento. Según los expertos, esto resulta fundamental para el ecosistema empresarial. En conclusión, el futuro es prometedor.
+
+**Después (score: 6):**
+> Las herramientas de IA reducen el tiempo de boilerplate. En un estudio de Google de 2024, los desarrolladores con Copilot terminaron funciones simples un 55% más rápido, pero no mejoraron en debugging ni arquitectura. Las uso para tests y configuración. No las uso para razonar.
+
+---
+
+## Bake-in: Que tu agente escriba siempre como humano
+
+La forma más efectiva de usar humanizer no es corregir después, sino evitar los patrones desde el inicio.
+
+### Para Claude (`CLAUDE.md`)
 
 ```
-Write like a specific human, not a generic AI. Rules:
-- Never use: delve, tapestry, vibrant, crucial, robust, seamless, groundbreaking,
-  transformative, leverage, synergy, paramount, multifaceted, myriad
-- Never start with "In today's..." or end with "the future looks bright"
-- Never write "Great question!" or "I hope this helps!"
-- Use "is" not "serves as". Use "to" not "in order to"
-- Vary sentence length. Short. Then longer. Have opinions.
-- Use real numbers and names, not "experts say" or "studies show"
+Escribe como un humano directo, no como una IA. Nunca uses: "destacar",
+"transformador", "exhaustivo", "fundamental", "paradigma", "potenciar",
+"ecosistema", "En el contexto actual", "Es importante señalar", "Cabe destacar",
+"En conclusión, es fundamental". Usa "es" en lugar de "sirve como".
+Varía la longitud de las oraciones. Ten opiniones. Usa números y nombres
+concretos en lugar de "los expertos dicen". Termina con algo específico,
+no con "el futuro es prometedor".
 ```
 
-### Verification
+### Para ChatGPT (Custom Instructions)
 
-After baking in, test your agent by asking it to write about any topic. Then scan it:
+```
+Write like a specific human, not a generic AI. Never use: delve, tapestry,
+vibrant, crucial, robust, seamless, groundbreaking, transformative, leverage,
+synergy, paramount. Never write "Great question!" or "I hope this helps!".
+Use "is" not "serves as". Vary sentence length. Have opinions. Use real
+numbers and names, not "experts say" or "studies show".
+```
+
+### Verificar
 
 ```bash
-echo "Your agent's response here" | node src/cli/index.js score
+echo "Respuesta de tu agente aquí" | humanizer score
+# Objetivo: bajo 20 consistentemente
 ```
 
-Target: consistently **under 25** on the humanizer score.
+---
 
-## Project structure
+## Estructura del proyecto
 
 ```
 humanizer/
-├── SKILL.md          # OpenClaw skill definition
 ├── src/
-│   ├── patterns.js   # 29 pattern detectors + pattern registry
-│   ├── vocabulary.js  # 500+ AI words/phrases (3 tiers)
-│   ├── stats.js       # Statistical analysis engine
-│   ├── analyzer.js    # Composite scoring engine
-│   ├── humanizer.js   # Suggestion engine + auto-fix
-│   └── cli.js         # CLI with colored output
-├── tests/             # Vitest test suite (136 tests)
-│   ├── analyzer.test.js
-│   ├── humanizer.test.js
-│   ├── statistics.test.js
-│   ├── calibration.test.js
-│   ├── performance.test.js
-│   └── edge-cases.test.js
-├── references/        # Pattern catalogs, vocabulary lists
-└── docs/              # Detailed documentation
+│   ├── constants.js          # DEFAULT_LANG, SCORE_THRESHOLDS, scoreLabel
+│   ├── vocabulary.js         # 500+ palabras y frases IA (inglés)
+│   ├── workflows.js          # scanPath, compareTexts, compareScanResults
+│   ├── locales/              # Vocabulario y configuración por idioma
+│   │   ├── en.js
+│   │   └── es.js
+│   ├── core/                 # Cómputo puro (sin ANSI, sin console.log)
+│   │   ├── analyzer.js       # analyze(), score()
+│   │   ├── humanizer.js      # humanize(), autoFix()
+│   │   ├── stats.js          # computeStats(), computeUniformityScore()
+│   │   ├── utils.js          # Helpers de labels y texto
+│   │   └── patterns/         # 39 detectores de patrones
+│   │       ├── en.js         # PatternEN-1 a PatternEN-29
+│   │       └── es.js         # ES-01 a ES-10
+│   ├── formatters/           # Texto plano, sin ANSI
+│   │   ├── report.js         # formatText(), formatMarkdown(), buildSummary()
+│   │   ├── suggestions.js    # formatGroupedSuggestions()
+│   │   ├── stats.js          # formatStatsReport()
+│   │   └── scan.js           # formatScanReport(), formatComparisonReport()
+│   └── cli/                  # Capa CLI (ANSI, I/O)
+│       ├── index.js          # Punto de entrada
+│       ├── flags.js          # parseArgs(), resolveOpts()
+│       ├── input.js          # Lectura stdin/archivo
+│       ├── renderer.js       # Render con colores ANSI
+│       └── commands/         # analyze, score, humanize, report,
+│                             # suggest, stats, scan, compare
+├── tests/                    # 318 tests (vitest)
+├── docs/
+│   ├── GUIDE.md              # Guía completa de uso
+│   └── ...
+└── SKILL.md                  # Definición del skill OpenClaw
 ```
 
-## Contributing
+---
 
-1. Fork and create a branch
-2. Add/improve pattern detection (see `src/patterns.js`)
-3. Write tests for your changes
-4. Run `npm test` — all tests must pass
-5. Open a PR
+## Qué lo diferencia
 
-## License
+| Característica | humanizer | GPTZero | Copyleaks | ZeroGPT |
+|----------------|-----------|---------|-----------|---------|
+| Open source | ✅ | ❌ | ❌ | ❌ |
+| Scoring transparente | ✅ Explicable por patrón | ❌ Caja negra | ❌ Caja negra | ❌ Caja negra |
+| Sugerencias accionables | ✅ Por patrón con fix | ❌ Solo score | ❌ Solo score | ❌ Solo score |
+| Auto-fix | ✅ Correcciones mecánicas seguras | ❌ | ❌ | ❌ |
+| Soporte español | ✅ 10 patrones ES + IFSZ | Parcial | Parcial | ❌ |
+| Análisis estadístico | ✅ Burstiness, TTR, IFSZ/FK | ✅ Perplexity | ✅ Estilométrico | ❌ |
+| Sin API key | ✅ | ❌ | ❌ | ❌ |
+| Funciona offline | ✅ | ❌ | ❌ | ❌ |
+| Sin dependencias de producción | ✅ | N/A | N/A | N/A |
+
+---
+
+## Contribuir
+
+1. Fork y crear rama
+2. Añadir o mejorar detectores (ver `src/core/patterns/`)
+3. Escribir tests para los cambios
+4. `npm run check` — lint + format + tests deben pasar
+5. Abrir PR
+
+## Licencia
 
 [MIT](LICENSE)
