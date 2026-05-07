@@ -5,8 +5,8 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { analyze, score } from '../src/analyzer.js';
-import { computeStats } from '../src/stats.js';
+import { analyze, score } from '../../src/core/analyzer.js';
+import { computeStats } from '../../src/core/stats.js';
 
 // ─── Empty / Minimal Input ───────────────────────────────
 

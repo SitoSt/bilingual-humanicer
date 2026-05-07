@@ -7,7 +7,7 @@
     "humanizer": "src/cli/index.js"
   },
   "scripts": {
-    "start": "node src/cli.js",
+    "start": "node src/cli/index.js",
     "test": "vitest run",
     "test:watch": "vitest",
     "lint": "eslint src/ tests/",

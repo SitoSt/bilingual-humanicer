@@ -35,16 +35,16 @@ en español.
 ### Patrones gramaticales y estructurales
 | # | Patrón | Señal |
 |---|--------|-------|
-| ES-01 | Gerundio encadenado | 3+ gerundios en la misma frase |
-| ES-02 | Apertura con contexto vago | "En el mundo actual...", "En la era digital..." |
-| ES-03 | Triada de abstractos | "innovación, creatividad y transformación" |
-| ES-04 | Tono sycofántico | "¡Excelente pregunta!", "Con mucho gusto..." |
-| ES-05 | Énfasis metacomentario | "Cabe destacar que", "Es importante señalar" |
-| ES-06 | Disclaimers de corte | "Como modelo de lenguaje", "Hasta mi fecha de corte" |
-| ES-07 | Conclusiones genéricas | "El futuro es prometedor", "Estamos ante un momento histórico" |
-| ES-08 | Atribuciones vagas | "Los expertos señalan", "Múltiples estudios demuestran" |
-| ES-09 | Lenguaje excesivamente positivo | "Avance revolucionario", "Resultados excelentes" |
-| ES-10 | Pasiva con ser innecesaria | "ha sido desarrollado por" (usar pasiva refleja) |
+| PatternES-01 | Gerundio encadenado | 3+ gerunds en la misma frase |
+| PatternES-02 | Apertura con contexto vago | "En el mundo actual...", "En la era digital..." |
+| PatternES-03 | Triada de abstractos | "innovación, creatividad y transformación" |
+| PatternES-04 | Tono sycofántico | "¡Excelente pregunta!", "Con mucho gusto..." |
+| PatternES-05 | Énfasis metacomentario | "Cabe destacar que", "Es importante señalar" |
+| PatternES-06 | Disclaimers de corte | "Como modelo de lenguaje", "Hasta mi fecha de corte" |
+| PatternES-07 | Conclusiones genéricas | "El futuro es prometedor", "Estamos ante un momento histórico" |
+| PatternES-08 | Atribuciones vagas | "Los expertos señalan", "Múltiples estudios demuestran" |
+| PatternES-09 | Lenguaje excesivamente positivo | "Avance revolucionario", "Resultados excelentes" |
+| PatternES-10 | Pasiva con ser innecesaria | "ha sido desarrollado por" (usar pasiva refleja) |
 
 ### Indicadores estadísticos (invisibles al ojo, pero reales)
 - **Burstiness baja**: todas las frases tienen longitud similar (IA: CV < 0.35; humano: > 0.6)
@@ -72,14 +72,14 @@ filler phrases, y más.
 ### Patrones en inglés (--lang en)
 | # | Patrón | Señal |
 |---|--------|-------|
-| 1 | Significance inflation | "marking a pivotal moment in the evolution of..." |
-| 2 | Notability name-dropping | Lista de medios sin afirmaciones concretas |
-| 4 | Promotional language | "nestled", "breathtaking", "stunning" |
-| 5 | Vague attributions | "Experts believe", "Studies show" |
-| 7 | AI vocabulary | "delve", "tapestry", "landscape", "seamless" |
-| 21 | Sycophantic tone | "Great question!", "You're absolutely right" |
-| 22 | Filler phrases | "in order to", "due to the fact that" |
-| 25 | Reasoning chain | "Let me think", "Step 1:", "Breaking this down" |
+| PatternEN-1 | Significance inflation | "marking a pivotal moment in the evolution of..." |
+| PatternEN-2 | Notability name-dropping | Lista de medios sin afirmaciones concretas |
+| PatternEN-4 | Promotional language | "nestled", "breathtaking", "stunning" |
+| PatternEN-5 | Vague attributions | "Experts believe", "Studies show" |
+| PatternEN-7 | AI vocabulary | "delve", "tapestry", "landscape", "seamless" |
+| PatternEN-21 | Sycophantic tone | "Great question!", "You're absolutely right" |
+| PatternEN-22 | Filler phrases | "in order to", "due to the fact that" |
+| PatternEN-25 | Reasoning chain | "Let me think", "Step 1:", "Breaking this down" |
 
 ## Tu proceso
 

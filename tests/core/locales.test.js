@@ -3,7 +3,7 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { getLocale } from '../src/locales/index.js';
+import { getLocale } from '../../src/locales/index.js';
 
 describe('getLocale', () => {
   it('defaults to Spanish', () => {

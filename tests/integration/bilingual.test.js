@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { analyze, score } from '../../src/analyzer.js';
+import { analyze, score } from '../../src/core/analyzer.js';
 
 describe('Full pipeline — Spanish texts', () => {
   it('scores clearly AI Spanish text above 50', () => {
@@ -28,13 +28,13 @@ describe('Full pipeline — Spanish texts', () => {
     const text = 'Cabe destacar que es importante senalar los aspectos fundamentales del ecosistema.';
     const result = analyze(text, { lang: 'es' });
     const patternIds = result.findings.map((f) => f.patternId);
-    expect(patternIds.some((id) => id === 'ES-05' || id === 7)).toBe(true);
+    expect(patternIds.some((id) => id === 'ES-05' || id === 'PatternEN-7')).toBe(true);
   });
 
   it('does not use English patterns for Spanish text', () => {
     const text = 'En el mundo actual, la tecnologia es fundamental.';
     const result = analyze(text, { lang: 'es' });
-    expect(result.findings.some((f) => f.patternId === 16)).toBe(false);
+    expect(result.findings.some((f) => f.patternId === 'PatternEN-16')).toBe(false);
   });
 
   it('English and Spanish produce different scores for the same text', () => {

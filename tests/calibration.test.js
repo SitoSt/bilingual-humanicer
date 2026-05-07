@@ -5,7 +5,7 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { score } from '../src/analyzer.js';
+import { score } from '../src/core/analyzer.js';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';

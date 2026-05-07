@@ -30,3 +30,6 @@ Thumbs.db
 # Test/Coverage
 coverage/
 .nyc_output/
+
+# Development docs (plans, specs, brainstorming)
+docs/superpowers/

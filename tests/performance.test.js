@@ -5,8 +5,8 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { analyze } from '../src/analyzer.js';
-import { computeStats } from '../src/stats.js';
+import { analyze } from '../src/core/analyzer.js';
+import { computeStats } from '../src/core/stats.js';
 
 /**
  * Generate a large text block of approximately the target word count.

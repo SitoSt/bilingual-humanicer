@@ -8,7 +8,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const { analyze } = require('./analyzer');
+const { analyze } = require('./core/analyzer');
 const { DEFAULT_LANG, scoreLabel } = require('./constants');
 
 const DEFAULT_SCAN_EXTENSIONS = ['.md', '.txt', '.rst', '.adoc'];
