@@ -1,5 +1,10 @@
 import { describe, it, expect } from 'vitest';
-import { DEFAULT_LANG, SCORE_THRESHOLDS, CATEGORY_LABELS, scoreLabel } from '../../src/constants.js';
+import {
+  DEFAULT_LANG,
+  SCORE_THRESHOLDS,
+  CATEGORY_LABELS,
+  scoreLabel,
+} from '../../src/constants.js';
 
 describe('constants', () => {
   it('DEFAULT_LANG is es', () => {

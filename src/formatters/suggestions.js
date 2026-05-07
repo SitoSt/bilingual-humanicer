@@ -33,7 +33,7 @@ function formatGroupedSuggestions(result) {
   const sections = [
     { label: 'Critical (weight 4-5)', items: result.critical },
     { label: 'Important (weight 2-3)', items: result.important },
-    { label: 'Minor (weight 1)',       items: result.minor },
+    { label: 'Minor (weight 1)', items: result.minor },
   ];
 
   for (const { label, items } of sections) {
@@ -63,7 +63,9 @@ function formatGuidance(result) {
  */
 function formatStyleTips(result) {
   if (!result.styleTips || result.styleTips.length === 0) return '';
-  return result.styleTips.map((tip, i) => `${i + 1}. ${typeof tip === 'string' ? tip : tip.tip}`).join('\n');
+  return result.styleTips
+    .map((tip, i) => `${i + 1}. ${typeof tip === 'string' ? tip : tip.tip}`)
+    .join('\n');
 }
 
 module.exports = { formatSuggestions, formatGroupedSuggestions, formatGuidance, formatStyleTips };

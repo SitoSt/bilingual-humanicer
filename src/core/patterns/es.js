@@ -6,10 +6,12 @@ const PATTERNS_ES = [
     name: 'Gerundio encadenado',
     category: 'language',
     langs: ['es'],
-    description: 'Three or more gerunds (-ando/-iendo) in one sentence. AI chains gerunds where Spanish naturally uses subordinate clauses.',
+    description:
+      'Three or more gerunds (-ando/-iendo) in one sentence. AI chains gerunds where Spanish naturally uses subordinate clauses.',
     weight: 4,
     detect(text) {
-      const sentenceRegex = /[^.!?]*\b\w+(?:ando|iendo)\b[^.!?]*\b\w+(?:ando|iendo)\b[^.!?]*\b\w+(?:ando|iendo)\b[^.!?]*/gi;
+      const sentenceRegex =
+        /[^.!?]*\b\w+(?:ando|iendo)\b[^.!?]*\b\w+(?:ando|iendo)\b[^.!?]*\b\w+(?:ando|iendo)\b[^.!?]*/gi;
       return findMatches(
         text,
         sentenceRegex,
@@ -24,7 +26,8 @@ const PATTERNS_ES = [
     name: 'Apertura con contexto vago',
     category: 'content',
     langs: ['es'],
-    description: 'Opening a paragraph or text with a vague contextual frame ("En el mundo actual..."). Classic AI opener in Spanish.',
+    description:
+      'Opening a paragraph or text with a vague contextual frame ("En el mundo actual..."). Classic AI opener in Spanish.',
     weight: 5,
     detect(text) {
       return findMatches(
@@ -41,10 +44,12 @@ const PATTERNS_ES = [
     name: 'Triada de abstractos',
     category: 'language',
     langs: ['es'],
-    description: 'Three abstract nouns or adjectives in a comma-separated list. AI groups ideas in compulsory triplets.',
+    description:
+      'Three abstract nouns or adjectives in a comma-separated list. AI groups ideas in compulsory triplets.',
     weight: 3,
     detect(text) {
-      const abstracts = '(?:innovación|creatividad|transformación|eficiencia|productividad|excelencia|sostenibilidad|transparencia|integridad|compromiso|visión|misión|valores|estrategia|impacto|crecimiento|desarrollo|mejora|calidad|rendimiento)';
+      const abstracts =
+        '(?:innovación|creatividad|transformación|eficiencia|productividad|excelencia|sostenibilidad|transparencia|integridad|compromiso|visión|misión|valores|estrategia|impacto|crecimiento|desarrollo|mejora|calidad|rendimiento)';
       return findMatches(
         text,
         new RegExp(`${abstracts},\\s+${abstracts}\\s+y\\s+${abstracts}`, 'gi'),
@@ -59,7 +64,8 @@ const PATTERNS_ES = [
     name: 'Tono sycofántico',
     category: 'communication',
     langs: ['es'],
-    description: 'Spanish chatbot sycophantic openers — praising questions or showing excessive enthusiasm.',
+    description:
+      'Spanish chatbot sycophantic openers — praising questions or showing excessive enthusiasm.',
     weight: 5,
     detect(text) {
       const patterns = [
@@ -81,7 +87,8 @@ const PATTERNS_ES = [
     name: 'Énfasis metacomentario',
     category: 'filler',
     langs: ['es'],
-    description: 'Meta-commentary that talks about what will be said instead of saying it. One of the strongest AI signals in Spanish.',
+    description:
+      'Meta-commentary that talks about what will be said instead of saying it. One of the strongest AI signals in Spanish.',
     weight: 4,
     detect(text) {
       const patterns = [
@@ -131,7 +138,8 @@ const PATTERNS_ES = [
     name: 'Conclusiones genéricas (español)',
     category: 'filler',
     langs: ['es'],
-    description: 'Vague, optimistic closing statements. AI ends text with empty encouragement rather than concrete next steps.',
+    description:
+      'Vague, optimistic closing statements. AI ends text with empty encouragement rather than concrete next steps.',
     weight: 3,
     detect(text) {
       const patterns = [
@@ -145,7 +153,14 @@ const PATTERNS_ES = [
       ];
       const results = [];
       for (const regex of patterns) {
-        results.push(...findMatches(text, regex, 'End with a specific fact or concrete plan instead.', 'medium'));
+        results.push(
+          ...findMatches(
+            text,
+            regex,
+            'End with a specific fact or concrete plan instead.',
+            'medium',
+          ),
+        );
       }
       return results;
     },
@@ -156,7 +171,8 @@ const PATTERNS_ES = [
     name: 'Atribuciones vagas (español)',
     category: 'content',
     langs: ['es'],
-    description: 'Vague attributions to unnamed experts or studies. Spanish equivalent of English "experts believe".',
+    description:
+      'Vague attributions to unnamed experts or studies. Spanish equivalent of English "experts believe".',
     weight: 4,
     detect(text) {
       const patterns = [
@@ -169,7 +185,9 @@ const PATTERNS_ES = [
       ];
       const results = [];
       for (const regex of patterns) {
-        results.push(...findMatches(text, regex, 'Name a specific study or expert with a citation.', 'high'));
+        results.push(
+          ...findMatches(text, regex, 'Name a specific study or expert with a citation.', 'high'),
+        );
       }
       return results;
     },
@@ -180,7 +198,8 @@ const PATTERNS_ES = [
     name: 'Lenguaje excesivamente positivo',
     category: 'content',
     langs: ['es'],
-    description: 'AI uses 96-133% more positive emotional language than humans (arXiv:2505.01800). Flags inflated positive framing.',
+    description:
+      'AI uses 96-133% more positive emotional language than humans (arXiv:2505.01800). Flags inflated positive framing.',
     weight: 3,
     detect(text) {
       const patterns = [
@@ -192,7 +211,14 @@ const PATTERNS_ES = [
       ];
       const results = [];
       for (const regex of patterns) {
-        results.push(...findMatches(text, regex, 'Give concrete figures instead of inflated praise.', 'medium'));
+        results.push(
+          ...findMatches(
+            text,
+            regex,
+            'Give concrete figures instead of inflated praise.',
+            'medium',
+          ),
+        );
       }
       return results;
     },
@@ -203,7 +229,8 @@ const PATTERNS_ES = [
     name: 'Pasiva con ser innecesaria',
     category: 'language',
     langs: ['es'],
-    description: 'AI overuses ser-passive (ha sido desarrollado por) where natural Spanish prefers se-passive or active voice. Likely English influence in training data.',
+    description:
+      'AI overuses ser-passive (ha sido desarrollado por) where natural Spanish prefers se-passive or active voice. Likely English influence in training data.',
     weight: 2,
     detect(text) {
       return findMatches(

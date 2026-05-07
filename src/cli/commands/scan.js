@@ -16,12 +16,12 @@ async function run(text, opts, flags) {
   }
 
   const scanResult = scanPath(target, {
-    exts:                 scanOptions.extensions || undefined,
-    minWords:             scanOptions.minWords,
-    ignoreDirs:           scanOptions.ignoreDirs,
+    exts: scanOptions.extensions || undefined,
+    minWords: scanOptions.minWords,
+    ignoreDirs: scanOptions.ignoreDirs,
     includeDefaultIgnore: scanOptions.includeDefaultIgnore,
-    ignoreCode:           scanOptions.ignoreCode,
-    lang:                 opts.lang,
+    ignoreCode: scanOptions.ignoreCode,
+    lang: opts.lang,
   });
 
   let baselineComparison = null;
@@ -57,7 +57,11 @@ async function run(text, opts, flags) {
     const hasFailure = scanResult.files.some((f) => f.score >= scanOptions.failAbove);
     if (hasFailure) exitCode = 2;
   }
-  if (scanOptions.failOnRegression && baselineComparison && baselineComparison.summary.regressions > 0) {
+  if (
+    scanOptions.failOnRegression &&
+    baselineComparison &&
+    baselineComparison.summary.regressions > 0
+  ) {
     exitCode = exitCode || 3;
   }
   if (exitCode !== 0) process.exit(exitCode);

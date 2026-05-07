@@ -9,11 +9,34 @@ const es = getLocale('es');
 
 describe('Spanish TIER_1 — dead giveaways', () => {
   const mustInclude = [
-    'fundamental', 'crucial', 'esencial', 'primordial', 'indispensable',
-    'invaluable', 'trascendental', 'revolucionario', 'innovador', 'disruptivo',
-    'robusto', 'integral', 'holístico', 'paradigma', 'sinergia', 'ecosistema',
-    'panorama', 'potenciar', 'optimizar', 'maximizar', 'aprovechar', 'impulsar',
-    'catalizar', 'empoderar', 'apalancar', 'destacar', 'subrayar', 'evidenciar',
+    'fundamental',
+    'crucial',
+    'esencial',
+    'primordial',
+    'indispensable',
+    'invaluable',
+    'trascendental',
+    'revolucionario',
+    'innovador',
+    'disruptivo',
+    'robusto',
+    'integral',
+    'holístico',
+    'paradigma',
+    'sinergia',
+    'ecosistema',
+    'panorama',
+    'potenciar',
+    'optimizar',
+    'maximizar',
+    'aprovechar',
+    'impulsar',
+    'catalizar',
+    'empoderar',
+    'apalancar',
+    'destacar',
+    'subrayar',
+    'evidenciar',
   ];
   for (const word of mustInclude) {
     it(`includes "${word}"`, () => {
@@ -24,9 +47,17 @@ describe('Spanish TIER_1 — dead giveaways', () => {
 
 describe('Spanish TIER_2 — suspicious in density', () => {
   const mustInclude = [
-    'asimismo', 'igualmente', 'no obstante', 'sin embargo', 'en consecuencia',
-    'cabe destacar', 'cabe señalar', 'es importante mencionar',
-    'vale la pena destacar', 'en el mundo actual', 'hoy en día',
+    'asimismo',
+    'igualmente',
+    'no obstante',
+    'sin embargo',
+    'en consecuencia',
+    'cabe destacar',
+    'cabe señalar',
+    'es importante mencionar',
+    'vale la pena destacar',
+    'en el mundo actual',
+    'hoy en día',
   ];
   for (const word of mustInclude) {
     it(`includes "${word}"`, () => {
@@ -76,7 +107,22 @@ describe('Spanish AI_PHRASES', () => {
 
 describe('Spanish FUNCTION_WORDS', () => {
   it('contains core Spanish function words', () => {
-    const required = ['el', 'la', 'de', 'que', 'en', 'y', 'a', 'los', 'las', 'un', 'una', 'por', 'con', 'para'];
+    const required = [
+      'el',
+      'la',
+      'de',
+      'que',
+      'en',
+      'y',
+      'a',
+      'los',
+      'las',
+      'un',
+      'una',
+      'por',
+      'con',
+      'para',
+    ];
     for (const w of required) {
       expect(es.FUNCTION_WORDS).toContain(w);
     }

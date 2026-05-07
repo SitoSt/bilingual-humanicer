@@ -2,7 +2,12 @@
 import { describe, it, expect } from 'vitest';
 import { analyze } from '../../src/core/analyzer.js';
 import { humanize } from '../../src/core/humanizer.js';
-import { buildSummary, formatText, formatMarkdown, formatJSON } from '../../src/formatters/report.js';
+import {
+  buildSummary,
+  formatText,
+  formatMarkdown,
+  formatJSON,
+} from '../../src/formatters/report.js';
 import { formatGroupedSuggestions } from '../../src/formatters/suggestions.js';
 import { computeStats } from '../../src/core/stats.js';
 import { formatStatsReport } from '../../src/formatters/stats.js';
@@ -18,6 +23,7 @@ describe('full pipeline — Spanish', () => {
   it('analyze → formatText produces no ANSI codes', () => {
     const result = analyze(AI_ES, { lang: 'es' });
     const output = formatText(result);
+    // eslint-disable-next-line no-control-regex
     expect(output).not.toMatch(/\x1b\[/);
     expect(output).toContain('Score:');
   });

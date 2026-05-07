@@ -25,7 +25,8 @@ describe('Full pipeline — Spanish texts', () => {
   });
 
   it('detects Spanish-specific patterns in result findings', () => {
-    const text = 'Cabe destacar que es importante senalar los aspectos fundamentales del ecosistema.';
+    const text =
+      'Cabe destacar que es importante senalar los aspectos fundamentales del ecosistema.';
     const result = analyze(text, { lang: 'es' });
     const patternIds = result.findings.map((f) => f.patternId);
     expect(patternIds.some((id) => id === 'ES-05' || id === 'PatternEN-7')).toBe(true);
@@ -45,7 +46,8 @@ describe('Full pipeline — Spanish texts', () => {
   });
 
   it('returns ifsz in stats for Spanish', () => {
-    const text = 'El sistema analiza los datos de forma eficiente. Los resultados son positivos para el proyecto.';
+    const text =
+      'El sistema analiza los datos de forma eficiente. Los resultados son positivos para el proyecto.';
     const result = analyze(text, { lang: 'es' });
     expect(result.stats.ifsz).not.toBeNull();
     expect(result.stats.fleschKincaid).toBeNull();

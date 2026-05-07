@@ -103,7 +103,7 @@ describe('computeNgramRepetition', () => {
 describe('computeStats', () => {
   // Use lang='en' for English tests (default is Spanish)
   const text = 'The quick brown fox jumps over the lazy dog. The dog did not try to catch the fox.';
-const stats = computeStats(text, 'en');
+  const stats = computeStats(text, 'en');
 
   it('returns all expected properties', () => {
     expect(stats).toHaveProperty('sentenceCount');

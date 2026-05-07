@@ -26,10 +26,7 @@ function createPatterns(lang = DEFAULT_LANG) {
   }
   if (lang === 'es') {
     const enPattern7 = enPatterns.find((p) => p.id === 'PatternEN-7');
-    return [
-      { ...enPattern7, detect: (text) => enPattern7.detect(text, 'es') },
-      ...esPatterns,
-    ];
+    return [{ ...enPattern7, detect: (text) => enPattern7.detect(text, 'es') }, ...esPatterns];
   }
   return [];
 }
@@ -37,19 +34,38 @@ function createPatterns(lang = DEFAULT_LANG) {
 // Backward-compat re-exports for existing consumers (shim period only — removed in Task 8).
 // WARNING: vocabulary re-exports are English-only (from vocabulary.js).
 // For multilingual vocabulary use getLocale(lang).TIER_1 etc.
-const { TIER_1, TIER_2, TIER_3, AI_PHRASES, SIGNIFICANCE_PHRASES, PROMOTIONAL_WORDS,
-        VAGUE_ATTRIBUTION_PHRASES, CHALLENGES_PHRASES, COPULA_AVOIDANCE } = require('../../vocabulary');
+const {
+  TIER_1,
+  TIER_2,
+  TIER_3,
+  AI_PHRASES,
+  SIGNIFICANCE_PHRASES,
+  PROMOTIONAL_WORDS,
+  VAGUE_ATTRIBUTION_PHRASES,
+  CHALLENGES_PHRASES,
+  COPULA_AVOIDANCE,
+} = require('../../vocabulary');
 const { findMatches, countMatches, scanWordList, scanPhrases } = require('./helpers');
 
 module.exports = {
   createPatterns,
   PatternRegistry,
   registry,
-  patterns: enPatterns,  // backward compat: consumers that do require('./patterns').patterns
-  wordCount,             // backward compat: src/analyzer.js imports wordCount from ./patterns
+  patterns: enPatterns, // backward compat: consumers that do require('./patterns').patterns
+  wordCount, // backward compat: src/analyzer.js imports wordCount from ./patterns
   // EN-only vocabulary (backward compat — use getLocale(lang) for multilingual):
-  TIER_1, TIER_2, TIER_3, AI_PHRASES, SIGNIFICANCE_PHRASES, PROMOTIONAL_WORDS,
-  VAGUE_ATTRIBUTION_PHRASES, CHALLENGES_PHRASES, COPULA_AVOIDANCE,
+  TIER_1,
+  TIER_2,
+  TIER_3,
+  AI_PHRASES,
+  SIGNIFICANCE_PHRASES,
+  PROMOTIONAL_WORDS,
+  VAGUE_ATTRIBUTION_PHRASES,
+  CHALLENGES_PHRASES,
+  COPULA_AVOIDANCE,
   // Helpers (backward compat for tests that import via the old path):
-  findMatches, countMatches, scanWordList, scanPhrases,
+  findMatches,
+  countMatches,
+  scanWordList,
+  scanPhrases,
 };

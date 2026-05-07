@@ -22,13 +22,13 @@ function loadFixture(name) {
 describe('AI sample calibration', () => {
   it('ai-sample-1.txt scores 55+', () => {
     const text = loadFixture('ai-sample-1.txt');
-    const s = score(text, { lang: "en" });
+    const s = score(text, { lang: 'en' });
     expect(s).toBeGreaterThanOrEqual(55);
   });
 
   it('ai-sample-2.txt scores 30+ (moderate AI)', () => {
     const text = loadFixture('ai-sample-2.txt');
-    const s = score(text, { lang: "en" });
+    const s = score(text, { lang: 'en' });
     expect(s).toBeGreaterThanOrEqual(30);
   });
 
@@ -44,7 +44,7 @@ It is worth noting that the landscape of AI continues to evolve at a breathtakin
 - **Adoption:** Industry reports suggest continued growth, underscoring the paramount importance of this technology.
 
 Despite challenges, the future looks bright. Exciting times lie ahead as we embark on this journey toward excellence. I hope this helps! Let me know if you'd like me to delve into any section further.`;
-    const s = score(text, { lang: "en" });
+    const s = score(text, { lang: 'en' });
     expect(s).toBeGreaterThanOrEqual(60);
   });
 
@@ -54,7 +54,7 @@ Despite challenges, the future looks bright. Exciting times lie ahead as we emba
 Renowned for its commitment to excellence, the establishment showcases a vibrant tapestry of cultural experiences. Industry observers have noted its pivotal role in reshaping the landscape of urban entertainment.
 
 The comprehensive approach encompasses state-of-the-art design, fostering a culture of innovation while leveraging synergy between form and function. The future looks bright as exciting times lie ahead.`;
-    const s = score(text, { lang: "en" });
+    const s = score(text, { lang: 'en' });
     expect(s).toBeGreaterThanOrEqual(55);
   });
 
@@ -64,7 +64,7 @@ The comprehensive approach encompasses state-of-the-art design, fostering a cult
 As we move forward, it goes without saying that leveraging cutting-edge tools plays a pivotal role. Needless to say, this comprehensive guide will help you unlock the potential of these transformative technologies.
 
 In conclusion, the multifaceted challenges of today's digital age require a seamless approach. Without further ado, let us delve into the realm of best practices.`;
-    const s = score(text, { lang: "en" });
+    const s = score(text, { lang: 'en' });
     expect(s).toBeGreaterThanOrEqual(50);
   });
 });
@@ -74,7 +74,7 @@ In conclusion, the multifaceted challenges of today's digital age require a seam
 describe('human sample calibration', () => {
   it('human-sample-1.txt scores under 30', () => {
     const text = loadFixture('human-sample-1.txt');
-    const s = score(text, { lang: "en" });
+    const s = score(text, { lang: 'en' });
     expect(s).toBeLessThan(30);
   });
 
@@ -82,7 +82,7 @@ describe('human sample calibration', () => {
     const text = `I tried three different coffee shops this week. The one on 5th Ave had the best espresso but terrible wifi. The place near the park was quiet enough to work but their cold brew tasted like it had been sitting out since Tuesday.
 
 Ended up going back to my usual spot. Nothing fancy. The barista knows my order. Sometimes that matters more than fancy latte art.`;
-    const s = score(text, { lang: "en" });
+    const s = score(text, { lang: 'en' });
     expect(s).toBeLessThan(25);
   });
 
@@ -92,7 +92,7 @@ Ended up going back to my usual spot. Nothing fancy. The barista knows my order.
 Found it by adding a counter to the pool checkout method. Took about 3 hours of staring at tcpdump output before I thought to look there.
 
 Fixed it with a bounded semaphore. PR is up. The test covers the edge case now.`;
-    const s = score(text, { lang: "en" });
+    const s = score(text, { lang: 'en' });
     expect(s).toBeLessThan(25);
   });
 
@@ -102,7 +102,7 @@ Fixed it with a bounded semaphore. PR is up. The test covers the edge case now.`
 Last week I spent 45 minutes trying to satisfy the type checker on a function that was obviously correct. The types were right, the logic was right, but some intersection type was confusing the compiler.
 
 I still use it for big projects. But for scripts and prototypes? Just give me plain JavaScript.`;
-    const s = score(text, { lang: "en" });
+    const s = score(text, { lang: 'en' });
     expect(s).toBeLessThan(25);
   });
 
@@ -112,7 +112,7 @@ I still use it for big projects. But for scripts and prototypes? Just give me pl
 He never fixed it. Said it gave the house character. I think he just didn't want to jack up a house he'd already put a roof on.
 
 The house is still standing. My aunt lives there now.`;
-    const s = score(text, { lang: "en" });
+    const s = score(text, { lang: 'en' });
     expect(s).toBeLessThan(25);
   });
 });
@@ -124,8 +124,8 @@ describe('relative scoring', () => {
     const aiText = loadFixture('ai-sample-1.txt');
     const humanText = loadFixture('human-sample-1.txt');
 
-    const aiScore = score(aiText, { lang: "en" });
-    const humanScore = score(humanText, { lang: "en" });
+    const aiScore = score(aiText, { lang: 'en' });
+    const humanScore = score(humanText, { lang: 'en' });
 
     expect(aiScore).toBeGreaterThan(humanScore);
     expect(aiScore - humanScore).toBeGreaterThan(20);
@@ -136,6 +136,6 @@ describe('relative scoring', () => {
     const heavy =
       "Additionally, this groundbreaking project serves as a testament to innovation. In today's rapidly evolving landscape, it showcases the vibrant tapestry of modern technology, fostering seamless synergy. I hope this helps!";
 
-    expect(score(heavy, { lang: "en" })).toBeGreaterThan(score(light, { lang: "en" }));
+    expect(score(heavy, { lang: 'en' })).toBeGreaterThan(score(light, { lang: 'en' }));
   });
 });

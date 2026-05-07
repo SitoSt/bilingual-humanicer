@@ -16,7 +16,7 @@ describe('createPatterns', () => {
   it('returns Spanish patterns for lang=es', () => {
     const patterns = createPatterns('es');
     expect(patterns.length).toBeGreaterThan(0);
-    expect(patterns.some(p => String(p.id).startsWith('ES-'))).toBe(true);
+    expect(patterns.some((p) => String(p.id).startsWith('ES-'))).toBe(true);
   });
 
   it('defaults to Spanish patterns', () => {

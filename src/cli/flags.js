@@ -9,15 +9,15 @@ const { normalizeExtensions } = require('../workflows');
 const supportsColor = process.stdout.isTTY && !process.env.NO_COLOR;
 
 const color = {
-  red:     (s) => (supportsColor ? `\x1b[31m${s}\x1b[0m` : s),
-  green:   (s) => (supportsColor ? `\x1b[32m${s}\x1b[0m` : s),
-  yellow:  (s) => (supportsColor ? `\x1b[33m${s}\x1b[0m` : s),
-  blue:    (s) => (supportsColor ? `\x1b[34m${s}\x1b[0m` : s),
+  red: (s) => (supportsColor ? `\x1b[31m${s}\x1b[0m` : s),
+  green: (s) => (supportsColor ? `\x1b[32m${s}\x1b[0m` : s),
+  yellow: (s) => (supportsColor ? `\x1b[33m${s}\x1b[0m` : s),
+  blue: (s) => (supportsColor ? `\x1b[34m${s}\x1b[0m` : s),
   magenta: (s) => (supportsColor ? `\x1b[35m${s}\x1b[0m` : s),
-  cyan:    (s) => (supportsColor ? `\x1b[36m${s}\x1b[0m` : s),
-  gray:    (s) => (supportsColor ? `\x1b[90m${s}\x1b[0m` : s),
-  bold:    (s) => (supportsColor ? `\x1b[1m${s}\x1b[0m` : s),
-  dim:     (s) => (supportsColor ? `\x1b[2m${s}\x1b[0m` : s),
+  cyan: (s) => (supportsColor ? `\x1b[36m${s}\x1b[0m` : s),
+  gray: (s) => (supportsColor ? `\x1b[90m${s}\x1b[0m` : s),
+  bold: (s) => (supportsColor ? `\x1b[1m${s}\x1b[0m` : s),
+  dim: (s) => (supportsColor ? `\x1b[2m${s}\x1b[0m` : s),
 };
 
 // ─── Scan Config Helpers ─────────────────────────────────
@@ -95,7 +95,16 @@ function loadConfig(configPath) {
 
 // ─── Arg Parsing ─────────────────────────────────────────
 
-const KNOWN_COMMANDS = ['analyze', 'score', 'humanize', 'report', 'suggest', 'stats', 'scan', 'compare'];
+const KNOWN_COMMANDS = [
+  'analyze',
+  'score',
+  'humanize',
+  'report',
+  'suggest',
+  'stats',
+  'scan',
+  'compare',
+];
 
 /**
  * Parse process.argv-style array into structured flags object.
@@ -107,27 +116,27 @@ function parseArgs(argv) {
   const command = argv[0] && !argv[0].startsWith('-') ? argv[0] : null;
 
   const flags = {
-    json:                 argv.includes('--json'),
-    verbose:              argv.includes('--verbose') || argv.includes('-v'),
-    autofix:              argv.includes('--autofix'),
-    help:                 argv.includes('--help') || argv.includes('-h'),
-    version:              argv.includes('--version'),
-    failOnRegression:     argv.includes('--fail-on-regression') ? true : null,
+    json: argv.includes('--json'),
+    verbose: argv.includes('--verbose') || argv.includes('-v'),
+    autofix: argv.includes('--autofix'),
+    help: argv.includes('--help') || argv.includes('-h'),
+    version: argv.includes('--version'),
+    failOnRegression: argv.includes('--fail-on-regression') ? true : null,
     includeDefaultIgnore: argv.includes('--no-default-ignore') ? false : null,
-    ignoreCode:           argv.includes('--ignore-code') ? true : null,
-    file:                 null,
-    before:               null,
-    after:                null,
-    patterns:             null,
-    threshold:            null,
-    config:               null,
-    extensions:           null,
-    minWords:             null,
-    failAbove:            null,
-    baseline:             null,
-    regressionThreshold:  null,
-    ignoreDirs:           null,
-    lang:                 DEFAULT_LANG,
+    ignoreCode: argv.includes('--ignore-code') ? true : null,
+    file: null,
+    before: null,
+    after: null,
+    patterns: null,
+    threshold: null,
+    config: null,
+    extensions: null,
+    minWords: null,
+    failAbove: null,
+    baseline: null,
+    regressionThreshold: null,
+    ignoreDirs: null,
+    lang: DEFAULT_LANG,
   };
 
   // -f / --file
@@ -234,10 +243,10 @@ function parseArgs(argv) {
  */
 function resolveOpts(flags) {
   return {
-    verbose:         flags.verbose,
+    verbose: flags.verbose,
     patternsToCheck: flags.patterns,
-    ignoreCode:      flags.ignoreCode === true,
-    lang:            flags.lang || DEFAULT_LANG,
+    ignoreCode: flags.ignoreCode === true,
+    lang: flags.lang || DEFAULT_LANG,
   };
 }
 

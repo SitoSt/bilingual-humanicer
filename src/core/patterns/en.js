@@ -4,8 +4,15 @@
  * en.js — All 29 English pattern definitions.
  */
 
-const { findMatches, countMatches, wordCount, wordRegex, scanWordList, scanPhrases } = require('./helpers');
-const { TIER_1, TIER_2, TIER_3, AI_PHRASES } = require('../../vocabulary');
+const {
+  findMatches,
+  countMatches,
+  wordCount,
+  wordRegex,
+  scanWordList,
+  scanPhrases,
+} = require('./helpers');
+const { AI_PHRASES } = require('../../vocabulary');
 const { getLocale } = require('../../locales');
 
 // ─── Significance / Promotional Phrase Lists ─────────────
@@ -315,7 +322,9 @@ const enPatterns = [
         }, 0);
         const density = tier3Count / words;
         if (density > 0.03) {
-          results.push(...scanWordList(text, locale.TIER_3, 'Tier 3 AI word (high density)', 'low'));
+          results.push(
+            ...scanWordList(text, locale.TIER_3, 'Tier 3 AI word (high density)', 'low'),
+          );
         }
       }
 

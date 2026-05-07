@@ -1,5 +1,11 @@
 import { describe, it, expect } from 'vitest';
-import { findMatches, countMatches, wordCount, scanWordList, scanPhrases } from '../../../src/core/patterns/helpers.js';
+import {
+  findMatches,
+  countMatches,
+  wordCount,
+  scanWordList,
+  scanPhrases,
+} from '../../../src/core/patterns/helpers.js';
 
 describe('findMatches', () => {
   it('returns line and column numbers', () => {
@@ -35,7 +41,9 @@ describe('scanWordList', () => {
 });
 describe('scanPhrases', () => {
   it('finds phrase and attaches fix', () => {
-    const results = scanPhrases('in order to succeed', [{ pattern: /in order to/gi, tier: 1, fix: 'to' }]);
+    const results = scanPhrases('in order to succeed', [
+      { pattern: /in order to/gi, tier: 1, fix: 'to' },
+    ]);
     expect(results).toHaveLength(1);
     expect(results[0].suggestion).toContain('to');
   });

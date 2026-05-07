@@ -24,21 +24,21 @@ function wordCount(text) {
 }
 
 function burstinessLabel(b) {
-  if (b >= 0.7)  return '(high — human-like)';
+  if (b >= 0.7) return '(high — human-like)';
   if (b >= 0.45) return '(moderate)';
   if (b >= 0.25) return '(low — somewhat uniform)';
   return '(very low — AI-like uniformity)';
 }
 
 function ttrLabel(ttr, wc) {
-  if (wc < 100)    return '(too short to assess)';
-  if (ttr >= 0.6)  return '(high — diverse vocabulary)';
+  if (wc < 100) return '(too short to assess)';
+  if (ttr >= 0.6) return '(high — diverse vocabulary)';
   if (ttr >= 0.45) return '(moderate)';
   return '(low — repetitive vocabulary)';
 }
 
 function reliabilityLabel(level) {
-  if (level === 'high')   return 'High confidence';
+  if (level === 'high') return 'High confidence';
   if (level === 'medium') return 'Medium confidence';
   return 'Low confidence';
 }

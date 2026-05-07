@@ -6,14 +6,14 @@ const { parseArgs, resolveOpts, showHelp, showVersion } = require('./flags');
 const { readFile, readStdin } = require('./input');
 
 const commands = {
-  analyze:  require('./commands/analyze'),
-  score:    require('./commands/score'),
+  analyze: require('./commands/analyze'),
+  score: require('./commands/score'),
   humanize: require('./commands/humanize'),
-  report:   require('./commands/report'),
-  suggest:  require('./commands/suggest'),
-  stats:    require('./commands/stats'),
-  scan:     require('./commands/scan'),
-  compare:  require('./commands/compare'),
+  report: require('./commands/report'),
+  suggest: require('./commands/suggest'),
+  stats: require('./commands/stats'),
+  scan: require('./commands/scan'),
+  compare: require('./commands/compare'),
 };
 
 async function main() {

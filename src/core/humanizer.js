@@ -116,7 +116,9 @@ function humanize(text, opts = {}) {
 
   const analysis = analyze(text, { verbose: true, includeStats, ignoreCode, lang });
 
-  const critical = [], important = [], minor = [];
+  const critical = [],
+    important = [],
+    minor = [];
 
   for (const finding of analysis.findings) {
     const suggestions = finding.matches.map((m) => ({
@@ -130,19 +132,20 @@ function humanize(text, opts = {}) {
       suggestion: m.suggestion,
       confidence: m.confidence || 'high',
     }));
-    if (finding.weight >= 4)      critical.push(...suggestions);
+    if (finding.weight >= 4) critical.push(...suggestions);
     else if (finding.weight >= 2) important.push(...suggestions);
-    else                          minor.push(...suggestions);
+    else minor.push(...suggestions);
   }
 
-  let fixedText = null, appliedFixes = [];
+  let fixedText = null,
+    appliedFixes = [];
   if (autofix) {
     const r = autoFix(text);
     fixedText = r.text;
     appliedFixes = r.fixes;
   }
 
-  const guidance  = buildGuidance(analysis);
+  const guidance = buildGuidance(analysis);
   const styleTips = includeStats && analysis.stats ? buildStyleTips(analysis.stats) : [];
 
   return {
@@ -157,9 +160,9 @@ function humanize(text, opts = {}) {
     important,
     minor,
     autofix: autofix ? { text: fixedText, fixes: appliedFixes } : null,
-    guidance,    // string[]
-    styleTips,   // array of { metric, value, tip }
-    analysis,    // full AnalysisResult (NEW — not in old humanizer.js)
+    guidance, // string[]
+    styleTips, // array of { metric, value, tip }
+    analysis, // full AnalysisResult (NEW — not in old humanizer.js)
   };
 }
 
@@ -170,7 +173,9 @@ function humanize(text, opts = {}) {
 function humanizeResult(analysisResult, opts = {}) {
   const { autofix = false, includeStats = true } = opts;
 
-  const critical = [], important = [], minor = [];
+  const critical = [],
+    important = [],
+    minor = [];
   for (const finding of analysisResult.findings) {
     const suggestions = finding.matches.map((m) => ({
       pattern: finding.patternName,
@@ -183,9 +188,9 @@ function humanizeResult(analysisResult, opts = {}) {
       suggestion: m.suggestion,
       confidence: m.confidence || 'high',
     }));
-    if (finding.weight >= 4)      critical.push(...suggestions);
+    if (finding.weight >= 4) critical.push(...suggestions);
     else if (finding.weight >= 2) important.push(...suggestions);
-    else                          minor.push(...suggestions);
+    else minor.push(...suggestions);
   }
 
   let autofixResult = null;
@@ -197,8 +202,9 @@ function humanizeResult(analysisResult, opts = {}) {
     // else: autofix requested but no originalText — return null (caller did not provide text)
   }
 
-  const guidance  = buildGuidance(analysisResult);
-  const styleTips = includeStats && analysisResult.stats ? buildStyleTips(analysisResult.stats) : [];
+  const guidance = buildGuidance(analysisResult);
+  const styleTips =
+    includeStats && analysisResult.stats ? buildStyleTips(analysisResult.stats) : [];
 
   return {
     score: analysisResult.score,
@@ -208,7 +214,9 @@ function humanizeResult(analysisResult, opts = {}) {
     wordCount: analysisResult.wordCount,
     totalIssues: analysisResult.totalMatches,
     stats: analysisResult.stats,
-    critical, important, minor,
+    critical,
+    important,
+    minor,
     autofix: autofixResult,
     guidance,
     styleTips,

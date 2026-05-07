@@ -4,11 +4,11 @@ import { computeStats } from '../../src/core/stats.js';
 
 const esStats = computeStats(
   'Esta es una prueba. Tiene varias palabras y frases. El texto es corto pero válido para estadísticas básicas.',
-  'es'
+  'es',
 );
 const enStats = computeStats(
   'This is a test. It has several words and phrases. The text is short but valid for basic statistics.',
-  'en'
+  'en',
 );
 
 describe('formatStatsReport', () => {
@@ -35,7 +35,9 @@ describe('formatStatsReport', () => {
   });
 
   it('contains no ANSI escape codes', () => {
+    // eslint-disable-next-line no-control-regex
     expect(formatStatsReport(esStats)).not.toMatch(/\x1b\[/);
+    // eslint-disable-next-line no-control-regex
     expect(formatStatsReport(enStats)).not.toMatch(/\x1b\[/);
   });
 

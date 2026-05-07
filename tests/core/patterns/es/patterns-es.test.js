@@ -2,14 +2,15 @@ import { describe, it, expect } from 'vitest';
 import { createPatterns } from '../../../../src/core/patterns/index.js';
 
 const esPatterns = createPatterns('es');
-const getPattern = (id) => esPatterns.find(p => p.id === id);
+const getPattern = (id) => esPatterns.find((p) => p.id === id);
 
 describe('ES-01: Gerundio encadenado', () => {
   const p = () => getPattern('ES-01');
   it('exists', () => expect(p()).toBeDefined());
 
   it('detects 3 gerundios in same sentence', () => {
-    const text = 'El sistema funciona analizando los datos, procesando la información y generando resultados.';
+    const text =
+      'El sistema funciona analizando los datos, procesando la información y generando resultados.';
     expect(p().detect(text).length).toBeGreaterThan(0);
   });
 
@@ -35,7 +36,9 @@ describe('ES-02: Apertura con contexto vago', () => {
     expect(p().detect('En la era digital, todo ha cambiado.').length).toBeGreaterThan(0);
   });
   it('detects "En un mundo cada vez más"', () => {
-    expect(p().detect('En un mundo cada vez más conectado, las empresas deben adaptarse.').length).toBeGreaterThan(0);
+    expect(
+      p().detect('En un mundo cada vez más conectado, las empresas deben adaptarse.').length,
+    ).toBeGreaterThan(0);
   });
   it('does not flag mid-sentence context', () => {
     expect(p().detect('Vivimos en el mundo actual con sus complejidades.').length).toBe(0);
@@ -72,10 +75,14 @@ describe('ES-05: Énfasis metacomentario', () => {
     expect(p().detect('Cabe destacar que los resultados son positivos.').length).toBeGreaterThan(0);
   });
   it('detects "es importante señalar que"', () => {
-    expect(p().detect('Es importante señalar que este proceso es clave.').length).toBeGreaterThan(0);
+    expect(p().detect('Es importante señalar que este proceso es clave.').length).toBeGreaterThan(
+      0,
+    );
   });
   it('detects "vale la pena mencionar"', () => {
-    expect(p().detect('Vale la pena mencionar que el equipo trabajó bien.').length).toBeGreaterThan(0);
+    expect(p().detect('Vale la pena mencionar que el equipo trabajó bien.').length).toBeGreaterThan(
+      0,
+    );
   });
 });
 
@@ -84,7 +91,9 @@ describe('ES-06: Disclaimers de corte (español)', () => {
   it('exists', () => expect(p()).toBeDefined());
 
   it('detects "como modelo de lenguaje"', () => {
-    expect(p().detect('Como modelo de lenguaje, no puedo acceder a internet.').length).toBeGreaterThan(0);
+    expect(
+      p().detect('Como modelo de lenguaje, no puedo acceder a internet.').length,
+    ).toBeGreaterThan(0);
   });
   it('detects "hasta mi fecha de corte"', () => {
     expect(p().detect('Hasta mi fecha de corte, esto era correcto.').length).toBeGreaterThan(0);
@@ -99,7 +108,9 @@ describe('ES-07: Conclusiones genéricas (español)', () => {
     expect(p().detect('El futuro es prometedor para esta industria.').length).toBeGreaterThan(0);
   });
   it('detects "estamos ante un momento histórico"', () => {
-    expect(p().detect('Estamos ante un momento histórico sin precedentes.').length).toBeGreaterThan(0);
+    expect(p().detect('Estamos ante un momento histórico sin precedentes.').length).toBeGreaterThan(
+      0,
+    );
   });
 });
 
@@ -111,7 +122,9 @@ describe('ES-08: Atribuciones vagas (español)', () => {
     expect(p().detect('Los expertos señalan que esto es importante.').length).toBeGreaterThan(0);
   });
   it('detects "múltiples estudios demuestran"', () => {
-    expect(p().detect('Múltiples estudios demuestran que el método funciona.').length).toBeGreaterThan(0);
+    expect(
+      p().detect('Múltiples estudios demuestran que el método funciona.').length,
+    ).toBeGreaterThan(0);
   });
 });
 
@@ -132,7 +145,9 @@ describe('ES-10: Pasiva con ser innecesaria', () => {
   it('exists', () => expect(p()).toBeDefined());
 
   it('detects "ha sido desarrollado por"', () => {
-    expect(p().detect('Este método ha sido desarrollado por los investigadores.').length).toBeGreaterThan(0);
+    expect(
+      p().detect('Este método ha sido desarrollado por los investigadores.').length,
+    ).toBeGreaterThan(0);
   });
   it('does not flag legitimate passive', () => {
     expect(p().detect('Se ha desarrollado un nuevo método.').length).toBe(0);

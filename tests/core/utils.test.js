@@ -1,5 +1,12 @@
 import { describe, it, expect } from 'vitest';
-import { stripCodeSnippets, wordCount, scoreLabel, burstinessLabel, ttrLabel, reliabilityLabel } from '../../src/core/utils.js';
+import {
+  stripCodeSnippets,
+  wordCount,
+  scoreLabel,
+  burstinessLabel,
+  ttrLabel,
+  reliabilityLabel,
+} from '../../src/core/utils.js';
 
 describe('stripCodeSnippets', () => {
   it('masks fenced code blocks preserving line count', () => {

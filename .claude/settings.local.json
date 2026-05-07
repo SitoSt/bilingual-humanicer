@@ -12,7 +12,13 @@
       "Bash(git commit -m ':*)",
       "Bash(git:*)",
       "Bash(ls /Users/alfonsogarre/Workspace/humanizer-duo/tests/*.test.js)",
-      "Bash(xargs basename:*)"
+      "Bash(xargs basename:*)",
+      "Bash(ls:*)",
+      "Bash(npm run:*)",
+      "Bash(grep:*)",
+      "Bash(npm ls:*)",
+      "Bash(npm audit:*)",
+      "Bash(npx eslint:*)"
     ]
   }
 }

@@ -1,7 +1,7 @@
 # humanizer
 
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
-![Tests](https://img.shields.io/badge/tests-153%20passing-brightgreen)
+![Tests](https://img.shields.io/badge/tests-318%20passing-brightgreen)
 ![Node >= 18](https://img.shields.io/badge/node-%3E%3D18-brightgreen)
 
 Detect and remove signs of AI-generated writing. Makes text sound natural and human.
@@ -27,13 +27,13 @@ cd humanizer
 npm install
 
 # Score some text
-echo "This serves as a testament to innovation." | node src/cli.js score
+echo "This serves as a testament to innovation." | node src/cli/index.js score
 
 # Full analysis
-node src/cli.js analyze -f your-draft.md
+node src/cli/index.js analyze -f your-draft.md
 
 # Humanize with auto-fixes
-node src/cli.js humanize --autofix -f article.txt
+node src/cli/index.js humanize --autofix -f article.txt
 ```
 
 ### Global install
@@ -386,7 +386,7 @@ Write like a specific human, not a generic AI. Rules:
 After baking in, test your agent by asking it to write about any topic. Then scan it:
 
 ```bash
-echo "Your agent's response here" | node src/cli.js score
+echo "Your agent's response here" | node src/cli/index.js score
 ```
 
 Target: consistently **under 25** on the humanizer score.

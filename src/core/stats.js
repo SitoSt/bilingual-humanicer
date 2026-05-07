@@ -141,7 +141,7 @@ function computeStats(text, lang = DEFAULT_LANG) {
     const syllableCount = words.reduce((sum, w) => sum + estimateSyllablesES(w), 0);
     const rawIfsz =
       sentenceCount > 0
-        ? 206.835 - 62.3 * (syllableCount / wordCount) - (wordCount / sentenceCount)
+        ? 206.835 - 62.3 * (syllableCount / wordCount) - wordCount / sentenceCount
         : 0;
     ifsz = Math.max(0, Math.min(100, rawIfsz));
   }
@@ -323,14 +323,12 @@ function computeUniformityScore(stats, lang = DEFAULT_LANG) {
   // Spanish has naturally higher TTR (~1.7x English)
   if (stats.wordCount > 100) {
     if (lang === 'es') {
-      if (stats.typeTokenRatio < 0.50) score += 20;
-      else if (stats.typeTokenRatio < 0.60) score += 12;
-      else if (stats.typeTokenRatio < 0.70) score += 5;
-    } else {
-      if (stats.typeTokenRatio < 0.35) score += 20;
-      else if (stats.typeTokenRatio < 0.45) score += 12;
-      else if (stats.typeTokenRatio < 0.55) score += 5;
-    }
+      if (stats.typeTokenRatio < 0.5) score += 20;
+      else if (stats.typeTokenRatio < 0.6) score += 12;
+      else if (stats.typeTokenRatio < 0.7) score += 5;
+    } else if (stats.typeTokenRatio < 0.35) score += 20;
+    else if (stats.typeTokenRatio < 0.45) score += 12;
+    else if (stats.typeTokenRatio < 0.55) score += 5;
   }
 
   // High trigram repetition = more AI-like (max 10 points)
@@ -341,7 +339,7 @@ function computeUniformityScore(stats, lang = DEFAULT_LANG) {
   // Low hapax legomena rate = more AI-like (max 10 points)
   // AI text has systematically lower HLR than humans
   if (stats.wordCount > 150) {
-    if (stats.hapaxLegomenaRate < 0.30) score += 10;
+    if (stats.hapaxLegomenaRate < 0.3) score += 10;
     else if (stats.hapaxLegomenaRate < 0.45) score += 5;
   }
 

@@ -21,13 +21,19 @@ function formatStatsReport(stats) {
   lines.push('');
   lines.push('  ── Vocabulary ─────────────────────────────────');
   lines.push(`    Total words:      ${stats.wordCount}`);
-  if (stats.uniqueWordCount !== undefined) lines.push(`    Unique words:     ${stats.uniqueWordCount}`);
-  lines.push(`    Type-token ratio: ${stats.typeTokenRatio}  ${ttrLabel(stats.typeTokenRatio, stats.wordCount)}`);
+  if (stats.uniqueWordCount !== undefined) {
+    lines.push(`    Unique words:     ${stats.uniqueWordCount}`);
+  }
+  lines.push(
+    `    Type-token ratio: ${stats.typeTokenRatio}  ${ttrLabel(stats.typeTokenRatio, stats.wordCount)}`,
+  );
   if (stats.avgWordLength !== undefined) lines.push(`    Avg word length:  ${stats.avgWordLength}`);
   lines.push('');
   lines.push('  ── Structure ──────────────────────────────────');
   lines.push(`    Paragraphs:       ${stats.paragraphCount}`);
-  if (stats.avgParagraphLength !== undefined) lines.push(`    Avg para length:  ${stats.avgParagraphLength} words`);
+  if (stats.avgParagraphLength !== undefined) {
+    lines.push(`    Avg para length:  ${stats.avgParagraphLength} words`);
+  }
   lines.push(`    Trigram repeat:   ${stats.trigramRepetition}`);
   lines.push('');
   lines.push('  ── Readability ────────────────────────────────');
@@ -39,7 +45,9 @@ function formatStatsReport(stats) {
   if (stats.connectorDensity !== null && stats.connectorDensity !== undefined) {
     lines.push(`    Connector density: ${stats.connectorDensity}`);
   }
-  lines.push(`    Function words:   ${stats.functionWordRatio} (${(stats.functionWordRatio * 100).toFixed(1)}%)`);
+  lines.push(
+    `    Function words:   ${stats.functionWordRatio} (${(stats.functionWordRatio * 100).toFixed(1)}%)`,
+  );
   lines.push('');
 
   return lines.join('\n');

@@ -1,7 +1,5 @@
 'use strict';
 
-const { scoreLabel } = require('../constants');
-
 /**
  * Format a scan result as plain text report.
  * Based on formatScanReport() from src/cli.js, with ANSI removed.
@@ -17,8 +15,12 @@ function formatScanReport(scanResult, failAbove = null, baselineComparison = nul
   lines.push('── REPO SCAN ────────────────────────────────────────');
   lines.push('');
   lines.push(`  Target: ${scanResult.targetPath}`);
-  lines.push(`  Files scanned: ${scanResult.summary.scannedFiles}  |  Skipped: ${scanResult.summary.skippedFiles}`);
-  lines.push(`  Avg score: ${scanResult.summary.averageScore}  |  Max: ${scanResult.summary.maxScore}  |  Min: ${scanResult.summary.minScore}`);
+  lines.push(
+    `  Files scanned: ${scanResult.summary.scannedFiles}  |  Skipped: ${scanResult.summary.skippedFiles}`,
+  );
+  lines.push(
+    `  Avg score: ${scanResult.summary.averageScore}  |  Max: ${scanResult.summary.maxScore}  |  Min: ${scanResult.summary.minScore}`,
+  );
   if (typeof scanResult.summary.uniquePatterns === 'number') {
     lines.push(`  Unique patterns: ${scanResult.summary.uniquePatterns}`);
   }
@@ -33,21 +35,29 @@ function formatScanReport(scanResult, failAbove = null, baselineComparison = nul
   lines.push('  Top flagged files:');
   for (const item of files.slice(0, 20)) {
     const failTag = failAbove !== null && item.score >= failAbove ? ' [FAIL]' : ' [OK]';
-    lines.push(`  ${item.score.toString().padStart(3)}/100${failTag} ${item.file} (${item.totalMatches} matches, ${item.wordCount} words)`);
+    lines.push(
+      `  ${item.score.toString().padStart(3)}/100${failTag} ${item.file} (${item.totalMatches} matches, ${item.wordCount} words)`,
+    );
   }
   lines.push('');
 
   if (baselineComparison) {
     const summary = baselineComparison.summary;
     lines.push('  Baseline comparison:');
-    lines.push(`  Compared: ${summary.comparedFiles}  |  Regressions: ${summary.regressions}  |  Improvements: ${summary.improvements}  |  Unchanged: ${summary.unchanged}`);
-    lines.push(`  New files: ${summary.newFiles}  |  Missing files: ${summary.missingFiles}  |  Threshold: ±${summary.regressionThreshold}`);
+    lines.push(
+      `  Compared: ${summary.comparedFiles}  |  Regressions: ${summary.regressions}  |  Improvements: ${summary.improvements}  |  Unchanged: ${summary.unchanged}`,
+    );
+    lines.push(
+      `  New files: ${summary.newFiles}  |  Missing files: ${summary.missingFiles}  |  Threshold: ±${summary.regressionThreshold}`,
+    );
     lines.push('');
 
     if (baselineComparison.regressions.length > 0) {
       lines.push('  Baseline regressions:');
       for (const item of baselineComparison.regressions.slice(0, 8)) {
-        lines.push(`  +${item.delta} ${item.relativePath} (${item.baselineScore} → ${item.currentScore})`);
+        lines.push(
+          `  +${item.delta} ${item.relativePath} (${item.baselineScore} → ${item.currentScore})`,
+        );
       }
       lines.push('');
     }
@@ -55,7 +65,9 @@ function formatScanReport(scanResult, failAbove = null, baselineComparison = nul
     if (baselineComparison.improvements.length > 0) {
       lines.push('  Baseline improvements:');
       for (const item of baselineComparison.improvements.slice(0, 5)) {
-        lines.push(`  ${item.delta} ${item.relativePath} (${item.baselineScore} → ${item.currentScore})`);
+        lines.push(
+          `  ${item.delta} ${item.relativePath} (${item.baselineScore} → ${item.currentScore})`,
+        );
       }
       lines.push('');
     }
@@ -64,7 +76,9 @@ function formatScanReport(scanResult, failAbove = null, baselineComparison = nul
   if (scanResult.patternHotspots && scanResult.patternHotspots.length > 0) {
     lines.push('  Common pattern hotspots:');
     for (const item of scanResult.patternHotspots.slice(0, 8)) {
-      lines.push(`  [${item.patternId}] ${item.patternName} (${item.totalMatches} matches across ${item.affectedFiles} files)`);
+      lines.push(
+        `  [${item.patternId}] ${item.patternName} (${item.totalMatches} matches across ${item.affectedFiles} files)`,
+      );
     }
     lines.push('');
   }
@@ -92,15 +106,21 @@ function formatComparisonReport(result) {
   lines.push('');
   lines.push('── DRAFT COMPARISON ─────────────────────────────────');
   lines.push('');
-  lines.push(`  Before: ${result.before.score}/100  (${result.before.totalMatches} matches, ${result.before.wordCount} words)`);
-  lines.push(`  After:  ${result.after.score}/100  (${result.after.totalMatches} matches, ${result.after.wordCount} words)`);
+  lines.push(
+    `  Before: ${result.before.score}/100  (${result.before.totalMatches} matches, ${result.before.wordCount} words)`,
+  );
+  lines.push(
+    `  After:  ${result.after.score}/100  (${result.after.totalMatches} matches, ${result.after.wordCount} words)`,
+  );
   lines.push(`  Delta:  ${scoreArrow} ${scoreDelta >= 0 ? '+' : ''}${scoreDelta} points`);
   lines.push('');
 
   if (result.improvements.length > 0) {
     lines.push('  Top improvements:');
     for (const item of result.improvements.slice(0, 5)) {
-      lines.push(`  • ${item.patternName}: ${item.beforeCount} → ${item.afterCount} (${item.delta})`);
+      lines.push(
+        `  • ${item.patternName}: ${item.beforeCount} → ${item.afterCount} (${item.delta})`,
+      );
     }
     lines.push('');
   }
@@ -108,7 +128,9 @@ function formatComparisonReport(result) {
   if (result.regressions.length > 0) {
     lines.push('  New regressions:');
     for (const item of result.regressions.slice(0, 5)) {
-      lines.push(`  • ${item.patternName}: ${item.beforeCount} → ${item.afterCount} (+${item.delta})`);
+      lines.push(
+        `  • ${item.patternName}: ${item.beforeCount} → ${item.afterCount} (+${item.delta})`,
+      );
     }
     lines.push('');
   }

@@ -1,10 +1,16 @@
 import { describe, it, expect } from 'vitest';
-import { buildSummary, formatText, formatMarkdown, formatJSON, formatReadabilityLine } from '../../src/formatters/report.js';
+import {
+  buildSummary,
+  formatText,
+  formatMarkdown,
+  formatJSON,
+  formatReadabilityLine,
+} from '../../src/formatters/report.js';
 import { analyze } from '../../src/core/analyzer.js';
 
 const sampleResult = analyze(
   'Furthermore, it is important to note that this comprehensive analysis clearly demonstrates the transformative impact.',
-  { lang: 'en' }
+  { lang: 'en' },
 );
 
 describe('buildSummary', () => {
@@ -30,6 +36,7 @@ describe('formatText', () => {
   });
 
   it('contains no ANSI escape codes', () => {
+    // eslint-disable-next-line no-control-regex
     expect(formatText(sampleResult)).not.toMatch(/\x1b\[/);
   });
 });
@@ -52,7 +59,9 @@ describe('formatReadabilityLine', () => {
   });
 
   it('returns FK line when fleschKincaid present', () => {
-    expect(formatReadabilityLine({ ifsz: null, fleschKincaid: 9.2 })).toBe('Flesch-Kincaid: 9.2 grade level');
+    expect(formatReadabilityLine({ ifsz: null, fleschKincaid: 9.2 })).toBe(
+      'Flesch-Kincaid: 9.2 grade level',
+    );
   });
 
   it('never returns a string containing "null"', () => {

@@ -91,7 +91,9 @@ describe('analyze — pure data contract', () => {
   });
 
   it('includes stats in result', () => {
-    const result = analyze('The cat sat on the mat. The dog ran fast. The bird flew away.', { lang: 'en' });
+    const result = analyze('The cat sat on the mat. The dog ran fast. The bird flew away.', {
+      lang: 'en',
+    });
     expect(result.stats).not.toBeNull();
     expect(result.stats).toHaveProperty('burstiness');
   });

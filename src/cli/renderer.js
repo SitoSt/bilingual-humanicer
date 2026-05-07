@@ -1,6 +1,11 @@
 'use strict';
 
-const { buildSummary, formatMarkdown, formatJSON, formatReadabilityLine } = require('../formatters/report');
+const {
+  buildSummary,
+  formatMarkdown,
+  formatJSON,
+  formatReadabilityLine,
+} = require('../formatters/report');
 const { formatSuggestions, formatGroupedSuggestions } = require('../formatters/suggestions');
 const { formatScanReport, formatComparisonReport } = require('../formatters/scan');
 const { formatStatsReport } = require('../formatters/stats');
@@ -9,15 +14,15 @@ const { formatStatsReport } = require('../formatters/stats');
 const supportsColor = process.stdout.isTTY && !process.env.NO_COLOR;
 
 const color = {
-  red:     (s) => (supportsColor ? `\x1b[31m${s}\x1b[0m` : s),
-  green:   (s) => (supportsColor ? `\x1b[32m${s}\x1b[0m` : s),
-  yellow:  (s) => (supportsColor ? `\x1b[33m${s}\x1b[0m` : s),
-  blue:    (s) => (supportsColor ? `\x1b[34m${s}\x1b[0m` : s),
+  red: (s) => (supportsColor ? `\x1b[31m${s}\x1b[0m` : s),
+  green: (s) => (supportsColor ? `\x1b[32m${s}\x1b[0m` : s),
+  yellow: (s) => (supportsColor ? `\x1b[33m${s}\x1b[0m` : s),
+  blue: (s) => (supportsColor ? `\x1b[34m${s}\x1b[0m` : s),
   magenta: (s) => (supportsColor ? `\x1b[35m${s}\x1b[0m` : s),
-  cyan:    (s) => (supportsColor ? `\x1b[36m${s}\x1b[0m` : s),
-  gray:    (s) => (supportsColor ? `\x1b[90m${s}\x1b[0m` : s),
-  bold:    (s) => (supportsColor ? `\x1b[1m${s}\x1b[0m` : s),
-  dim:     (s) => (supportsColor ? `\x1b[2m${s}\x1b[0m` : s),
+  cyan: (s) => (supportsColor ? `\x1b[36m${s}\x1b[0m` : s),
+  gray: (s) => (supportsColor ? `\x1b[90m${s}\x1b[0m` : s),
+  bold: (s) => (supportsColor ? `\x1b[1m${s}\x1b[0m` : s),
+  dim: (s) => (supportsColor ? `\x1b[2m${s}\x1b[0m` : s),
 };
 
 /**

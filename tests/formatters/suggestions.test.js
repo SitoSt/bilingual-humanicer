@@ -1,11 +1,16 @@
 // tests/formatters/suggestions.test.js
 import { describe, it, expect } from 'vitest';
-import { formatGroupedSuggestions, formatSuggestions, formatGuidance, formatStyleTips } from '../../src/formatters/suggestions.js';
+import {
+  formatGroupedSuggestions,
+  formatSuggestions,
+  formatGuidance,
+  formatStyleTips,
+} from '../../src/formatters/suggestions.js';
 import { humanize } from '../../src/core/humanizer.js';
 
 const result = humanize(
   'Furthermore, it is important to note the comprehensive impact showcasing transformative change.',
-  { lang: 'en' }
+  { lang: 'en' },
 );
 
 describe('formatGroupedSuggestions', () => {
@@ -16,6 +21,7 @@ describe('formatGroupedSuggestions', () => {
   });
 
   it('contains no ANSI escape codes', () => {
+    // eslint-disable-next-line no-control-regex
     expect(formatGroupedSuggestions(result)).not.toMatch(/\x1b\[/);
   });
 });

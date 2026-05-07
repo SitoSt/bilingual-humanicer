@@ -63,7 +63,7 @@ describe('autoFix', () => {
   it('removes chatbot opening artifact', () => {
     const { text, fixes } = autoFix('Great question! Now let me explain.');
     expect(text).not.toContain('Great question!');
-    expect(fixes.some(f => f.includes('chatbot'))).toBe(true);
+    expect(fixes.some((f) => f.includes('chatbot'))).toBe(true);
   });
 
   it('simplifies filler phrases', () => {
