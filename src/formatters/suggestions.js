@@ -22,6 +22,10 @@ function formatSuggestions(result) {
  * Format as grouped list by priority (no ANSI).
  */
 function formatGroupedSuggestions(result) {
+  const all = [...result.critical, ...result.important, ...result.minor];
+  if (all.length === 0) {
+    return 'No significant AI patterns detected.';
+  }
   const lines = [];
   lines.push('');
   lines.push('── Suggestions ─────────────────────────────────────');

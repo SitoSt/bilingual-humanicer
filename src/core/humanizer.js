@@ -164,7 +164,8 @@ function humanize(text, opts = {}) {
 }
 
 /**
- * humanizeResult: accepts pre-computed AnalysisResult to avoid double analysis
+ * Like humanize() but accepts a pre-computed AnalysisResult to avoid double analysis.
+ * @param {object} opts.originalText — Required when opts.autofix is true
  */
 function humanizeResult(analysisResult, opts = {}) {
   const { autofix = false, includeStats = true } = opts;
@@ -187,11 +188,13 @@ function humanizeResult(analysisResult, opts = {}) {
     else                          minor.push(...suggestions);
   }
 
-  let fixedText = null, appliedFixes = [];
-  if (autofix && opts.originalText) {
-    const r = autoFix(opts.originalText);
-    fixedText = r.text;
-    appliedFixes = r.fixes;
+  let autofixResult = null;
+  if (autofix) {
+    if (opts.originalText) {
+      const r = autoFix(opts.originalText);
+      autofixResult = { text: r.text, fixes: r.fixes };
+    }
+    // else: autofix requested but no originalText — return null (caller did not provide text)
   }
 
   const guidance  = buildGuidance(analysisResult);
@@ -206,7 +209,7 @@ function humanizeResult(analysisResult, opts = {}) {
     totalIssues: analysisResult.totalMatches,
     stats: analysisResult.stats,
     critical, important, minor,
-    autofix: autofix ? { text: fixedText, fixes: appliedFixes } : null,
+    autofix: autofixResult,
     guidance,
     styleTips,
     analysis: analysisResult,
