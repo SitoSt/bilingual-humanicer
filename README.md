@@ -10,6 +10,8 @@ An [OpenClaw](https://github.com/nichochar/openclaw) skill and standalone CLI to
 
 Based on [Wikipedia:Signs of AI writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing), [Copyleaks stylistic fingerprint research](https://arxiv.org/abs/2503.01659), and [blader/humanizer](https://github.com/blader/humanizer).
 
+**→ [Guía completa de uso](docs/GUIDE.md)** — comandos, opciones, API, referencia de patrones, CI/CD.
+
 ## Install
 
 ### As an OpenClaw skill
