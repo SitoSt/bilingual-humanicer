@@ -13,7 +13,8 @@ function buildSummary(result) {
     return s;
   }
 
-  const level = scoreLabel(finalScore).toLowerCase();
+  const levelLabel = scoreLabel(finalScore);
+  const level = levelLabel.charAt(0).toLowerCase() + levelLabel.slice(1);
   const topPatterns = [...findings]
     .sort((a, b) => b.matchCount * b.weight - a.matchCount * a.weight)
     .slice(0, 3)

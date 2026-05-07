@@ -1,6 +1,6 @@
 'use strict';
 
-const { SCORE_THRESHOLDS } = require('../constants');
+const { scoreLabel } = require('../constants');
 
 const NON_NEWLINE = /[^\n]/g;
 const FENCED_CODE_BLOCKS = /```[\s\S]*?```|~~~[\s\S]*?~~~/g;
@@ -21,13 +21,6 @@ function stripCodeSnippets(text, opts = {}) {
 
 function wordCount(text) {
   return text.trim().split(/\s+/).filter(Boolean).length;
-}
-
-function scoreLabel(s) {
-  if (s > SCORE_THRESHOLDS.MODERATE.max) return SCORE_THRESHOLDS.HEAVY.label;
-  if (s > SCORE_THRESHOLDS.LIGHT.max)    return SCORE_THRESHOLDS.MODERATE.label;
-  if (s > SCORE_THRESHOLDS.HUMAN.max)    return SCORE_THRESHOLDS.LIGHT.label;
-  return SCORE_THRESHOLDS.HUMAN.label;
 }
 
 function burstinessLabel(b) {
