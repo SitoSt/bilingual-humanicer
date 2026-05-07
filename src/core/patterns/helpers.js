@@ -53,10 +53,6 @@ function wordCount(text) {
  */
 function wordRegex(word) {
   const escaped = word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  // For multi-word phrases, don't use word boundaries on internal spaces
-  if (word.includes(' ')) {
-    return new RegExp(`\\b${escaped}\\b`, 'gi');
-  }
   return new RegExp(`\\b${escaped}\\b`, 'gi');
 }
 

@@ -6,7 +6,10 @@ const esPatterns = require('./es');
 const { DEFAULT_LANG } = require('../../constants');
 const { wordCount } = require('./helpers');
 
-// Singleton registry populated with EN patterns
+// Singleton registry populated with EN patterns only.
+// NOTE: ES patterns are excluded because they are a separate detection set,
+// not an extension of the EN registry. Use createPatterns(lang) to get the
+// correct active set for a given language.
 const registry = new PatternRegistry();
 for (const p of enPatterns) registry.register(p);
 
@@ -31,21 +34,22 @@ function createPatterns(lang = DEFAULT_LANG) {
   return [];
 }
 
-// Re-export vocabulary for backward-compat consumers
-const vocab = require('../../vocabulary');
+// Backward-compat re-exports for existing consumers (shim period only — removed in Task 8).
+// WARNING: vocabulary re-exports are English-only (from vocabulary.js).
+// For multilingual vocabulary use getLocale(lang).TIER_1 etc.
+const { TIER_1, TIER_2, TIER_3, AI_PHRASES, SIGNIFICANCE_PHRASES, PROMOTIONAL_WORDS,
+        VAGUE_ATTRIBUTION_PHRASES, CHALLENGES_PHRASES, COPULA_AVOIDANCE } = require('../../vocabulary');
+const { findMatches, countMatches, scanWordList, scanPhrases } = require('./helpers');
 
 module.exports = {
   createPatterns,
   PatternRegistry,
   registry,
-  patterns: enPatterns,       // backward compat: old consumers do require('./patterns').patterns
-  wordCount,                  // backward compat: analyzer.js imports wordCount from patterns
-  ...vocab,                   // TIER_1, TIER_2, TIER_3, AI_PHRASES, etc. for backward compat
-  // Internal helpers are intentionally NOT exported from the public API
-  // (findMatches, countMatches, wordRegex, scanWordList, scanPhrases are in helpers.js)
-  // But findMatches IS exported for backward compat (tests/patterns.test.js imports it)
-  findMatches: require('./helpers').findMatches,
-  countMatches: require('./helpers').countMatches,
-  scanWordList: require('./helpers').scanWordList,
-  scanPhrases: require('./helpers').scanPhrases,
+  patterns: enPatterns,  // backward compat: consumers that do require('./patterns').patterns
+  wordCount,             // backward compat: src/analyzer.js imports wordCount from ./patterns
+  // EN-only vocabulary (backward compat — use getLocale(lang) for multilingual):
+  TIER_1, TIER_2, TIER_3, AI_PHRASES, SIGNIFICANCE_PHRASES, PROMOTIONAL_WORDS,
+  VAGUE_ATTRIBUTION_PHRASES, CHALLENGES_PHRASES, COPULA_AVOIDANCE,
+  // Helpers (backward compat for tests that import via the old path):
+  findMatches, countMatches, scanWordList, scanPhrases,
 };
