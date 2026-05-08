@@ -30,11 +30,15 @@ describe('ES-01: threshold change — 2 gerundios', () => {
   const p = () => getPattern('ES-01');
 
   it('now detects 2 gerundios in same sentence', () => {
-    expect(p().detect('El equipo fue avanzando y mejorando sus resultados.').length).toBeGreaterThan(0);
+    expect(
+      p().detect('El equipo fue avanzando y mejorando sus resultados.').length,
+    ).toBeGreaterThan(0);
   });
 
   it('still does not flag 1 gerundio', () => {
-    expect(p().detect('El sistema funciona analizando los datos de forma eficiente.').length).toBe(0);
+    expect(p().detect('El sistema funciona analizando los datos de forma eficiente.').length).toBe(
+      0,
+    );
   });
 });
 
@@ -43,31 +47,45 @@ describe('ES-02: new vague openers', () => {
   const p = () => getPattern('ES-02');
 
   it('detects "Vivimos en un momento en que"', () => {
-    expect(p().detect('Vivimos en un momento en que la tecnología avanza sin parar.').length).toBeGreaterThan(0);
+    expect(
+      p().detect('Vivimos en un momento en que la tecnología avanza sin parar.').length,
+    ).toBeGreaterThan(0);
   });
 
   it('detects "Nos encontramos ante un momento"', () => {
-    expect(p().detect('Nos encontramos ante un momento decisivo para la industria.').length).toBeGreaterThan(0);
+    expect(
+      p().detect('Nos encontramos ante un momento decisivo para la industria.').length,
+    ).toBeGreaterThan(0);
   });
 
   it('detects "En los últimos años," at line start', () => {
-    expect(p().detect('En los últimos años, el sector ha experimentado cambios profundos.').length).toBeGreaterThan(0);
+    expect(
+      p().detect('En los últimos años, el sector ha experimentado cambios profundos.').length,
+    ).toBeGreaterThan(0);
   });
 
   it('detects "A lo largo de los últimos años" at line start', () => {
-    expect(p().detect('A lo largo de los últimos años, el sector ha evolucionado notablemente.').length).toBeGreaterThan(0);
+    expect(
+      p().detect('A lo largo de los últimos años, el sector ha evolucionado notablemente.').length,
+    ).toBeGreaterThan(0);
   });
 
   it('detects "Hoy en día, más que nunca,"', () => {
-    expect(p().detect('Hoy en día, más que nunca, la colaboración es clave.').length).toBeGreaterThan(0);
+    expect(
+      p().detect('Hoy en día, más que nunca, la colaboración es clave.').length,
+    ).toBeGreaterThan(0);
   });
 
   it('detects "En pleno siglo XXI"', () => {
-    expect(p().detect('En pleno siglo XXI, seguimos enfrentando estos retos.').length).toBeGreaterThan(0);
+    expect(
+      p().detect('En pleno siglo XXI, seguimos enfrentando estos retos.').length,
+    ).toBeGreaterThan(0);
   });
 
   it('detects "En este contexto,"', () => {
-    expect(p().detect('En este contexto, resulta fundamental analizar las tendencias.').length).toBeGreaterThan(0);
+    expect(
+      p().detect('En este contexto, resulta fundamental analizar las tendencias.').length,
+    ).toBeGreaterThan(0);
   });
 });
 
@@ -76,15 +94,21 @@ describe('ES-03: expanded abstract nouns list', () => {
   const p = () => getPattern('ES-03');
 
   it('detects triada with new nouns: liderazgo, talento, diversidad', () => {
-    expect(p().detect('Buscamos liderazgo, talento y diversidad en el equipo.').length).toBeGreaterThan(0);
+    expect(
+      p().detect('Buscamos liderazgo, talento y diversidad en el equipo.').length,
+    ).toBeGreaterThan(0);
   });
 
   it('detects triada with: resiliencia, agilidad, colaboración', () => {
-    expect(p().detect('Fomentamos resiliencia, agilidad y colaboración en la organización.').length).toBeGreaterThan(0);
+    expect(
+      p().detect('Fomentamos resiliencia, agilidad y colaboración en la organización.').length,
+    ).toBeGreaterThan(0);
   });
 
   it('detects triada with: bienestar, propósito, confianza', () => {
-    expect(p().detect('Nuestra cultura prioriza bienestar, propósito y confianza.').length).toBeGreaterThan(0);
+    expect(
+      p().detect('Nuestra cultura prioriza bienestar, propósito y confianza.').length,
+    ).toBeGreaterThan(0);
   });
 });
 
@@ -229,7 +253,9 @@ describe('ES-04: closing sycophancy', () => {
   });
 
   it('detects "no dudes en volver a preguntar"', () => {
-    expect(p().detect('No dudes en volver a preguntar si tienes más dudas.').length).toBeGreaterThan(0);
+    expect(
+      p().detect('No dudes en volver a preguntar si tienes más dudas.').length,
+    ).toBeGreaterThan(0);
   });
 });
 
@@ -241,11 +267,15 @@ describe('ES-07: expanded generic conclusions', () => {
   });
 
   it('detects "es hora de actuar"', () => {
-    expect(p().detect('Es hora de actuar y tomar las decisiones necesarias.').length).toBeGreaterThan(0);
+    expect(
+      p().detect('Es hora de actuar y tomar las decisiones necesarias.').length,
+    ).toBeGreaterThan(0);
   });
 
   it('detects "marca un antes y un después"', () => {
-    expect(p().detect('Este descubrimiento marca un antes y un después en la industria.').length).toBeGreaterThan(0);
+    expect(
+      p().detect('Este descubrimiento marca un antes y un después en la industria.').length,
+    ).toBeGreaterThan(0);
   });
 
   it('detects "sin duda alguna"', () => {
@@ -253,7 +283,9 @@ describe('ES-07: expanded generic conclusions', () => {
   });
 
   it('detects "el reto está en nuestras manos"', () => {
-    expect(p().detect('El reto está en nuestras manos y debemos actuar.').length).toBeGreaterThan(0);
+    expect(p().detect('El reto está en nuestras manos y debemos actuar.').length).toBeGreaterThan(
+      0,
+    );
   });
 });
 
@@ -269,7 +301,9 @@ describe('ES-08: expanded vague attributions', () => {
   });
 
   it('detects "está comprobado que"', () => {
-    expect(p().detect('Está comprobado que la formación continua mejora resultados.').length).toBeGreaterThan(0);
+    expect(
+      p().detect('Está comprobado que la formación continua mejora resultados.').length,
+    ).toBeGreaterThan(0);
   });
 });
 
@@ -277,15 +311,21 @@ describe('ES-09: expanded positive language', () => {
   const p = () => getPattern('ES-09');
 
   it('detects "experiencia enriquecedora"', () => {
-    expect(p().detect('Fue una experiencia enriquecedora para todo el equipo.').length).toBeGreaterThan(0);
+    expect(
+      p().detect('Fue una experiencia enriquecedora para todo el equipo.').length,
+    ).toBeGreaterThan(0);
   });
 
   it('detects "oportunidad única"', () => {
-    expect(p().detect('Es una oportunidad única que no debemos dejar pasar.').length).toBeGreaterThan(0);
+    expect(
+      p().detect('Es una oportunidad única que no debemos dejar pasar.').length,
+    ).toBeGreaterThan(0);
   });
 
   it('detects "hito histórico"', () => {
-    expect(p().detect('Este acuerdo representa un hito histórico en el sector.').length).toBeGreaterThan(0);
+    expect(
+      p().detect('Este acuerdo representa un hito histórico en el sector.').length,
+    ).toBeGreaterThan(0);
   });
 });
 
@@ -293,19 +333,27 @@ describe('ES-10: expanded unnecessary passive', () => {
   const p = () => getPattern('ES-10');
 
   it('detects "debe ser considerado"', () => {
-    expect(p().detect('Este factor debe ser considerado en el análisis.').length).toBeGreaterThan(0);
+    expect(p().detect('Este factor debe ser considerado en el análisis.').length).toBeGreaterThan(
+      0,
+    );
   });
 
   it('detects "puede ser implementado"', () => {
-    expect(p().detect('El sistema puede ser implementado en cualquier empresa.').length).toBeGreaterThan(0);
+    expect(
+      p().detect('El sistema puede ser implementado en cualquier empresa.').length,
+    ).toBeGreaterThan(0);
   });
 
   it('detects "debe ser considerada" (feminine)', () => {
-    expect(p().detect('La propuesta debe ser considerada en el análisis.').length).toBeGreaterThan(0);
+    expect(p().detect('La propuesta debe ser considerada en el análisis.').length).toBeGreaterThan(
+      0,
+    );
   });
 
   it('detects "puede ser compartido" (-ido form)', () => {
-    expect(p().detect('El documento puede ser compartido con el equipo.').length).toBeGreaterThan(0);
+    expect(p().detect('El documento puede ser compartido con el equipo.').length).toBeGreaterThan(
+      0,
+    );
   });
 
   it('does not flag "hay que ser educado" (adjective, not passive)', () => {
@@ -322,15 +370,21 @@ describe('ES-11: Framing de análisis', () => {
   });
 
   it('detects "comencemos por entender"', () => {
-    expect(p().detect('Comencemos por entender qué es la inteligencia artificial.').length).toBeGreaterThan(0);
+    expect(
+      p().detect('Comencemos por entender qué es la inteligencia artificial.').length,
+    ).toBeGreaterThan(0);
   });
 
   it('detects "a continuación vamos a explorar"', () => {
-    expect(p().detect('A continuación vamos a explorar las tres principales causas.').length).toBeGreaterThan(0);
+    expect(
+      p().detect('A continuación vamos a explorar las tres principales causas.').length,
+    ).toBeGreaterThan(0);
   });
 
   it('detects "permíteme explicarte"', () => {
-    expect(p().detect('Permíteme explicarte cómo funciona este proceso.').length).toBeGreaterThan(0);
+    expect(p().detect('Permíteme explicarte cómo funciona este proceso.').length).toBeGreaterThan(
+      0,
+    );
   });
 
   it('does not flag normal transition "a continuación, los resultados"', () => {
@@ -347,7 +401,9 @@ describe('ES-12: Copula avoidance española', () => {
   });
 
   it('detects "actúa como"', () => {
-    expect(p().detect('El coordinador actúa como enlace entre los departamentos.').length).toBeGreaterThan(0);
+    expect(
+      p().detect('El coordinador actúa como enlace entre los departamentos.').length,
+    ).toBeGreaterThan(0);
   });
 
   it('detects "se erige como"', () => {
@@ -355,7 +411,9 @@ describe('ES-12: Copula avoidance española', () => {
   });
 
   it('detects "desempeña el papel de"', () => {
-    expect(p().detect('La tecnología desempeña el papel de catalizador en este proceso.').length).toBeGreaterThan(0);
+    expect(
+      p().detect('La tecnología desempeña el papel de catalizador en este proceso.').length,
+    ).toBeGreaterThan(0);
   });
 
   it('does not flag "funciona correctamente"', () => {
@@ -368,7 +426,9 @@ describe('ES-13: Pregunta retórica de apertura', () => {
   it('exists', () => expect(p()).toBeDefined());
 
   it('detects "¿Alguna vez te has preguntado" at start', () => {
-    expect(p().detect('¿Alguna vez te has preguntado cómo funciona el aprendizaje automático?').length).toBeGreaterThan(0);
+    expect(
+      p().detect('¿Alguna vez te has preguntado cómo funciona el aprendizaje automático?').length,
+    ).toBeGreaterThan(0);
   });
 
   it('detects "¿Sabías que" at start', () => {
@@ -376,11 +436,14 @@ describe('ES-13: Pregunta retórica de apertura', () => {
   });
 
   it('detects "¿Qué pasaría si" at start', () => {
-    expect(p().detect('¿Qué pasaría si pudiéramos automatizar todo el proceso?').length).toBeGreaterThan(0);
+    expect(
+      p().detect('¿Qué pasaría si pudiéramos automatizar todo el proceso?').length,
+    ).toBeGreaterThan(0);
   });
 
   it('does not flag rhetorical question mid-text', () => {
-    const text = 'Los resultados fueron sorprendentes. ¿Sabías que el método falló en el 30% de los casos? Esto cambió nuestro enfoque.';
+    const text =
+      'Los resultados fueron sorprendentes. ¿Sabías que el método falló en el 30% de los casos? Esto cambió nuestro enfoque.';
     expect(p().detect(text).length).toBe(0);
   });
 });
@@ -394,7 +457,9 @@ describe('ES-14: Hedging excesivo', () => {
   });
 
   it('detects "en cierta medida"', () => {
-    expect(p().detect('En cierta medida, los resultados confirman la hipótesis.').length).toBeGreaterThan(0);
+    expect(
+      p().detect('En cierta medida, los resultados confirman la hipótesis.').length,
+    ).toBeGreaterThan(0);
   });
 
   it('detects "hasta cierto punto"', () => {
@@ -402,11 +467,15 @@ describe('ES-14: Hedging excesivo', () => {
   });
 
   it('detects "de alguna manera"', () => {
-    expect(p().detect('De alguna manera, todos somos responsables del resultado.').length).toBeGreaterThan(0);
+    expect(
+      p().detect('De alguna manera, todos somos responsables del resultado.').length,
+    ).toBeGreaterThan(0);
   });
 
   it('detects "en mayor o menor medida"', () => {
-    expect(p().detect('En mayor o menor medida, todos estamos afectados.').length).toBeGreaterThan(0);
+    expect(p().detect('En mayor o menor medida, todos estamos afectados.').length).toBeGreaterThan(
+      0,
+    );
   });
 });
 
@@ -415,15 +484,21 @@ describe('ES-15: Paralelismo negativo', () => {
   it('exists', () => expect(p()).toBeDefined());
 
   it('detects "no solo X sino también Y"', () => {
-    expect(p().detect('No solo mejora la productividad sino también la satisfacción del equipo.').length).toBeGreaterThan(0);
+    expect(
+      p().detect('No solo mejora la productividad sino también la satisfacción del equipo.').length,
+    ).toBeGreaterThan(0);
   });
 
   it('detects "no sólo X sino que además Y"', () => {
-    expect(p().detect('No sólo reduce costes sino que además mejora la calidad.').length).toBeGreaterThan(0);
+    expect(
+      p().detect('No sólo reduce costes sino que además mejora la calidad.').length,
+    ).toBeGreaterThan(0);
   });
 
   it('detects "no únicamente X sino también Y"', () => {
-    expect(p().detect('No únicamente afecta al rendimiento sino también al bienestar.').length).toBeGreaterThan(0);
+    expect(
+      p().detect('No únicamente afecta al rendimiento sino también al bienestar.').length,
+    ).toBeGreaterThan(0);
   });
 
   it('does not flag normal negation', () => {
@@ -436,18 +511,134 @@ describe('ES-16: Desafíos formulaicos', () => {
   it('exists', () => expect(p()).toBeDefined());
 
   it('detects "a pesar de los retos"', () => {
-    expect(p().detect('A pesar de los retos, el equipo logró sus objetivos.').length).toBeGreaterThan(0);
+    expect(
+      p().detect('A pesar de los retos, el equipo logró sus objetivos.').length,
+    ).toBeGreaterThan(0);
   });
 
   it('detects "si bien existen desafíos"', () => {
-    expect(p().detect('Si bien existen desafíos, las oportunidades son enormes.').length).toBeGreaterThan(0);
+    expect(
+      p().detect('Si bien existen desafíos, las oportunidades son enormes.').length,
+    ).toBeGreaterThan(0);
   });
 
   it('detects "aunque el camino no es sencillo"', () => {
-    expect(p().detect('Aunque el camino no es sencillo, los resultados justifican el esfuerzo.').length).toBeGreaterThan(0);
+    expect(
+      p().detect('Aunque el camino no es sencillo, los resultados justifican el esfuerzo.').length,
+    ).toBeGreaterThan(0);
   });
 
   it('detects "no es tarea fácil"', () => {
     expect(p().detect('Implementar este cambio no es tarea fácil.').length).toBeGreaterThan(0);
+  });
+});
+
+describe('ES-17: Estructura excesiva', () => {
+  const p = () => getPattern('ES-17');
+  it('exists', () => expect(p()).toBeDefined());
+
+  it('detects bold inline header in bullet', () => {
+    const text =
+      '- **Ventaja principal:** Reduce el tiempo de proceso.\n- **Desventaja:** Requiere formación.';
+    expect(p().detect(text).length).toBeGreaterThan(0);
+  });
+
+  it('detects 5 consecutive bullet lines', () => {
+    const text =
+      '- Primer punto\n- Segundo punto\n- Tercer punto\n- Cuarto punto\n- Quinto punto\n- Sexto punto';
+    expect(p().detect(text).length).toBeGreaterThan(0);
+  });
+
+  it('does not flag 4 or fewer consecutive bullets', () => {
+    const text = '- Primer punto\n- Segundo punto\n- Tercer punto\n- Cuarto punto';
+    expect(p().detect(text).length).toBe(0);
+  });
+});
+
+describe('ES-18: Apertura de artículo formulaica', () => {
+  const p = () => getPattern('ES-18');
+  it('exists', () => expect(p()).toBeDefined());
+
+  it('detects "En este artículo vamos a explorar"', () => {
+    expect(
+      p().detect('En este artículo vamos a explorar las claves del éxito empresarial.').length,
+    ).toBeGreaterThan(0);
+  });
+
+  it('detects "A lo largo de este post"', () => {
+    expect(
+      p().detect('A lo largo de este post analizaremos las principales tendencias.').length,
+    ).toBeGreaterThan(0);
+  });
+
+  it('detects "En las siguientes líneas"', () => {
+    expect(
+      p().detect('En las siguientes líneas te explicamos cómo funciona.').length,
+    ).toBeGreaterThan(0);
+  });
+
+  it('detects "Este artículo tiene como objetivo"', () => {
+    expect(
+      p().detect('Este artículo tiene como objetivo analizar el impacto del cambio climático.')
+        .length,
+    ).toBeGreaterThan(0);
+  });
+});
+
+describe('ES-19: Cierre de chatbot español', () => {
+  const p = () => getPattern('ES-19');
+  it('exists', () => expect(p()).toBeDefined());
+
+  it('detects "espero que esto te haya sido útil"', () => {
+    expect(
+      p().detect('Espero que esto te haya sido útil para tu proyecto.').length,
+    ).toBeGreaterThan(0);
+  });
+
+  it('detects "¿hay algo más en lo que pueda ayudarte?"', () => {
+    expect(p().detect('¿Hay algo más en lo que pueda ayudarte?').length).toBeGreaterThan(0);
+  });
+
+  it('detects "quedo a tu disposición"', () => {
+    expect(
+      p().detect('Quedo a tu disposición para cualquier consulta adicional.').length,
+    ).toBeGreaterThan(0);
+  });
+
+  it('detects "si tienes alguna otra pregunta"', () => {
+    expect(
+      p().detect('Si tienes alguna otra pregunta, no dudes en escribirme.').length,
+    ).toBeGreaterThan(0);
+  });
+});
+
+describe('ES-20: Clickbait de guía', () => {
+  const p = () => getPattern('ES-20');
+  it('exists', () => expect(p()).toBeDefined());
+
+  it('detects "todo lo que necesitas saber sobre"', () => {
+    expect(
+      p().detect('Todo lo que necesitas saber sobre la inteligencia artificial.').length,
+    ).toBeGreaterThan(0);
+  });
+
+  it('detects "guía completa de"', () => {
+    expect(
+      p().detect('Guía completa de marketing digital para principiantes.').length,
+    ).toBeGreaterThan(0);
+  });
+
+  it('detects numeric clickbait "10 razones para"', () => {
+    expect(p().detect('10 razones para empezar a usar IA en tu empresa.').length).toBeGreaterThan(
+      0,
+    );
+  });
+
+  it('detects "lo que nadie te cuenta sobre"', () => {
+    expect(p().detect('Lo que nadie te cuenta sobre el trabajo remoto.').length).toBeGreaterThan(0);
+  });
+
+  it('does not flag a plain sentence with a number', () => {
+    expect(p().detect('El equipo tiene 10 personas y trabaja en 3 proyectos.').length).toBe(0);
   });
 });

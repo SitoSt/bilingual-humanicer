@@ -6,13 +6,11 @@ const PATTERNS_ES = [
     name: 'Gerundio encadenado',
     category: 'language',
     langs: ['es'],
-    description:
-      'Two or more gerunds chained in the same sentence.',
+    description: 'Two or more gerunds chained in the same sentence.',
     weight: 4,
     detect(text) {
       // Lowered from 3 to 2 gerunds — two chained gerunds is already a strong AI signal in Spanish
-      const sentenceRegex =
-        /[^.!?]*\b\w+(?:ando|iendo)\b[^.!?]*\b\w+(?:ando|iendo)\b[^.!?]*/gi;
+      const sentenceRegex = /[^.!?]*\b\w+(?:ando|iendo)\b[^.!?]*\b\w+(?:ando|iendo)\b[^.!?]*/gi;
       return findMatches(
         text,
         sentenceRegex,
@@ -47,7 +45,12 @@ const PATTERNS_ES = [
       const results = [];
       for (const regex of patterns) {
         results.push(
-          ...findMatches(text, regex, 'Remove — start with a concrete fact or specific claim.', 'high'),
+          ...findMatches(
+            text,
+            regex,
+            'Remove — start with a concrete fact or specific claim.',
+            'high',
+          ),
         );
       }
       return results;
@@ -308,7 +311,12 @@ const PATTERNS_ES = [
       const results = [];
       for (const regex of patterns) {
         results.push(
-          ...findMatches(text, regex, 'Start with the content directly — remove the framing.', 'high'),
+          ...findMatches(
+            text,
+            regex,
+            'Start with the content directly — remove the framing.',
+            'high',
+          ),
         );
       }
       return results;
@@ -334,9 +342,7 @@ const PATTERNS_ES = [
       ];
       const results = [];
       for (const regex of patterns) {
-        results.push(
-          ...findMatches(text, regex, 'Use "es/son" directly.', 'medium'),
-        );
+        results.push(...findMatches(text, regex, 'Use "es/son" directly.', 'medium'));
       }
       return results;
     },
@@ -392,9 +398,7 @@ const PATTERNS_ES = [
       ];
       const results = [];
       for (const regex of patterns) {
-        results.push(
-          ...findMatches(text, regex, 'Say it directly or omit it.', 'medium'),
-        );
+        results.push(...findMatches(text, regex, 'Say it directly or omit it.', 'medium'));
       }
       return results;
     },
@@ -405,8 +409,7 @@ const PATTERNS_ES = [
     name: 'Paralelismo negativo',
     category: 'language',
     langs: ['es'],
-    description:
-      'Formulaic "not only X but also Y" construct overused by AI in Spanish.',
+    description: 'Formulaic "not only X but also Y" construct overused by AI in Spanish.',
     weight: 3,
     detect(text) {
       const patterns = [
@@ -444,7 +447,162 @@ const PATTERNS_ES = [
       const results = [];
       for (const regex of patterns) {
         results.push(
-          ...findMatches(text, regex, 'Name the specific challenge or remove the framing.', 'medium'),
+          ...findMatches(
+            text,
+            regex,
+            'Name the specific challenge or remove the framing.',
+            'medium',
+          ),
+        );
+      }
+      return results;
+    },
+  },
+
+  {
+    id: 'ES-17',
+    name: 'Estructura excesiva',
+    category: 'style',
+    langs: ['es'],
+    description:
+      'AI over-structures content with bold inline headers in bullet lists or excessive consecutive bullets.',
+    weight: 2,
+    detect(text) {
+      const results = [];
+
+      // Bold inline header in bullet: "- **Header:** content"
+      results.push(
+        ...findMatches(
+          text,
+          /^[ \t]*[-*•][ \t]+\*\*[^*\n]{2,40}:\*\*/gm,
+          'Use prose paragraphs; reserve bullets for genuinely list-like content.',
+          'low',
+        ),
+      );
+
+      // 5+ consecutive bullet lines
+      const lines = text.split('\n');
+      let count = 0;
+      let startOffset = 0;
+      let currentOffset = 0;
+      for (let i = 0; i < lines.length; i++) {
+        if (/^[ \t]*[-*•][ \t]+/.test(lines[i])) {
+          if (count === 0) {
+            startOffset = currentOffset;
+          }
+          count++;
+        } else {
+          if (count >= 5) {
+            results.push({
+              match: lines
+                .slice(i - count, i)
+                .join('\n')
+                .substring(0, 60),
+              index: startOffset,
+              line: i - count + 1,
+              column: 1,
+              suggestion: 'Reduce bullet points — use prose for most content.',
+              confidence: 'low',
+            });
+          }
+          count = 0;
+        }
+        currentOffset += lines[i].length + 1;
+      }
+      if (count >= 5) {
+        results.push({
+          match: lines
+            .slice(lines.length - count)
+            .join('\n')
+            .substring(0, 60),
+          index: startOffset,
+          line: lines.length - count + 1,
+          column: 1,
+          suggestion: 'Reduce bullet points — use prose for most content.',
+          confidence: 'low',
+        });
+      }
+
+      return results;
+    },
+  },
+
+  {
+    id: 'ES-18',
+    name: 'Apertura de artículo formulaica',
+    category: 'filler',
+    langs: ['es'],
+    description:
+      'AI announces article structure before writing it. Almost never appears in human writing.',
+    weight: 4,
+    detect(text) {
+      const patterns = [
+        /\ben este (artículo|post|texto|documento|ensayo) (vamos a|te |exploraremos|analizaremos|abordaremos|trataremos|veremos)\b/gi,
+        /\ba lo largo de este (artículo|post|texto|documento|ensayo)\b/gi,
+        /\ben las (siguientes|próximas) (líneas|páginas|secciones|palabras)\b/gi,
+        /\beste (artículo|post|texto|documento) (tiene como objetivo|busca|pretende|se propone)\b/gi,
+        /\ben esta (guía|entrada|publicación) (vamos a|exploraremos|analizaremos|abordaremos)\b/gi,
+      ];
+      const results = [];
+      for (const regex of patterns) {
+        results.push(
+          ...findMatches(
+            text,
+            regex,
+            'Start with the content directly — remove the meta-framing.',
+            'high',
+          ),
+        );
+      }
+      return results;
+    },
+  },
+
+  {
+    id: 'ES-19',
+    name: 'Cierre de chatbot español',
+    category: 'communication',
+    langs: ['es'],
+    description:
+      'Closing phrases that expose chatbot origin. Almost never appear in human writing.',
+    weight: 4,
+    detect(text) {
+      const patterns = [
+        /\bespero que (esto|esta información|esta respuesta|todo esto) te haya (sido útil|ayudado|servido)\b/gi,
+        /\bespero haber (sido de ayuda|respondido (tu|su) pregunta|aclarado (tus|sus) dudas)\b/gi,
+        /\bno dudes en (preguntar|consultarme|escribirme|contactarme)(?: de nuevo| otra vez)?\b/gi,
+        /\bsi (tienes|tiene) (alguna )?(otra )?(pregunta|duda|consulta)\b/gi,
+        /¿hay algo más en lo que (pueda|te pueda|le pueda) (ayudar|asistir)/gi,
+        /\bquedo a (tu|su) (disposición|entera disposición)\b/gi,
+        /\bha sido un placer (ayudarte|atenderte|responderte|asistirte)\b/gi,
+      ];
+      const results = [];
+      for (const regex of patterns) {
+        results.push(...findMatches(text, regex, '(remove — end with actual content)', 'high'));
+      }
+      return results;
+    },
+  },
+
+  {
+    id: 'ES-20',
+    name: 'Clickbait de guía',
+    category: 'content',
+    langs: ['es'],
+    description: 'AI-generated article titles and section openers with clickbait formula patterns.',
+    weight: 2,
+    detect(text) {
+      const patterns = [
+        /\btodo lo que (necesitas|debes) saber (sobre|acerca de)\b/gi,
+        /\bguía (completa|definitiva|esencial|práctica|paso a paso) (de|para|sobre)\b/gi,
+        /\b\d+ (cosas|razones|claves|aspectos|formas|maneras|pasos|consejos|secretos|trucos|errores) (que|para|de|sobre|a evitar)\b/gi,
+        /\blo que (nadie te cuenta|no te dicen|no sabes) (sobre|acerca de|de)\b/gi,
+        /\b(todo|lo) que necesitas saber\b/gi,
+      ];
+      const results = [];
+      for (const regex of patterns) {
+        results.push(
+          ...findMatches(text, regex, 'Write a specific, descriptive title instead.', 'medium'),
         );
       }
       return results;
