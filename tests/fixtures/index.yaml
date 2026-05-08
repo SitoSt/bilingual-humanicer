@@ -1,0 +1,137 @@
+# Fixture index — single source of truth for all test text samples.
+# status: existing = file present | pending = to be generated
+# expected_score is the threshold/range for analyze() result.score
+
+fixtures:
+  human:
+    description: >
+      Textos escritos por humanos. Estilo casual, opinioso, personal.
+      Contracciones, argot, gramática imperfecta, primera persona, digresiones.
+    expected_score: "< 30"
+    files:
+      - path: human/es/airfryer-opinion-es.txt
+        lang: es
+        topic: Opinión sobre una freidora de aire
+        style: Casual, primera persona, humor, quejas cotidianas
+        status: pending
+
+      - path: human/es/dog-tweet-es.txt
+        lang: es
+        topic: Tweet sobre un perro
+        style: Muy corto, coloquial, emojis posibles
+        status: pending
+
+      - path: human/es/social-media-fatigue-es.txt
+        lang: es
+        topic: Fatiga de redes sociales
+        style: Rant personal, primera persona, tono agotado
+        status: pending
+
+      - path: human/en/docs-opinion-en.txt
+        lang: en
+        topic: Opinion on technical documentation
+        style: Opinionated, slightly snarky, developer voice
+        status: pending
+
+      - path: human/en/office-migration-en.txt
+        lang: en
+        topic: Office software migration experience
+        style: Rant-style, colloquial, personal anecdote
+        status: pending
+
+      - path: human/en/prod-bug-en.txt
+        lang: en
+        topic: Production bug incident story
+        style: Stressed, informal, technical but conversational
+        status: pending
+
+      - path: human/en/ai-tools-opinion-en.txt
+        lang: en
+        topic: Personal opinion on AI coding tools
+        style: Honest, contradictory, casual voice, first-person reflection
+        status: existing
+
+  ai:
+    gpt:
+      description: >
+        Salidas de GPT-4. Sobre-estructurado, lenguaje promocional,
+        artefactos de chatbot (frases de cierre, listas exhaustivas).
+      expected_score: "> 50"
+      files:
+        - path: ai/gpt/es/soft-skills-formal-es.txt
+          lang: es
+          topic: Habilidades blandas en el entorno laboral
+          style: Formal, enumerativo, frases de cierre típicas de IA
+          status: pending
+
+        - path: ai/gpt/en/remote-work-en.txt
+          lang: en
+          topic: Remote work best practices overview
+          style: Over-structured, promotional, chatbot artifacts
+          status: pending
+
+        - path: ai/gpt/en/ai-coding-overview-en.txt
+          lang: en
+          topic: AI-assisted coding overview
+          style: Heavy chatbot clichés, bullet points, "Great question!" artifacts
+          status: existing
+
+    claude:
+      description: >
+        Salidas de Claude (Anthropic). Filosófico, exhaustivo,
+        tratamiento formal de temas complejos.
+      expected_score: "> 40"
+      files:
+        - path: ai/claude/en/ai-impact-en.txt
+          lang: en
+          topic: Impact of AI on society
+          style: Philosophical, structured dimensions, measured tone
+          status: existing
+
+        - path: ai/claude/es/blockchain-es.txt
+          lang: es
+          topic: Tecnología blockchain explicada
+          style: Técnico-formal, exhaustivo, sin contracciones
+          status: existing
+
+    gemini:
+      description: >
+        Salidas de Google Gemini. Listas, encabezados, bullet points,
+        estructura muy visible.
+      expected_score: "> 40"
+      files:
+        - path: ai/gemini/en/pm-methodologies-en.txt
+          lang: en
+          topic: Project management methodologies comparison
+          style: List-heavy, headers, structured breakdown
+          status: existing
+
+        - path: ai/gemini/es/sleep-science-es.txt
+          lang: es
+          topic: Ciencia del sueño y sus fases
+          style: Divulgativo estructurado, bullets, tono neutro
+          status: existing
+
+    mixed:
+      description: >
+        Patrones de IA ligeros o ambiguos. Textos híbridos o con
+        intervención de IA mínima. Score esperado intermedio.
+      expected_score: "20–60"
+      files:
+        - path: ai/mixed/en/leadership-light-en.txt
+          lang: en
+          topic: Leadership skills list
+          style: Light AI patterns, list-heavy but informal register
+          status: pending
+
+        - path: ai/mixed/en/portland-city-guide-en.txt
+          lang: en
+          topic: Portland city travel guide
+          style: Promotional-moderate AI, travel clichés but lighter patterns
+          status: existing
+
+        - path: ai/mixed/es/time-management-es.txt
+          lang: es
+          topic: Gestión del tiempo, consejos
+          style: Code-switching, mezcla de tono casual y AI-formal
+          status: pending
