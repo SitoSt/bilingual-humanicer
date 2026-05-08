@@ -40,7 +40,7 @@ const PATTERNS_ES = [
         /^nos encontramos (en|ante) (un|el) momento/im,
         /^en los últimos años[,\s]/im,
         /^a lo largo de los últimos años/im,
-        /^hoy en día[,\s] más que nunca/im,
+        /^hoy en día[,]?\s+más que nunca/im,
         /^en pleno siglo (xxi|veintiuno)/im,
         /^en este (contexto|escenario|marco|entorno)[,\s]/im,
       ];
