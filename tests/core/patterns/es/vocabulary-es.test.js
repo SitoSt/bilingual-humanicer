@@ -144,3 +144,89 @@ describe('Spanish CONNECTORS', () => {
     }
   });
 });
+
+describe('TIER_1 — 2026-05-08 expansions', () => {
+  it('contains new analytical verbs', () => {
+    expect(es.TIER_1).toContain('abordar');
+    expect(es.TIER_1).toContain('examinar');
+    expect(es.TIER_1).toContain('desglosar');
+    expect(es.TIER_1).toContain('desgranar');
+    expect(es.TIER_1).toContain('profundizar');
+    expect(es.TIER_1).toContain('adentrarse');
+    expect(es.TIER_1).toContain('ahondar');
+    expect(es.TIER_1).toContain('dilucidar');
+  });
+
+  it('contains new positive emotional adjectives', () => {
+    expect(es.TIER_1).toContain('gratificante');
+    expect(es.TIER_1).toContain('fascinante');
+    expect(es.TIER_1).toContain('motivador');
+    expect(es.TIER_1).toContain('estimulante');
+    expect(es.TIER_1).toContain('revelador');
+    expect(es.TIER_1).toContain('enriquecedor');
+    expect(es.TIER_1).toContain('apasionante');
+    expect(es.TIER_1).toContain('esclarecedor');
+    expect(es.TIER_1).toContain('prometedor');
+    expect(es.TIER_1).toContain('valioso');
+  });
+
+  it('contains corporate/management vocabulary', () => {
+    expect(es.TIER_1).toContain('multidisciplinar');
+    expect(es.TIER_1).toContain('transversal');
+    expect(es.TIER_1).toContain('interdisciplinar');
+    expect(es.TIER_1).toContain('alineado');
+    expect(es.TIER_1).toContain('resiliencia');
+    expect(es.TIER_1).toContain('resiliente');
+    expect(es.TIER_1).toContain('agilidad');
+    expect(es.TIER_1).toContain('vertebrar');
+    expect(es.TIER_1).toContain('pivotar');
+    expect(es.TIER_1).toContain('iterar');
+  });
+
+  it('significativo promoted to TIER_1 and removed from TIER_3', () => {
+    expect(es.TIER_1).toContain('significativo');
+    expect(es.TIER_3).not.toContain('significativo');
+  });
+
+  it('extraordinario added to TIER_1', () => {
+    expect(es.TIER_1).toContain('extraordinario');
+  });
+});
+
+describe('TIER_3 — 2026-05-08 expansions', () => {
+  it('has at least 55 words', () => {
+    expect(es.TIER_3.length).toBeGreaterThanOrEqual(55);
+  });
+
+  it('contains newly added context-dependent words', () => {
+    expect(es.TIER_3).toContain('viable');
+    expect(es.TIER_3).toContain('coherente');
+    expect(es.TIER_3).toContain('concreto');
+    expect(es.TIER_3).toContain('consistente');
+    expect(es.TIER_3).toContain('flexible');
+    expect(es.TIER_3).toContain('global');
+    expect(es.TIER_3).toContain('óptimo');
+    expect(es.TIER_3).toContain('potencial');
+  });
+});
+
+describe('AI_PHRASES — 2026-05-08 expansions', () => {
+  it('has at least 70 phrase patterns', () => {
+    expect(es.AI_PHRASES.length).toBeGreaterThanOrEqual(70);
+  });
+
+  it('detects "en el marco de"', () => {
+    const text = 'En el marco de esta investigación se analizaron los datos.';
+    expect(es.AI_PHRASES.some(({ pattern }) => pattern.test(text))).toBe(true);
+  });
+
+  it('detects "llevar a cabo"', () => {
+    const text = 'Para llevar a cabo este proyecto necesitamos recursos.';
+    expect(es.AI_PHRASES.some(({ pattern }) => pattern.test(text))).toBe(true);
+  });
+
+  it('detects "en aras de"', () => {
+    const text = 'En aras de la transparencia, publicamos los resultados.';
+    expect(es.AI_PHRASES.some(({ pattern }) => pattern.test(text))).toBe(true);
+  });
+});

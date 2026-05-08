@@ -3,64 +3,42 @@
  */
 
 const TIER_1 = [
-  'destacar',
-  'subrayar',
-  'enfatizar',
-  'recalcar',
-  'remarcar',
-  'evidenciar',
-  'ilustrar',
-  'demostrar',
-  'revelar',
+  // Original — metacommentary verbs
+  'destacar', 'subrayar', 'enfatizar', 'recalcar', 'remarcar',
+  'evidenciar', 'ilustrar', 'demostrar', 'revelar',
 
-  'fundamental',
-  'crucial',
-  'esencial',
-  'primordial',
-  'indispensable',
-  'imprescindible',
-  'invaluable',
-  'inestimable',
-  'trascendental',
-  'revolucionario',
-  'innovador',
-  'vanguardista',
-  'disruptivo',
-  'pionero',
-  'robusto',
-  'sólido',
-  'integral',
-  'holístico',
-  'exhaustivo',
-  'meticuloso',
-  'riguroso',
-  'minucioso',
+  // Original — importance adjectives
+  'fundamental', 'crucial', 'esencial', 'primordial', 'indispensable',
+  'imprescindible', 'invaluable', 'inestimable', 'trascendental',
+  'revolucionario', 'innovador', 'vanguardista', 'disruptivo', 'pionero',
+  'robusto', 'sólido', 'integral', 'holístico', 'exhaustivo',
+  'meticuloso', 'riguroso', 'minucioso',
 
-  'paradigma',
-  'sinergia',
-  'ecosistema',
-  'ámbito',
-  'panorama',
-  'espectro',
-  'horizonte',
-  'tejido',
-  'esfera',
-  'dominio',
+  // Original — AI buzzword nouns
+  'paradigma', 'sinergia', 'ecosistema', 'ámbito', 'panorama',
+  'espectro', 'horizonte', 'tejido', 'esfera', 'dominio',
 
-  'potenciar',
-  'optimizar',
-  'maximizar',
-  'aprovechar',
-  'impulsar',
-  'catalizar',
-  'empoderar',
-  'apalancar',
-  'articular',
-  'implementar',
-  'gestionar',
-  'promover',
-  'fomentar',
-  'garantizar',
+  // Original — action verbs
+  'potenciar', 'optimizar', 'maximizar', 'aprovechar', 'impulsar',
+  'catalizar', 'empoderar', 'apalancar', 'articular', 'implementar',
+  'gestionar', 'promover', 'fomentar', 'garantizar',
+
+  // NEW — analytical performance verbs (AI announces analysis instead of doing it)
+  'abordar', 'examinar', 'desglosar', 'desgranar', 'profundizar',
+  'adentrarse', 'ahondar', 'dilucidar', 'explorar', 'comprender',
+  'identificar',
+
+  // NEW — positive emotional adjectives (AI uses 96%+ more than humans)
+  'gratificante', 'fascinante', 'motivador', 'estimulante', 'revelador',
+  'enriquecedor', 'apasionante', 'esclarecedor', 'prometedor', 'valioso',
+
+  // NEW — corporate/management vocabulary
+  'multidisciplinar', 'transversal', 'interdisciplinar', 'alineado',
+  'resiliencia', 'resiliente', 'agilidad', 'ownership',
+  'vertebrar', 'pivotar', 'iterar',
+
+  // NEW — promoted from TIER_3 (strong enough to be dead giveaways)
+  'significativo', 'extraordinario',
 ];
 
 const TIER_2 = [
@@ -136,33 +114,23 @@ const TIER_2 = [
 ];
 
 const TIER_3 = [
-  'significativo',
-  'relevante',
-  'notable',
-  'considerable',
-  'sustancial',
-  'efectivo',
-  'eficiente',
-  'eficaz',
-  'productivo',
-  'exitoso',
-  'único',
-  'especial',
-  'excepcional',
-  'extraordinario',
-  'estratégico',
-  'estratégicamente',
-  'proactivo',
-  'dinámico',
-  'sostenible',
-  'escalable',
-  'transformador',
-  'innovación',
-  'digitalización',
-  'transformación',
-  'mejores prácticas',
-  'valor añadido',
-  'propuesta de valor',
+  // Original (minus significativo, now in TIER_1)
+  'relevante', 'notable', 'considerable', 'sustancial',
+  'efectivo', 'eficiente', 'eficaz', 'productivo', 'exitoso',
+  'único', 'especial', 'excepcional',
+  'estratégico', 'estratégicamente', 'proactivo', 'dinámico',
+  'sostenible', 'escalable', 'transformador',
+  'innovación', 'digitalización', 'transformación',
+  'mejores prácticas', 'valor añadido', 'propuesta de valor',
+
+  // NEW — context-dependent adjectives
+  'abundante', 'amplio', 'apropiado', 'beneficioso', 'central',
+  'clave', 'coherente', 'complejo', 'concreto', 'consistente',
+  'continuo', 'diverso', 'específico', 'flexible', 'frecuente',
+  'global', 'importante', 'integral', 'moderno', 'necesario',
+  'nuevo', 'objetivo', 'óptimo', 'particular', 'positivo',
+  'potencial', 'preciso', 'principal', 'progresivo', 'real',
+  'reciente', 'típico', 'variado', 'viable',
 ];
 
 const AI_PHRASES = [
@@ -371,6 +339,29 @@ const AI_PHRASES = [
   },
   { pattern: /\bhasta cierto punto\b/gi, tier: 2, fix: '(ser preciso o eliminar)' },
   { pattern: /\ben cierta (medida|forma)\b/gi, tier: 2, fix: '(ser preciso o eliminar)' },
+
+  // NEW — framing/bureaucratic phrases
+  { pattern: /\ben el marco de\b/gi, tier: 2, fix: '(ser específico sobre el contexto)' },
+  { pattern: /\ben el ámbito de\b/gi, tier: 2, fix: '(ser específico)' },
+  { pattern: /\bdesde esta perspectiva\b/gi, tier: 2, fix: '(decir desde cuál perspectiva o eliminar)' },
+  { pattern: /\ben aras de\b/gi, tier: 2, fix: '(usar "para" o ser directo)' },
+  { pattern: /\bcon miras a\b/gi, tier: 2, fix: '(usar "para")' },
+  { pattern: /\bde cara a\b/gi, tier: 2, fix: '(usar "para" o "ante")' },
+  { pattern: /\ba nivel de\b/gi, tier: 2, fix: '(eliminar o ser específico)' },
+  { pattern: /\ba modo de ejemplo\b/gi, tier: 2, fix: '(usar "por ejemplo")' },
+  { pattern: /\ba título de ejemplo\b/gi, tier: 2, fix: '(usar "por ejemplo")' },
+  { pattern: /\bllevar a cabo\b/gi, tier: 2, fix: '(usar el verbo directo: "hacer", "realizar", "ejecutar")' },
+  { pattern: /\bponer en marcha\b/gi, tier: 2, fix: '(usar "iniciar", "lanzar", "comenzar")' },
+  { pattern: /\bdar respuesta a\b/gi, tier: 2, fix: '(usar "responder a")' },
+  { pattern: /\bhacer frente a\b/gi, tier: 2, fix: '(usar "afrontar", "abordar")' },
+  { pattern: /\ba lo largo de\b/gi, tier: 2, fix: '(dar período concreto: "entre 2020 y 2024")' },
+  { pattern: /\ben lo que respecta a\b/gi, tier: 2, fix: '(usar "sobre" o "en cuanto a")' },
+  { pattern: /\bcon el objetivo de\b/gi, tier: 2, fix: '(usar "para")' },
+  { pattern: /\bcon el propósito de\b/gi, tier: 2, fix: '(usar "para")' },
+  { pattern: /\ba efectos de\b/gi, tier: 2, fix: '(usar "para")' },
+  { pattern: /\bteniendo en cuenta (que|lo anterior|esto)\b/gi, tier: 2, fix: '(ser específico sobre qué se tiene en cuenta)' },
+  { pattern: /\ben términos generales\b/gi, tier: 2, fix: '(ser específico o eliminar)' },
+  { pattern: /\ba grandes rasgos\b/gi, tier: 2, fix: '(ser específico o eliminar)' },
 ];
 
 const FUNCTION_WORDS = [
