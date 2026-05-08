@@ -312,3 +312,75 @@ describe('ES-10: expanded unnecessary passive', () => {
     expect(p().detect('En este ámbito hay que ser educado con todos.').length).toBe(0);
   });
 });
+
+describe('ES-11: Framing de análisis', () => {
+  const p = () => getPattern('ES-11');
+  it('exists', () => expect(p()).toBeDefined());
+
+  it('detects "procedemos a analizar"', () => {
+    expect(p().detect('Procedemos a analizar los principales factores.').length).toBeGreaterThan(0);
+  });
+
+  it('detects "comencemos por entender"', () => {
+    expect(p().detect('Comencemos por entender qué es la inteligencia artificial.').length).toBeGreaterThan(0);
+  });
+
+  it('detects "a continuación vamos a explorar"', () => {
+    expect(p().detect('A continuación vamos a explorar las tres principales causas.').length).toBeGreaterThan(0);
+  });
+
+  it('detects "permíteme explicarte"', () => {
+    expect(p().detect('Permíteme explicarte cómo funciona este proceso.').length).toBeGreaterThan(0);
+  });
+
+  it('does not flag normal transition "a continuación, los resultados"', () => {
+    expect(p().detect('A continuación, los resultados del experimento.').length).toBe(0);
+  });
+});
+
+describe('ES-12: Copula avoidance española', () => {
+  const p = () => getPattern('ES-12');
+  it('exists', () => expect(p()).toBeDefined());
+
+  it('detects "sirve como"', () => {
+    expect(p().detect('Este documento sirve como guía para el equipo.').length).toBeGreaterThan(0);
+  });
+
+  it('detects "actúa como"', () => {
+    expect(p().detect('El coordinador actúa como enlace entre los departamentos.').length).toBeGreaterThan(0);
+  });
+
+  it('detects "se erige como"', () => {
+    expect(p().detect('La empresa se erige como líder del sector.').length).toBeGreaterThan(0);
+  });
+
+  it('detects "desempeña el papel de"', () => {
+    expect(p().detect('La tecnología desempeña el papel de catalizador en este proceso.').length).toBeGreaterThan(0);
+  });
+
+  it('does not flag "funciona correctamente"', () => {
+    expect(p().detect('El sistema funciona correctamente en todos los entornos.').length).toBe(0);
+  });
+});
+
+describe('ES-13: Pregunta retórica de apertura', () => {
+  const p = () => getPattern('ES-13');
+  it('exists', () => expect(p()).toBeDefined());
+
+  it('detects "¿Alguna vez te has preguntado" at start', () => {
+    expect(p().detect('¿Alguna vez te has preguntado cómo funciona el aprendizaje automático?').length).toBeGreaterThan(0);
+  });
+
+  it('detects "¿Sabías que" at start', () => {
+    expect(p().detect('¿Sabías que el 80% de las empresas ya usan IA?').length).toBeGreaterThan(0);
+  });
+
+  it('detects "¿Qué pasaría si" at start', () => {
+    expect(p().detect('¿Qué pasaría si pudiéramos automatizar todo el proceso?').length).toBeGreaterThan(0);
+  });
+
+  it('does not flag rhetorical question mid-text', () => {
+    const text = 'Los resultados fueron sorprendentes. ¿Sabías que el método falló en el 30% de los casos? Esto cambió nuestro enfoque.';
+    expect(p().detect(text).length).toBe(0);
+  });
+});

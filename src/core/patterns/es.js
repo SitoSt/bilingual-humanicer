@@ -289,6 +289,86 @@ const PATTERNS_ES = [
       return results;
     },
   },
+  {
+    id: 'ES-11',
+    name: 'Framing de análisis',
+    category: 'filler',
+    langs: ['es'],
+    description:
+      'AI announces what it is about to analyze or explain instead of doing it directly.',
+    weight: 4,
+    detect(text) {
+      const patterns = [
+        /\bprocedemos a (analizar|explorar|examinar|ver|estudiar|revisar)\b/gi,
+        /\bcomencemos por (entender|analizar|explorar|ver|revisar|examinar)\b/gi,
+        /\ba continuación (vamos a|exploraremos|analizaremos|veremos|abordaremos)\b/gi,
+        /\bantes de (responder|continuar|avanzar)[,\s]+es (importante|necesario|fundamental) (analizar|entender|explorar|considerar)\b/gi,
+        /\bpermíteme (explicarte|presentarte|mostrarte|guiarte)\b/gi,
+      ];
+      const results = [];
+      for (const regex of patterns) {
+        results.push(
+          ...findMatches(text, regex, 'Start with the content directly — remove the framing.', 'high'),
+        );
+      }
+      return results;
+    },
+  },
+
+  {
+    id: 'ES-12',
+    name: 'Copula avoidance española',
+    category: 'language',
+    langs: ['es'],
+    description:
+      'Avoiding "es/son" by substituting verbose copula equivalents. Borrowed from English AI training data.',
+    weight: 3,
+    detect(text) {
+      const patterns = [
+        /\b(sirve|sirven) como\b/gi,
+        /\b(actúa|actúan) como\b/gi,
+        /\bse (erige|erigen) como\b/gi,
+        /\bse (posiciona|posicionan) como\b/gi,
+        /\bse (presenta|presentan) como (un|una|el|la)\b/gi,
+        /\bdesempeña(n)? (el|un) papel (de|fundamental|clave|crucial|central)\b/gi,
+      ];
+      const results = [];
+      for (const regex of patterns) {
+        results.push(
+          ...findMatches(text, regex, 'Use "es/son" directly.', 'medium'),
+        );
+      }
+      return results;
+    },
+  },
+
+  {
+    id: 'ES-13',
+    name: 'Pregunta retórica de apertura',
+    category: 'content',
+    langs: ['es'],
+    description:
+      'AI hooks with a rhetorical question at the start of a paragraph or text. Rarely appears in human writing.',
+    weight: 4,
+    detect(text) {
+      const patterns = [
+        /^¿alguna vez (te has|se ha) preguntado\b/im,
+        /^¿sabías que\b/im,
+        /^¿te (has dado cuenta|has puesto a pensar|has parado a pensar)\b/im,
+        /^¿qué (pasaría|ocurriría|sucedería) si\b/im,
+        /^¿cómo (es posible|puede ser|explicar) que\b/im,
+        /^¿por qué (es importante|deberíamos|merece la pena|debería importarnos)\b/im,
+        /^¿(has|hemos) (pensado|reflexionado|considerado) alguna vez\b/im,
+      ];
+      const results = [];
+      for (const regex of patterns) {
+        results.push(
+          ...findMatches(text, regex, 'Start with the answer, not the question.', 'high'),
+        );
+      }
+      return results;
+    },
+  },
 ];
 
 module.exports = PATTERNS_ES;
