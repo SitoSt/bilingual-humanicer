@@ -384,3 +384,70 @@ describe('ES-13: Pregunta retórica de apertura', () => {
     expect(p().detect(text).length).toBe(0);
   });
 });
+
+describe('ES-14: Hedging excesivo', () => {
+  const p = () => getPattern('ES-14');
+  it('exists', () => expect(p()).toBeDefined());
+
+  it('detects "podría decirse que"', () => {
+    expect(p().detect('Podría decirse que el enfoque ha sido efectivo.').length).toBeGreaterThan(0);
+  });
+
+  it('detects "en cierta medida"', () => {
+    expect(p().detect('En cierta medida, los resultados confirman la hipótesis.').length).toBeGreaterThan(0);
+  });
+
+  it('detects "hasta cierto punto"', () => {
+    expect(p().detect('Hasta cierto punto, la metodología es válida.').length).toBeGreaterThan(0);
+  });
+
+  it('detects "de alguna manera"', () => {
+    expect(p().detect('De alguna manera, todos somos responsables del resultado.').length).toBeGreaterThan(0);
+  });
+
+  it('detects "en mayor o menor medida"', () => {
+    expect(p().detect('En mayor o menor medida, todos estamos afectados.').length).toBeGreaterThan(0);
+  });
+});
+
+describe('ES-15: Paralelismo negativo', () => {
+  const p = () => getPattern('ES-15');
+  it('exists', () => expect(p()).toBeDefined());
+
+  it('detects "no solo X sino también Y"', () => {
+    expect(p().detect('No solo mejora la productividad sino también la satisfacción del equipo.').length).toBeGreaterThan(0);
+  });
+
+  it('detects "no sólo X sino que además Y"', () => {
+    expect(p().detect('No sólo reduce costes sino que además mejora la calidad.').length).toBeGreaterThan(0);
+  });
+
+  it('detects "no únicamente X sino también Y"', () => {
+    expect(p().detect('No únicamente afecta al rendimiento sino también al bienestar.').length).toBeGreaterThan(0);
+  });
+
+  it('does not flag normal negation', () => {
+    expect(p().detect('No tenemos datos suficientes para esta conclusión.').length).toBe(0);
+  });
+});
+
+describe('ES-16: Desafíos formulaicos', () => {
+  const p = () => getPattern('ES-16');
+  it('exists', () => expect(p()).toBeDefined());
+
+  it('detects "a pesar de los retos"', () => {
+    expect(p().detect('A pesar de los retos, el equipo logró sus objetivos.').length).toBeGreaterThan(0);
+  });
+
+  it('detects "si bien existen desafíos"', () => {
+    expect(p().detect('Si bien existen desafíos, las oportunidades son enormes.').length).toBeGreaterThan(0);
+  });
+
+  it('detects "aunque el camino no es sencillo"', () => {
+    expect(p().detect('Aunque el camino no es sencillo, los resultados justifican el esfuerzo.').length).toBeGreaterThan(0);
+  });
+
+  it('detects "no es tarea fácil"', () => {
+    expect(p().detect('Implementar este cambio no es tarea fácil.').length).toBeGreaterThan(0);
+  });
+});

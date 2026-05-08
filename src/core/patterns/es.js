@@ -369,6 +369,87 @@ const PATTERNS_ES = [
       return results;
     },
   },
+
+  {
+    id: 'ES-14',
+    name: 'Hedging excesivo',
+    category: 'filler',
+    langs: ['es'],
+    description: 'Multiple hedges that weaken statements without adding information.',
+    weight: 3,
+    detect(text) {
+      const patterns = [
+        /\bpodría (decirse|considerarse|afirmarse|argumentarse|entenderse) que\b/gi,
+        /\bes posible (que|considerar|decir|afirmar)\b/gi,
+        /\ben cierta (medida|forma|manera)\b/gi,
+        /\bhasta cierto punto\b/gi,
+        /\bde alguna (manera|forma|modo)\b/gi,
+        /\ben algún sentido\b/gi,
+        /\bde cierta (forma|manera|modo)\b/gi,
+        /\ben mayor o menor medida\b/gi,
+        /\ben términos generales\b/gi,
+        /\bde (una forma|un modo) (u otra|u otro)\b/gi,
+      ];
+      const results = [];
+      for (const regex of patterns) {
+        results.push(
+          ...findMatches(text, regex, 'Say it directly or omit it.', 'medium'),
+        );
+      }
+      return results;
+    },
+  },
+
+  {
+    id: 'ES-15',
+    name: 'Paralelismo negativo',
+    category: 'language',
+    langs: ['es'],
+    description:
+      'Formulaic "not only X but also Y" construct overused by AI in Spanish.',
+    weight: 3,
+    detect(text) {
+      const patterns = [
+        /\bno (solo|sólo) .{3,80}sino (también|que además|incluso)\b/gi,
+        /\bno únicamente .{3,80}sino (también|que)\b/gi,
+        /\bno meramente .{3,80}sino\b/gi,
+        /\bno simplemente .{3,80}sino\b/gi,
+      ];
+      const results = [];
+      for (const regex of patterns) {
+        results.push(
+          ...findMatches(text, regex, 'Choose one idea and develop it directly.', 'medium'),
+        );
+      }
+      return results;
+    },
+  },
+
+  {
+    id: 'ES-16',
+    name: 'Desafíos formulaicos',
+    category: 'content',
+    langs: ['es'],
+    description:
+      'AI acknowledges challenges in a formulaic way before pivoting to optimism. Spanish equivalent of EN-6.',
+    weight: 3,
+    detect(text) {
+      const patterns = [
+        /\ba pesar de (los|estos|dichos|los numerosos) (retos|desafíos|obstáculos|dificultades)\b/gi,
+        /\bsi bien (existen|hay|persisten|se presentan) (retos|desafíos|obstáculos|dificultades)\b/gi,
+        /\baunque (el camino|el proceso|la tarea|el reto) no (es|será|resulta|sea) (sencillo|fácil|simple|corto)\b/gi,
+        /\blos (retos|desafíos|obstáculos) (son|existen|persisten|son muchos|son numerosos)[^.]{0,60}(pero|sin embargo|no obstante|aunque)\b/gi,
+        /\bno (es|será|resulta) (tarea|camino) (fácil|sencilla|simple)\b/gi,
+      ];
+      const results = [];
+      for (const regex of patterns) {
+        results.push(
+          ...findMatches(text, regex, 'Name the specific challenge or remove the framing.', 'medium'),
+        );
+      }
+      return results;
+    },
+  },
 ];
 
 module.exports = PATTERNS_ES;
