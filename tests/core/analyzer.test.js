@@ -63,12 +63,12 @@ describe('analyze — pure data contract', () => {
   });
 
   it('scores clean human text low (EN)', () => {
-    const result = analyze(loadFixture('human-sample-1.txt'), { lang: 'en' });
+    const result = analyze(loadFixture('human/en/ai-tools-opinion-en.txt'), { lang: 'en' });
     expect(result.score).toBeLessThan(25);
   });
 
   it('scores obvious AI text high (EN)', () => {
-    const result = analyze(loadFixture('ai-sample-1.txt'), { lang: 'en' });
+    const result = analyze(loadFixture('ai/gpt/en/ai-coding-overview-en.txt'), { lang: 'en' });
     expect(result.score).toBeGreaterThan(50);
   });
 

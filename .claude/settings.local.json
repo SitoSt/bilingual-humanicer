@@ -18,7 +18,11 @@
       "Bash(grep:*)",
       "Bash(npm ls:*)",
       "Bash(npm audit:*)",
-      "Bash(npx eslint:*)"
+      "Bash(npx eslint:*)",
+      "Bash(npx jest:*)",
+      "Bash(echo \"EXIT: $?\")",
+      "Bash(echo \"Exit: $?\")",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(d.get\\('scripts',{}\\)\\); print\\(d.get\\('devDependencies',{}\\).get\\('jest','no jest'\\)\\); print\\(d.get\\('type','commonjs'\\)\\)\")"
     ]
   }
 }

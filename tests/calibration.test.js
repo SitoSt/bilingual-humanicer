@@ -21,13 +21,13 @@ function loadFixture(name) {
 
 describe('AI sample calibration', () => {
   it('ai-sample-1.txt scores 55+', () => {
-    const text = loadFixture('ai-sample-1.txt');
+    const text = loadFixture('ai/gpt/en/ai-coding-overview-en.txt');
     const s = score(text, { lang: 'en' });
     expect(s).toBeGreaterThanOrEqual(55);
   });
 
   it('ai-sample-2.txt scores 30+ (moderate AI)', () => {
-    const text = loadFixture('ai-sample-2.txt');
+    const text = loadFixture('ai/mixed/en/portland-city-guide-en.txt');
     const s = score(text, { lang: 'en' });
     expect(s).toBeGreaterThanOrEqual(30);
   });
@@ -73,7 +73,7 @@ In conclusion, the multifaceted challenges of today's digital age require a seam
 
 describe('human sample calibration', () => {
   it('human-sample-1.txt scores under 30', () => {
-    const text = loadFixture('human-sample-1.txt');
+    const text = loadFixture('human/en/ai-tools-opinion-en.txt');
     const s = score(text, { lang: 'en' });
     expect(s).toBeLessThan(30);
   });
@@ -121,8 +121,8 @@ The house is still standing. My aunt lives there now.`;
 
 describe('relative scoring', () => {
   it('AI text always scores higher than human text', () => {
-    const aiText = loadFixture('ai-sample-1.txt');
-    const humanText = loadFixture('human-sample-1.txt');
+    const aiText = loadFixture('ai/gpt/en/ai-coding-overview-en.txt');
+    const humanText = loadFixture('human/en/ai-tools-opinion-en.txt');
 
     const aiScore = score(aiText, { lang: 'en' });
     const humanScore = score(humanText, { lang: 'en' });
