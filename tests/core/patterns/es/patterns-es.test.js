@@ -54,6 +54,10 @@ describe('ES-02: new vague openers', () => {
     expect(p().detect('En los últimos años, el sector ha experimentado cambios profundos.').length).toBeGreaterThan(0);
   });
 
+  it('detects "A lo largo de los últimos años" at line start', () => {
+    expect(p().detect('A lo largo de los últimos años, el sector ha evolucionado notablemente.').length).toBeGreaterThan(0);
+  });
+
   it('detects "Hoy en día, más que nunca,"', () => {
     expect(p().detect('Hoy en día, más que nunca, la colaboración es clave.').length).toBeGreaterThan(0);
   });

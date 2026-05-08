@@ -7,7 +7,7 @@ const PATTERNS_ES = [
     category: 'language',
     langs: ['es'],
     description:
-      'Three or more gerunds (-ando/-iendo) in one sentence. AI chains gerunds where Spanish naturally uses subordinate clauses.',
+      'Two or more gerunds chained in the same sentence.',
     weight: 4,
     detect(text) {
       // Lowered from 3 to 2 gerunds — two chained gerunds is already a strong AI signal in Spanish
