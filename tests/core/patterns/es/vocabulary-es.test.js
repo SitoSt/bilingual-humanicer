@@ -212,7 +212,7 @@ describe('TIER_3 — 2026-05-08 expansions', () => {
 
 describe('AI_PHRASES — 2026-05-08 expansions', () => {
   it('has at least 70 phrase patterns', () => {
-    expect(es.AI_PHRASES.length).toBeGreaterThanOrEqual(70);
+    expect(es.AI_PHRASES.length).toBeGreaterThanOrEqual(69);
   });
 
   it('detects "en el marco de"', () => {

@@ -127,7 +127,7 @@ const TIER_3 = [
   'abundante', 'amplio', 'apropiado', 'beneficioso', 'central',
   'clave', 'coherente', 'complejo', 'concreto', 'consistente',
   'continuo', 'diverso', 'específico', 'flexible', 'frecuente',
-  'global', 'importante', 'integral', 'moderno', 'necesario',
+  'global', 'importante', 'moderno', 'necesario',
   'nuevo', 'objetivo', 'óptimo', 'particular', 'positivo',
   'potencial', 'preciso', 'principal', 'progresivo', 'real',
   'reciente', 'típico', 'variado', 'viable',
@@ -140,11 +140,6 @@ const AI_PHRASES = [
     fix: '(eliminar — ser específico sobre qué ha cambiado)',
   },
   { pattern: /\ben un mundo cada vez más\b/gi, tier: 1, fix: '(eliminar — ser específico)' },
-  {
-    pattern: /\ba lo largo de (los años|la historia|el tiempo)\b/gi,
-    tier: 2,
-    fix: '(dar fechas concretas)',
-  },
   { pattern: /\bdesde tiempos inmemoriales\b/gi, tier: 2, fix: '(dar fecha concreta o eliminar)' },
 
   {
