@@ -10,8 +10,9 @@ const PATTERNS_ES = [
       'Three or more gerunds (-ando/-iendo) in one sentence. AI chains gerunds where Spanish naturally uses subordinate clauses.',
     weight: 4,
     detect(text) {
+      // Lowered from 3 to 2 gerunds — two chained gerunds is already a strong AI signal in Spanish
       const sentenceRegex =
-        /[^.!?]*\b\w+(?:ando|iendo)\b[^.!?]*\b\w+(?:ando|iendo)\b[^.!?]*\b\w+(?:ando|iendo)\b[^.!?]*/gi;
+        /[^.!?]*\b\w+(?:ando|iendo)\b[^.!?]*\b\w+(?:ando|iendo)\b[^.!?]*/gi;
       return findMatches(
         text,
         sentenceRegex,
@@ -30,12 +31,26 @@ const PATTERNS_ES = [
       'Opening a paragraph or text with a vague contextual frame ("En el mundo actual..."). Classic AI opener in Spanish.',
     weight: 5,
     detect(text) {
-      return findMatches(
-        text,
-        /^(?:en (el mundo|la sociedad|el contexto|la era|un mundo|nuestros días) actual|en un mundo cada vez más|en la era digital|en el panorama actual)/im,
-        'Remove — start with a concrete fact or specific claim.',
-        'high',
-      );
+      const patterns = [
+        /^en (el mundo|la sociedad|el contexto|la era|un mundo|nuestros días) actual/im,
+        /^en un mundo cada vez más/im,
+        /^en la era (digital|moderna|actual|tecnológica)/im,
+        /^en el panorama actual/im,
+        /^vivimos en (un|el) momento/im,
+        /^nos encontramos (en|ante) (un|el) momento/im,
+        /^en los últimos años[,\s]/im,
+        /^a lo largo de los últimos años/im,
+        /^hoy en día[,\s] más que nunca/im,
+        /^en pleno siglo (xxi|veintiuno)/im,
+        /^en este (contexto|escenario|marco|entorno)[,\s]/im,
+      ];
+      const results = [];
+      for (const regex of patterns) {
+        results.push(
+          ...findMatches(text, regex, 'Remove — start with a concrete fact or specific claim.', 'high'),
+        );
+      }
+      return results;
     },
   },
 
@@ -49,7 +64,7 @@ const PATTERNS_ES = [
     weight: 3,
     detect(text) {
       const abstracts =
-        '(?:innovación|creatividad|transformación|eficiencia|productividad|excelencia|sostenibilidad|transparencia|integridad|compromiso|visión|misión|valores|estrategia|impacto|crecimiento|desarrollo|mejora|calidad|rendimiento)';
+        '(?:innovación|creatividad|transformación|eficiencia|productividad|excelencia|sostenibilidad|transparencia|integridad|compromiso|visión|misión|valores|estrategia|impacto|crecimiento|desarrollo|mejora|calidad|rendimiento|liderazgo|talento|diversidad|inclusión|bienestar|propósito|agilidad|resiliencia|colaboración|confianza|empoderamiento|autenticidad|pasión|vocación|flexibilidad|adaptabilidad|proactividad|cohesión|sinergia|equidad)';
       return findMatches(
         text,
         new RegExp(`${abstracts},\\s+${abstracts}\\s+y\\s+${abstracts}`, 'gi'),

@@ -19,9 +19,68 @@ describe('ES-01: Gerundio encadenado', () => {
     expect(p().detect(text).length).toBe(0);
   });
 
-  it('does not flag 2 gerundios', () => {
+  it('now flags 2 gerundios (threshold lowered)', () => {
     const text = 'El equipo fue avanzando y mejorando sus resultados.';
-    expect(p().detect(text).length).toBe(0);
+    expect(p().detect(text).length).toBeGreaterThan(0);
+  });
+});
+
+// ES-01 threshold change: now detects 2+ gerundios
+describe('ES-01: threshold change — 2 gerundios', () => {
+  const p = () => getPattern('ES-01');
+
+  it('now detects 2 gerundios in same sentence', () => {
+    expect(p().detect('El equipo fue avanzando y mejorando sus resultados.').length).toBeGreaterThan(0);
+  });
+
+  it('still does not flag 1 gerundio', () => {
+    expect(p().detect('El sistema funciona analizando los datos de forma eficiente.').length).toBe(0);
+  });
+});
+
+// ES-02 new openers
+describe('ES-02: new vague openers', () => {
+  const p = () => getPattern('ES-02');
+
+  it('detects "Vivimos en un momento en que"', () => {
+    expect(p().detect('Vivimos en un momento en que la tecnología avanza sin parar.').length).toBeGreaterThan(0);
+  });
+
+  it('detects "Nos encontramos ante un momento"', () => {
+    expect(p().detect('Nos encontramos ante un momento decisivo para la industria.').length).toBeGreaterThan(0);
+  });
+
+  it('detects "En los últimos años," at line start', () => {
+    expect(p().detect('En los últimos años, el sector ha experimentado cambios profundos.').length).toBeGreaterThan(0);
+  });
+
+  it('detects "Hoy en día, más que nunca,"', () => {
+    expect(p().detect('Hoy en día, más que nunca, la colaboración es clave.').length).toBeGreaterThan(0);
+  });
+
+  it('detects "En pleno siglo XXI"', () => {
+    expect(p().detect('En pleno siglo XXI, seguimos enfrentando estos retos.').length).toBeGreaterThan(0);
+  });
+
+  it('detects "En este contexto,"', () => {
+    expect(p().detect('En este contexto, resulta fundamental analizar las tendencias.').length).toBeGreaterThan(0);
+  });
+});
+
+// ES-03 expanded abstract nouns
+describe('ES-03: expanded abstract nouns list', () => {
+  const p = () => getPattern('ES-03');
+
+  it('detects triada with new nouns: liderazgo, talento, diversidad', () => {
+    expect(p().detect('Buscamos liderazgo, talento y diversidad en el equipo.').length).toBeGreaterThan(0);
+  });
+
+  it('detects triada with: resiliencia, agilidad, colaboración', () => {
+    expect(p().detect('Fomentamos resiliencia, agilidad y colaboración en la organización.').length).toBeGreaterThan(0);
+  });
+
+  it('detects triada with: bienestar, propósito, confianza', () => {
+    expect(p().detect('Nuestra cultura prioriza bienestar, propósito y confianza.').length).toBeGreaterThan(0);
   });
 });
 
