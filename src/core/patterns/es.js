@@ -243,7 +243,6 @@ const PATTERNS_ES = [
         /\boportunidad (única|excepcional|irrepetible|histórica|inigualable)\b/gi,
         /\bhito (histórico|sin precedentes|fundamental|trascendental)\b/gi,
         /\b(nunca|jamás) (antes )?(habíamos|hemos) (visto|experimentado) (algo|nada) (igual|similar|parecido)\b/gi,
-        /\bmarca un antes y un después\b/gi,
       ];
       const results = [];
       for (const regex of patterns) {
@@ -273,8 +272,8 @@ const PATTERNS_ES = [
         // Original: ser-passive with agent ("por")
         /\b(ha|fue|es|será|han|fueron|son|serán|había|habían|sería|serían)\s+(sido\s+)?\w+ado\b[^.!?]{0,30}\bpor\b/gi,
         // NEW: modal + ser + participio
-        /\b(debe|puede|tiene que|debería|tendría que|hay que)\s+ser\s+\w+ado\b/gi,
-        /\b(deben|pueden|tienen que|deberían|tendrían que)\s+ser\s+\w+ados\b/gi,
+        /\b(debe|puede|tiene que|debería|tendría que)\s+ser\s+\w+(?:ado|ada|ido|ida)\b/gi,
+        /\b(deben|pueden|tienen que|deberían|tendrían que)\s+ser\s+\w+(?:ados|adas|idos|idas)\b/gi,
       ];
       const results = [];
       for (const regex of patterns) {

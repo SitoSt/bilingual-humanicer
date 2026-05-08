@@ -247,6 +247,14 @@ describe('ES-07: expanded generic conclusions', () => {
   it('detects "marca un antes y un después"', () => {
     expect(p().detect('Este descubrimiento marca un antes y un después en la industria.').length).toBeGreaterThan(0);
   });
+
+  it('detects "sin duda alguna"', () => {
+    expect(p().detect('Sin duda alguna, este es el camino correcto.').length).toBeGreaterThan(0);
+  });
+
+  it('detects "el reto está en nuestras manos"', () => {
+    expect(p().detect('El reto está en nuestras manos y debemos actuar.').length).toBeGreaterThan(0);
+  });
 });
 
 describe('ES-08: expanded vague attributions', () => {
@@ -290,5 +298,17 @@ describe('ES-10: expanded unnecessary passive', () => {
 
   it('detects "puede ser implementado"', () => {
     expect(p().detect('El sistema puede ser implementado en cualquier empresa.').length).toBeGreaterThan(0);
+  });
+
+  it('detects "debe ser considerada" (feminine)', () => {
+    expect(p().detect('La propuesta debe ser considerada en el análisis.').length).toBeGreaterThan(0);
+  });
+
+  it('detects "puede ser compartido" (-ido form)', () => {
+    expect(p().detect('El documento puede ser compartido con el equipo.').length).toBeGreaterThan(0);
+  });
+
+  it('does not flag "hay que ser educado" (adjective, not passive)', () => {
+    expect(p().detect('En este ámbito hay que ser educado con todos.').length).toBe(0);
   });
 });
