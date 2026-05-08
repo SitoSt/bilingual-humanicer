@@ -216,3 +216,79 @@ describe('ES-10: Pasiva con ser innecesaria', () => {
     expect(p().detect('Se ha desarrollado un nuevo método.').length).toBe(0);
   });
 });
+
+describe('ES-04: closing sycophancy', () => {
+  const p = () => getPattern('ES-04');
+
+  it('detects "espero haber sido de ayuda"', () => {
+    expect(p().detect('Espero haber sido de ayuda.').length).toBeGreaterThan(0);
+  });
+
+  it('detects "ha sido un placer ayudarte"', () => {
+    expect(p().detect('Ha sido un placer ayudarte con esta consulta.').length).toBeGreaterThan(0);
+  });
+
+  it('detects "no dudes en volver a preguntar"', () => {
+    expect(p().detect('No dudes en volver a preguntar si tienes más dudas.').length).toBeGreaterThan(0);
+  });
+});
+
+describe('ES-07: expanded generic conclusions', () => {
+  const p = () => getPattern('ES-07');
+
+  it('detects "todo apunta a que"', () => {
+    expect(p().detect('Todo apunta a que el sector seguirá creciendo.').length).toBeGreaterThan(0);
+  });
+
+  it('detects "es hora de actuar"', () => {
+    expect(p().detect('Es hora de actuar y tomar las decisiones necesarias.').length).toBeGreaterThan(0);
+  });
+
+  it('detects "marca un antes y un después"', () => {
+    expect(p().detect('Este descubrimiento marca un antes y un después en la industria.').length).toBeGreaterThan(0);
+  });
+});
+
+describe('ES-08: expanded vague attributions', () => {
+  const p = () => getPattern('ES-08');
+
+  it('detects "los datos revelan"', () => {
+    expect(p().detect('Los datos revelan que el método es efectivo.').length).toBeGreaterThan(0);
+  });
+
+  it('detects "se ha demostrado que"', () => {
+    expect(p().detect('Se ha demostrado que este enfoque funciona.').length).toBeGreaterThan(0);
+  });
+
+  it('detects "está comprobado que"', () => {
+    expect(p().detect('Está comprobado que la formación continua mejora resultados.').length).toBeGreaterThan(0);
+  });
+});
+
+describe('ES-09: expanded positive language', () => {
+  const p = () => getPattern('ES-09');
+
+  it('detects "experiencia enriquecedora"', () => {
+    expect(p().detect('Fue una experiencia enriquecedora para todo el equipo.').length).toBeGreaterThan(0);
+  });
+
+  it('detects "oportunidad única"', () => {
+    expect(p().detect('Es una oportunidad única que no debemos dejar pasar.').length).toBeGreaterThan(0);
+  });
+
+  it('detects "hito histórico"', () => {
+    expect(p().detect('Este acuerdo representa un hito histórico en el sector.').length).toBeGreaterThan(0);
+  });
+});
+
+describe('ES-10: expanded unnecessary passive', () => {
+  const p = () => getPattern('ES-10');
+
+  it('detects "debe ser considerado"', () => {
+    expect(p().detect('Este factor debe ser considerado en el análisis.').length).toBeGreaterThan(0);
+  });
+
+  it('detects "puede ser implementado"', () => {
+    expect(p().detect('El sistema puede ser implementado en cualquier empresa.').length).toBeGreaterThan(0);
+  });
+});

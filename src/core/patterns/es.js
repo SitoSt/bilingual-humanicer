@@ -88,6 +88,10 @@ const PATTERNS_ES = [
         /\bme alegr[ao] (que me lo preguntes|de poder ayudarte|que (lo |)hayas preguntado)\b/gi,
         /\b¡(claro|por supuesto|desde luego)!\s+(con mucho gusto|estoy encantado|permíteme|te ayudo)\b/gi,
         /\bentiendo (tu|su) (preocupación|pregunta|punto de vista|inquietud)\b/gi,
+        /\bespero haber (sido de ayuda|respondido (tu|su) pregunta|aclarado (tus|sus) dudas)\b/gi,
+        /\bespero que (esto|esta información|esta respuesta) te haya (sido útil|ayudado|servido)\b/gi,
+        /\bha sido un placer (ayudarte|atenderte|responderte|asistirte)\b/gi,
+        /\bno dudes en (volver a )?(preguntar|consultarme|escribirme)\b/gi,
       ];
       const results = [];
       for (const regex of patterns) {
@@ -165,6 +169,13 @@ const PATTERNS_ES = [
         /\bqueda (mucho|bastante|un largo) camino por recorrer\b/gi,
         /\bel camino por recorrer (es|será) (largo|arduo|apasionante)\b/gi,
         /\buna (nueva era|nueva etapa|nueva época) (se abre|comienza|está por comenzar)\b/gi,
+        /\btodo (apunta|indica|señala) a que\b/gi,
+        /\bes (hora|momento) de (actuar|reflexionar|cambiar)\b/gi,
+        /\bmarca un antes y un después\b/gi,
+        /\ben este contexto[,\s]+resulta evidente que\b/gi,
+        /\bestá claro que el futuro\b/gi,
+        /\bsin duda alguna[,\s]/gi,
+        /\bel reto (está|queda) en (nuestras|sus) manos\b/gi,
       ];
       const results = [];
       for (const regex of patterns) {
@@ -197,6 +208,11 @@ const PATTERNS_ES = [
         /\bla evidencia (sugiere|muestra|indica|demuestra|apunta a) que\b/gi,
         /\bla (ciencia|comunidad científica|literatura científica) (dice|muestra|afirma|demuestra|señala)\b/gi,
         /\binvestigaciones (recientes |)(demuestran|muestran|sugieren|indican)\b/gi,
+        /\blos datos (revelan|apuntan|confirman|evidencian)\b/gi,
+        /\bla mayoría de (los expertos|los especialistas|los estudios)\b/gi,
+        /\bse (sabe|ha demostrado|ha comprobado) que\b/gi,
+        /\bestá (comprobado|demostrado|probado) que\b/gi,
+        /\bfuentes (especializadas|autorizadas|consultadas) (indican|señalan|afirman)\b/gi,
       ];
       const results = [];
       for (const regex of patterns) {
@@ -223,6 +239,11 @@ const PATTERNS_ES = [
         /\bun (gran|enorme|extraordinario|increíble|monumental|histórico) (paso|logro|éxito|avance|hito|resultado)\b/gi,
         /\bun (futuro|mañana) (mejor|más brillante|más prometedor|más justo)\b/gi,
         /\bimpacto (positivo|transformador|revolucionario|sin precedentes) en\b/gi,
+        /\bexperiencia (única|enriquecedora|transformadora|inolvidable|gratificante)\b/gi,
+        /\boportunidad (única|excepcional|irrepetible|histórica|inigualable)\b/gi,
+        /\bhito (histórico|sin precedentes|fundamental|trascendental)\b/gi,
+        /\b(nunca|jamás) (antes )?(habíamos|hemos) (visto|experimentado) (algo|nada) (igual|similar|parecido)\b/gi,
+        /\bmarca un antes y un después\b/gi,
       ];
       const results = [];
       for (const regex of patterns) {
@@ -248,12 +269,25 @@ const PATTERNS_ES = [
       'AI overuses ser-passive (ha sido desarrollado por) where natural Spanish prefers se-passive or active voice. Likely English influence in training data.',
     weight: 2,
     detect(text) {
-      return findMatches(
-        text,
+      const patterns = [
+        // Original: ser-passive with agent ("por")
         /\b(ha|fue|es|será|han|fueron|son|serán|había|habían|sería|serían)\s+(sido\s+)?\w+ado\b[^.!?]{0,30}\bpor\b/gi,
-        'Consider se-passive or active voice: "se ha desarrollado" or "los investigadores han desarrollado".',
-        'low',
-      );
+        // NEW: modal + ser + participio
+        /\b(debe|puede|tiene que|debería|tendría que|hay que)\s+ser\s+\w+ado\b/gi,
+        /\b(deben|pueden|tienen que|deberían|tendrían que)\s+ser\s+\w+ados\b/gi,
+      ];
+      const results = [];
+      for (const regex of patterns) {
+        results.push(
+          ...findMatches(
+            text,
+            regex,
+            'Consider se-passive or active voice: "se ha desarrollado" or "los investigadores han desarrollado".',
+            'low',
+          ),
+        );
+      }
+      return results;
     },
   },
 ];
