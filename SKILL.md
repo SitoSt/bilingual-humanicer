@@ -1,6 +1,6 @@
 ---
 name: humanizer
-version: 3.1.0
+version: 3.1.1
 description: >
   Detecta y elimina patrones de escritura generada por IA en español e inglés.
   Por defecto opera en español. Usar --lang en para inglés.
