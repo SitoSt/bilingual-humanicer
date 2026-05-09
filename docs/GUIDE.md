@@ -292,7 +292,7 @@ humanizer stats -f ensayo.txt --lang en
 Escanea todos los archivos de un directorio (o un archivo concreto), los ordena por score y detecta patrones recurrentes entre archivos.
 
 ```bash
-# Escaneo básico
+# Escaneo básico (directorio específico)
 humanizer scan docs
 
 # Con extensiones específicas
@@ -305,10 +305,7 @@ humanizer scan docs --min-words 50
 humanizer scan docs --fail-above 50
 
 # Con directorio ignorado adicional
-humanizer scan . --ext md --ignore-dirs generated,vendor
-
-# Sin los ignores predefinidos (.git, node_modules, dist...)
-humanizer scan . --ext md --no-default-ignore
+humanizer scan docs --ext md --ignore-dirs generated,vendor,node_modules
 
 # Ignorar bloques de código en docs técnicos
 humanizer scan docs --ext md --ignore-code
@@ -316,6 +313,8 @@ humanizer scan docs --ext md --ignore-code
 # Guardar baseline para comparar luego
 humanizer scan docs --json > .humanizer-baseline.json
 ```
+
+> **Nota de seguridad:** Evita escanear directorios amplios con `--no-default-ignore`. Usa siempre que sea posible `ignore-dirs` para excluir contenido privado o irrelevante (`node_modules`, `.git`, `vendor`, `generated`, etc.).
 
 **Output:**
 

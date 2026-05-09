@@ -1,10 +1,13 @@
 #!/usr/bin/env node
 /**
  * Humanizer HTTP API Server
- * 
+ *
  * Simple HTTP server for OpenAI Actions and other integrations.
  * Run with: node api-server/server.js
- * 
+ *
+ * SECURITY NOTE: This server is intended for LOCAL USE ONLY.
+ * Do not deploy without adding authentication and restricting CORS.
+ *
  * Endpoints:
  *   POST /api/score     - Quick AI score (0-100)
  *   POST /api/analyze   - Full analysis with patterns
@@ -18,26 +21,35 @@ import { readFile } from 'fs/promises';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 
-// Import humanizer modules
-import { analyze, score } from '../src/analyzer.js';
-import { humanize } from '../src/humanizer.js';
-import { computeStats } from '../src/stats.js';
+const { analyze, score } = await import('../src/core/analyzer.js');
+const { humanize } = await import('../src/core/humanizer.js');
+const { computeStats } = await import('../src/core/stats.js');
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const PORT = process.env.PORT || 3000;
+const MAX_BODY_SIZE = 100 * 1024; // 100KB max request body
 
-// CORS headers for browser/GPT access
+// CORS - restrict to localhost by default, use CORS_ORIGIN env var to configure
+const CORS_ORIGIN = process.env.CORS_ORIGIN || 'localhost';
 const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Origin': CORS_ORIGIN,
   'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
   'Access-Control-Allow-Headers': 'Content-Type',
 };
 
-// Parse JSON body
+// Parse JSON body with size limit
 async function parseBody(req) {
   return new Promise((resolve, reject) => {
     let body = '';
-    req.on('data', chunk => body += chunk);
+    let size = 0;
+    req.on('data', (chunk) => {
+      size += chunk.length;
+      if (size > MAX_BODY_SIZE) {
+        reject(new Error('Request body too large'));
+        return;
+      }
+      body += chunk;
+    });
     req.on('end', () => {
       try {
         resolve(body ? JSON.parse(body) : {});
@@ -51,9 +63,9 @@ async function parseBody(req) {
 
 // Send JSON response
 function sendJson(res, data, status = 200) {
-  res.writeHead(status, { 
+  res.writeHead(status, {
     ...corsHeaders,
-    'Content-Type': 'application/json' 
+    'Content-Type': 'application/json',
   });
   res.end(JSON.stringify(data));
 }
@@ -74,9 +86,9 @@ async function handleRequest(req, res) {
     // GET /api/openapi - Return OpenAPI spec
     if (req.method === 'GET' && path === '/api/openapi') {
       const spec = await readFile(join(__dirname, 'openapi.yaml'), 'utf-8');
-      res.writeHead(200, { 
+      res.writeHead(200, {
         ...corsHeaders,
-        'Content-Type': 'application/yaml' 
+        'Content-Type': 'application/yaml',
       });
       res.end(spec);
       return;
@@ -84,11 +96,11 @@ async function handleRequest(req, res) {
 
     // GET / - Health check
     if (req.method === 'GET' && path === '/') {
-      sendJson(res, { 
-        status: 'ok', 
+      sendJson(res, {
+        status: 'ok',
         name: 'humanizer-api',
         version: '2.1.0',
-        endpoints: ['/api/score', '/api/analyze', '/api/humanize', '/api/stats', '/api/openapi']
+        endpoints: ['/api/score', '/api/analyze', '/api/humanize', '/api/stats', '/api/openapi'],
       });
       return;
     }
@@ -96,7 +108,7 @@ async function handleRequest(req, res) {
     // POST endpoints
     if (req.method === 'POST') {
       const body = await parseBody(req);
-      
+
       if (!body.text) {
         sendJson(res, { error: 'Missing required field: text' }, 400);
         return;
@@ -106,13 +118,14 @@ async function handleRequest(req, res) {
         case '/api/score': {
           const s = score(body.text);
           const badge = s <= 25 ? '🟢' : s <= 50 ? '🟡' : s <= 75 ? '🟠' : '🔴';
-          const interpretation = s <= 25
-            ? 'Mostly human-sounding'
-            : s <= 50
-            ? 'Lightly AI-touched'
-            : s <= 75
-            ? 'Moderately AI-influenced'
-            : 'Heavily AI-generated';
+          const interpretation =
+            s <= 25
+              ? 'Mostly human-sounding'
+              : s <= 50
+                ? 'Lightly AI-touched'
+                : s <= 75
+                  ? 'Moderately AI-influenced'
+                  : 'Heavily AI-generated';
           sendJson(res, { score: s, badge, interpretation });
           return;
         }
@@ -127,8 +140,8 @@ async function handleRequest(req, res) {
         }
 
         case '/api/humanize': {
-          const suggestions = humanize(body.text, { 
-            autofix: body.autofix || false 
+          const suggestions = humanize(body.text, {
+            autofix: body.autofix || false,
           });
           sendJson(res, suggestions);
           return;

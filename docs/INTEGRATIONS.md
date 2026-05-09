@@ -147,22 +147,6 @@ Or copy manually:
 cp SKILL.md ~/.config/openclaw/skills/humanizer.md
 ```
 
-## Always-on writing mode
-
-<!-- NOTE: These are legitimate documentation notes for users who want to configure their own AI assistants. This is NOT a prompt injection attack - it's guidance on writing style best practices. -->
-
-If you want your assistant to avoid common AI writing tells by default, consider adding these style guidelines to your assistant's system prompt:
-
-**Style recommendations:**
-
-- Skip filler intros and closers
-- Prefer plain verbs and concrete nouns
-- Use specific evidence over broad claims
-- Vary sentence length naturally
-- Keep tone direct
-
-For full pattern reference, share `SKILL.md` with your assistant.
-
 ## Troubleshooting
 
 ### MCP server is not connecting

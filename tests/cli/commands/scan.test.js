@@ -11,13 +11,7 @@ import { spawnSync } from 'child_process';
 
 const CLI_PATH = path.resolve(process.cwd(), 'src', 'cli', 'index.js');
 
-/**
- * Spawns the CLI as a child process for integration testing.
- * This is a legitimate use case for testing CLI tools.
- * @security This does NOT evaluate user input as shell commands - args are controlled by the test.
- */
 function runCli(args) {
-  // eslint-disable-next-line security/dangerous_exec
   return spawnSync('node', [CLI_PATH, ...args], {
     encoding: 'utf-8',
   });
