@@ -17,7 +17,7 @@ const { computeStats } = await import('../src/core/stats.js');
 const server = new Server(
   {
     name: 'humanizer',
-    version: '3.1.1',
+    version: '3.1.2',
   },
   {
     capabilities: {
