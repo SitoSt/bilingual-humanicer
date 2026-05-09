@@ -5,8 +5,8 @@ Thanks for your interest in improving AI writing detection.
 ## Getting started
 
 ```bash
-git clone https://github.com/brandonwise/humanizer.git
-cd humanizer
+git clone https://github.com/SitoSt/bilingual-humanicer.git
+cd bilingual-humanicer
 npm install
 npm test
 ```
@@ -40,7 +40,7 @@ The main source of false positives is overly broad regex. When tightening patter
 - Pure Node.js, no external runtime dependencies
 - CommonJS modules (`require`/`module.exports`)
 - No build step — the code runs directly
-- Comments explain *why*, not *what*
+- Comments explain _why_, not _what_
 - Functions are small and single-purpose
 
 ## Tests

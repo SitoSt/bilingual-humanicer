@@ -35,8 +35,8 @@ Humanizer detecta y elimina patrones de escritura generada por IA. Analiza texto
 ### Como herramienta CLI (standalone)
 
 ```bash
-git clone https://github.com/brandonwise/humanizer.git
-cd humanizer
+git clone https://github.com/SitoSt/bilingual-humanicer.git
+cd bilingual-humanicer
 npm install
 
 # Verificar instalación
@@ -96,11 +96,13 @@ humanizer score -f artículo.txt --lang en
 ```
 
 **Output:**
+
 ```
 🟡 42/100
 ```
 
 **Output JSON:**
+
 ```bash
 humanizer score -f borrador.md --json
 # → {"score": 42}
@@ -108,12 +110,12 @@ humanizer score -f borrador.md --json
 
 Los emojis de badge corresponden a:
 
-| Badge | Rango | Nivel |
-|-------|-------|-------|
-| 🟢 | 0–19 | Mostly human-sounding |
-| 🟡 | 20–44 | Lightly AI-touched |
-| 🟠 | 45–69 | Moderately AI-influenced |
-| 🔴 | 70–100 | Heavily AI-generated |
+| Badge | Rango  | Nivel                    |
+| ----- | ------ | ------------------------ |
+| 🟢    | 0–19   | Mostly human-sounding    |
+| 🟡    | 20–44  | Lightly AI-touched       |
+| 🟠    | 45–69  | Moderately AI-influenced |
+| 🔴    | 70–100 | Heavily AI-generated     |
 
 ---
 
@@ -131,6 +133,7 @@ humanizer analyze -f doc.md --threshold 3         # sólo patrones con peso ≥ 
 ```
 
 **Output (terminal):**
+
 ```
 ════════════════════════════════════════════════════
   🟡 42/100  Lightly AI-touched
@@ -154,6 +157,7 @@ humanizer analyze -f doc.md --threshold 3         # sólo patrones con peso ≥ 
 ```
 
 **Output JSON:**
+
 ```bash
 humanizer analyze -f borrador.md --json | jq '.score, .reliability.level'
 ```
@@ -172,6 +176,7 @@ echo "Texto" | humanizer humanize --lang en
 ```
 
 **Output sin `--autofix`:**
+
 ```
 ══ HUMANIZATION SUGGESTIONS ══════════════════════
 
@@ -199,12 +204,14 @@ echo "Texto" | humanizer humanize --lang en
 **Output con `--autofix`:**
 
 El texto corregido se escribe a stdout. Las correcciones automáticas incluyen:
+
 - Eliminar frases relleno ("in order to" → "to", "due to the fact that" → "because")
 - Eliminar artefactos de chatbot (aperturas y cierres genéricos)
 - Normalizar unicode oculto (zero-width spaces, soft hyphens)
 - Corregir comillas tipográficas
 
 **Output JSON:**
+
 ```bash
 humanizer humanize -f borrador.md --json | jq '{
   score: .score,
@@ -252,6 +259,7 @@ humanizer stats -f ensayo.txt --lang en
 ```
 
 **Output:**
+
 ```
 ── ESTADÍSTICAS ───────────────────────────────────────
 
@@ -310,6 +318,7 @@ humanizer scan docs --json > .humanizer-baseline.json
 ```
 
 **Output:**
+
 ```
 ── REPO SCAN ─────────────────────────────────────────
 
@@ -330,6 +339,7 @@ humanizer scan docs --json > .humanizer-baseline.json
 ```
 
 **Salida JSON completa (para baseline):**
+
 ```bash
 humanizer scan docs --json > .humanizer-baseline.json
 ```
@@ -356,6 +366,7 @@ humanizer scan docs --baseline .humanizer-baseline.json \
 ```
 
 **Output con baseline:**
+
 ```
 ── REPO SCAN ─────────────────────────────────────────
   ...
@@ -385,6 +396,7 @@ humanizer compare --before v1.md --after v2.md --json
 ```
 
 **Output:**
+
 ```
 ── DRAFT COMPARISON ──────────────────────────────────
 
@@ -407,44 +419,44 @@ humanizer compare --before v1.md --after v2.md --json
 
 Estas opciones funcionan con todos los comandos:
 
-| Opción | Descripción |
-|--------|-------------|
-| `-f, --file <ruta>` | Leer texto de archivo en vez de stdin |
-| `--json` | Salida en JSON (sin colores ni formato) |
-| `--lang <en\|es>` | Idioma del análisis. Default: `es` |
-| `--ignore-code` | Ignorar bloques de código fenced (` ```...``` `) e inline (`` `...` ``) |
-| `--verbose, -v` | Mostrar todos los matches, no sólo los 5 primeros por patrón |
-| `--patterns <ids>` | Analizar sólo los patrones indicados (e.g. `--patterns 7,19,22`) |
-| `--threshold <n>` | Sólo mostrar patrones con peso ≥ n |
-| `--help, -h` | Mostrar ayuda |
-| `--version` | Mostrar versión |
+| Opción              | Descripción                                                             |
+| ------------------- | ----------------------------------------------------------------------- |
+| `-f, --file <ruta>` | Leer texto de archivo en vez de stdin                                   |
+| `--json`            | Salida en JSON (sin colores ni formato)                                 |
+| `--lang <en\|es>`   | Idioma del análisis. Default: `es`                                      |
+| `--ignore-code`     | Ignorar bloques de código fenced (` ```...``` `) e inline (`` `...` ``) |
+| `--verbose, -v`     | Mostrar todos los matches, no sólo los 5 primeros por patrón            |
+| `--patterns <ids>`  | Analizar sólo los patrones indicados (e.g. `--patterns 7,19,22`)        |
+| `--threshold <n>`   | Sólo mostrar patrones con peso ≥ n                                      |
+| `--help, -h`        | Mostrar ayuda                                                           |
+| `--version`         | Mostrar versión                                                         |
 
 Opciones específicas de `humanize`:
 
-| Opción | Descripción |
-|--------|-------------|
+| Opción      | Descripción                                                     |
+| ----------- | --------------------------------------------------------------- |
 | `--autofix` | Aplicar correcciones automáticas seguras y escribirlas a stdout |
 
 Opciones específicas de `compare`:
 
-| Opción | Descripción |
-|--------|-------------|
+| Opción            | Descripción                 |
+| ----------------- | --------------------------- |
 | `--before <ruta>` | Archivo de versión anterior |
-| `--after <ruta>` | Archivo de versión nueva |
+| `--after <ruta>`  | Archivo de versión nueva    |
 
 Opciones específicas de `scan`:
 
-| Opción | Descripción |
-|--------|-------------|
-| `--ext <lista>` | Extensiones a incluir, separadas por coma (default: `md,txt,rst,adoc`) |
-| `--min-words <n>` | Ignorar archivos con menos de n palabras |
-| `--fail-above <n>` | Salir con código 2 si algún archivo tiene score ≥ n |
-| `--baseline <archivo>` | Archivo JSON de scan previo para comparar |
-| `--regression-threshold <n>` | Delta mínimo para considerar regresión (default: 1) |
-| `--fail-on-regression` | Salir con código 3 si hay regresiones |
-| `--ignore-dirs <lista>` | Directorios extra a ignorar (se suman a los predefinidos) |
-| `--no-default-ignore` | Desactivar la lista de ignores predefinida |
-| `--config <archivo>` | Cargar defaults de scan desde JSON |
+| Opción                       | Descripción                                                            |
+| ---------------------------- | ---------------------------------------------------------------------- |
+| `--ext <lista>`              | Extensiones a incluir, separadas por coma (default: `md,txt,rst,adoc`) |
+| `--min-words <n>`            | Ignorar archivos con menos de n palabras                               |
+| `--fail-above <n>`           | Salir con código 2 si algún archivo tiene score ≥ n                    |
+| `--baseline <archivo>`       | Archivo JSON de scan previo para comparar                              |
+| `--regression-threshold <n>` | Delta mínimo para considerar regresión (default: 1)                    |
+| `--fail-on-regression`       | Salir con código 3 si hay regresiones                                  |
+| `--ignore-dirs <lista>`      | Directorios extra a ignorar (se suman a los predefinidos)              |
+| `--no-default-ignore`        | Desactivar la lista de ignores predefinida                             |
+| `--config <archivo>`         | Cargar defaults de scan desde JSON                                     |
 
 ---
 
@@ -463,24 +475,25 @@ humanizer analyze -f article.md --lang en
 
 **Diferencias por idioma:**
 
-| Aspecto | Español (`es`) | Inglés (`en`) |
-|---------|---------------|---------------|
-| Patrones activos | ES-01 a ES-10 + PatternEN-7 | PatternEN-1 a PatternEN-29 |
-| Métrica legibilidad | IFSZ (Flesch-Szigriszt) | Flesch-Kincaid grade level |
-| Vocabulario | `src/locales/es.js` | `src/vocabulary.js` |
-| Métrica adicional | connector density | — |
+| Aspecto             | Español (`es`)              | Inglés (`en`)              |
+| ------------------- | --------------------------- | -------------------------- |
+| Patrones activos    | ES-01 a ES-10 + PatternEN-7 | PatternEN-1 a PatternEN-29 |
+| Métrica legibilidad | IFSZ (Flesch-Szigriszt)     | Flesch-Kincaid grade level |
+| Vocabulario         | `src/locales/es.js`         | `src/vocabulary.js`        |
+| Métrica adicional   | connector density           | —                          |
 
 Los **11 patrones en español** detectan:
-- Gerundios encadenados (*aprovechando las oportunidades, generando valor, facilitando el crecimiento*)
-- Aperturas con contexto vago (*En el contexto actual de la transformación digital…*)
-- Tríadas de abstractos (*eficiencia, innovación y sostenibilidad*)
-- Tono sycofántico (*Excelente pregunta, es un honor…*)
-- Énfasis metacomentario (*Es importante destacar, cabe señalar…*)
-- Disclaimers de corte (*Como modelo de lenguaje, mi conocimiento…*)
-- Conclusiones genéricas (*En conclusión, es fundamental…*)
-- Atribuciones vagas (*Según los expertos, los estudios indican…*)
-- Lenguaje excesivamente positivo (*innovador, revolucionario, transformador…*)
-- Pasiva con *ser* innecesaria (*es importante señalar que…*)
+
+- Gerundios encadenados (_aprovechando las oportunidades, generando valor, facilitando el crecimiento_)
+- Aperturas con contexto vago (_En el contexto actual de la transformación digital…_)
+- Tríadas de abstractos (_eficiencia, innovación y sostenibilidad_)
+- Tono sycofántico (_Excelente pregunta, es un honor…_)
+- Énfasis metacomentario (_Es importante destacar, cabe señalar…_)
+- Disclaimers de corte (_Como modelo de lenguaje, mi conocimiento…_)
+- Conclusiones genéricas (_En conclusión, es fundamental…_)
+- Atribuciones vagas (_Según los expertos, los estudios indican…_)
+- Lenguaje excesivamente positivo (_innovador, revolucionario, transformador…_)
+- Pasiva con _ser_ innecesaria (_es importante señalar que…_)
 - Vocabulario IA en español (vocabulario inflado, frases características)
 
 ---
@@ -515,17 +528,17 @@ humanizer scan docs --config .humanizer.json --fail-above 40
 
 **Campos del config:**
 
-| Campo | Tipo | Default | Descripción |
-|-------|------|---------|-------------|
-| `extensions` | string[] | `["md","txt","rst","adoc"]` | Extensiones de archivo |
-| `minWords` | number | 1 | Mínimo de palabras por archivo |
-| `failAbove` | number | null | Threshold de score para fallo |
-| `baseline` | string | null | Ruta al archivo baseline |
-| `regressionThreshold` | number | 1 | Delta mínimo para regresión |
-| `failOnRegression` | boolean | false | Fallar si hay regresiones |
-| `ignoreDirs` | string[] | [] | Directorios extra a ignorar |
-| `includeDefaultIgnore` | boolean | true | Usar lista predefinida de ignores |
-| `ignoreCode` | boolean | false | Ignorar bloques de código |
+| Campo                  | Tipo     | Default                     | Descripción                       |
+| ---------------------- | -------- | --------------------------- | --------------------------------- |
+| `extensions`           | string[] | `["md","txt","rst","adoc"]` | Extensiones de archivo            |
+| `minWords`             | number   | 1                           | Mínimo de palabras por archivo    |
+| `failAbove`            | number   | null                        | Threshold de score para fallo     |
+| `baseline`             | string   | null                        | Ruta al archivo baseline          |
+| `regressionThreshold`  | number   | 1                           | Delta mínimo para regresión       |
+| `failOnRegression`     | boolean  | false                       | Fallar si hay regresiones         |
+| `ignoreDirs`           | string[] | []                          | Directorios extra a ignorar       |
+| `includeDefaultIgnore` | boolean  | true                        | Usar lista predefinida de ignores |
+| `ignoreCode`           | boolean  | false                       | Ignorar bloques de código         |
 
 **Ignores predefinidos** (cuando `includeDefaultIgnore: true`):
 `.git`, `node_modules`, `dist`, `.next`, `build`, `coverage`, `.cache`
@@ -614,41 +627,41 @@ console.log(s); // 0-100
 
 // Análisis completo
 const result = analyze('Tu texto aquí', {
-  lang: 'es',          // 'es' | 'en'
-  verbose: false,      // true: todos los matches, false: max 5 por patrón
-  ignoreCode: false,   // true: ignora código fenced e inline
-  includeStats: true,  // false: omite estadísticas (más rápido)
+  lang: 'es', // 'es' | 'en'
+  verbose: false, // true: todos los matches, false: max 5 por patrón
+  ignoreCode: false, // true: ignora código fenced e inline
+  includeStats: true, // false: omite estadísticas (más rápido)
   patternsToCheck: null, // [7, 19, 22]: sólo estos patrones
 });
 
-console.log(result.score);           // 0-100
-console.log(result.patternScore);    // componente de patrones (70%)
+console.log(result.score); // 0-100
+console.log(result.patternScore); // componente de patrones (70%)
 console.log(result.uniformityScore); // componente estadístico (30%)
 console.log(result.wordCount);
 console.log(result.totalMatches);
-console.log(result.reliability);     // { level, score, reasons, recommendation }
-console.log(result.stats);           // métricas estadísticas
-console.log(result.findings);        // array de patrones detectados
-console.log(result.categories);      // agrupado por categoría
-console.log(result.lang);            // 'es' | 'en'
+console.log(result.reliability); // { level, score, reasons, recommendation }
+console.log(result.stats); // métricas estadísticas
+console.log(result.findings); // array de patrones detectados
+console.log(result.categories); // agrupado por categoría
+console.log(result.lang); // 'es' | 'en'
 ```
 
 **Estructura de `result.findings`:**
 
 ```javascript
-result.findings.forEach(finding => {
-  console.log(finding.patternId);    // 'ES-07' | 'PatternEN-22'
-  console.log(finding.patternName);  // 'Conclusiones genéricas'
-  console.log(finding.category);     // 'content' | 'language' | 'style' | ...
-  console.log(finding.weight);       // 1-5
-  console.log(finding.matchCount);   // número total de coincidencias
-  console.log(finding.truncated);    // true si hay más de 5 matches (verbose=false)
+result.findings.forEach((finding) => {
+  console.log(finding.patternId); // 'ES-07' | 'PatternEN-22'
+  console.log(finding.patternName); // 'Conclusiones genéricas'
+  console.log(finding.category); // 'content' | 'language' | 'style' | ...
+  console.log(finding.weight); // 1-5
+  console.log(finding.matchCount); // número total de coincidencias
+  console.log(finding.truncated); // true si hay más de 5 matches (verbose=false)
 
-  finding.matches.forEach(m => {
-    console.log(m.match);            // texto que hizo match
-    console.log(m.line, m.column);   // posición en el texto
-    console.log(m.suggestion);       // cómo corregirlo
-    console.log(m.confidence);       // 'high' | 'medium' | 'low'
+  finding.matches.forEach((m) => {
+    console.log(m.match); // texto que hizo match
+    console.log(m.line, m.column); // posición en el texto
+    console.log(m.suggestion); // cómo corregirlo
+    console.log(m.confidence); // 'high' | 'medium' | 'low'
   });
 });
 ```
@@ -667,22 +680,22 @@ const result = humanize('Tu texto aquí', {
 
 console.log(result.score);
 console.log(result.totalIssues);
-console.log(result.critical);    // issues con weight >= 4
-console.log(result.important);   // issues con weight 2-3
-console.log(result.minor);       // issues con weight 1
-console.log(result.guidance);    // string[] con consejos de escritura
-console.log(result.styleTips);   // [{ metric, value, tip }]
-console.log(result.analysis);    // AnalysisResult completo
+console.log(result.critical); // issues con weight >= 4
+console.log(result.important); // issues con weight 2-3
+console.log(result.minor); // issues con weight 1
+console.log(result.guidance); // string[] con consejos de escritura
+console.log(result.styleTips); // [{ metric, value, tip }]
+console.log(result.analysis); // AnalysisResult completo
 
 // Con autofix
 const withFix = humanize('Tu texto', { autofix: true, lang: 'es' });
-console.log(withFix.autofix.text);   // texto corregido
-console.log(withFix.autofix.fixes);  // ['Removed filler: "in order to"', ...]
+console.log(withFix.autofix.text); // texto corregido
+console.log(withFix.autofix.fixes); // ['Removed filler: "in order to"', ...]
 
 // Solo auto-fix (sin análisis de sugerencias)
 const { text, fixes } = autoFix('Tu texto aquí');
-console.log(text);   // texto corregido
-console.log(fixes);  // lista de correcciones aplicadas
+console.log(text); // texto corregido
+console.log(fixes); // lista de correcciones aplicadas
 ```
 
 ### Estadísticas
@@ -697,13 +710,13 @@ console.log(stats.uniqueWordCount);
 console.log(stats.sentenceCount);
 console.log(stats.paragraphCount);
 console.log(stats.avgSentenceLength);
-console.log(stats.burstiness);          // 0-1+, >0.5 es human-like
-console.log(stats.typeTokenRatio);      // 0-1, >0.5 es diverso
-console.log(stats.trigramRepetition);   // <0.05 es bueno
-console.log(stats.ifsz);               // legibilidad española (null en EN)
-console.log(stats.fleschKincaid);       // legibilidad inglesa (null en ES)
-console.log(stats.hapaxLegomenaRate);   // palabras que aparecen sólo 1 vez
-console.log(stats.connectorDensity);    // densidad de conectores (ES only)
+console.log(stats.burstiness); // 0-1+, >0.5 es human-like
+console.log(stats.typeTokenRatio); // 0-1, >0.5 es diverso
+console.log(stats.trigramRepetition); // <0.05 es bueno
+console.log(stats.ifsz); // legibilidad española (null en EN)
+console.log(stats.fleschKincaid); // legibilidad inglesa (null en ES)
+console.log(stats.hapaxLegomenaRate); // palabras que aparecen sólo 1 vez
+console.log(stats.connectorDensity); // densidad de conectores (ES only)
 
 const uniformity = computeUniformityScore(stats, 'es'); // 0-100
 ```
@@ -715,31 +728,31 @@ const { scanPath, compareScanResults, compareTexts, compareFiles } = require('./
 
 // Scan
 const scan = scanPath('docs', {
-  exts: ['.md', '.txt'],      // extensiones (con punto)
-  minWords: 20,               // ignorar archivos cortos
-  ignoreCode: true,           // ignorar código
-  ignoreDirs: ['vendor'],     // directorios extra a ignorar
+  exts: ['.md', '.txt'], // extensiones (con punto)
+  minWords: 20, // ignorar archivos cortos
+  ignoreCode: true, // ignorar código
+  ignoreDirs: ['vendor'], // directorios extra a ignorar
   includeDefaultIgnore: true, // ignorar .git, node_modules...
   lang: 'es',
-  includeStats: false,        // más rápido sin estadísticas por archivo
+  includeStats: false, // más rápido sin estadísticas por archivo
 });
 
-console.log(scan.summary);          // { scannedFiles, averageScore, maxScore... }
-console.log(scan.files);            // ordenado por score desc
-console.log(scan.patternHotspots);  // patrones más frecuentes entre archivos
-console.log(scan.skipped);          // archivos saltados y motivo
+console.log(scan.summary); // { scannedFiles, averageScore, maxScore... }
+console.log(scan.files); // ordenado por score desc
+console.log(scan.patternHotspots); // patrones más frecuentes entre archivos
+console.log(scan.skipped); // archivos saltados y motivo
 
 // Comparar dos scans
 const baseline = JSON.parse(fs.readFileSync('.humanizer-baseline.json', 'utf8'));
 const comparison = compareScanResults(scan, baseline, { regressionThreshold: 3 });
 
 console.log(comparison.summary.regressions);
-console.log(comparison.regressions);   // [{ file, baselineScore, currentScore, delta }]
+console.log(comparison.regressions); // [{ file, baselineScore, currentScore, delta }]
 console.log(comparison.improvements);
 
 // Comparar dos textos
 const delta = compareTexts(textoBefore, textoAfter, { lang: 'es' });
-console.log(delta.delta.score);        // cambio en score (negativo = mejora)
+console.log(delta.delta.score); // cambio en score (negativo = mejora)
 console.log(delta.improvements);
 console.log(delta.regressions);
 
@@ -791,52 +804,52 @@ const scanReport = formatScanReport(scanResult, 50 /* failAbove */);
 
 ### Patrones en español (ES-01 a ES-10)
 
-| ID | Nombre | Peso | Categoría | Detecta |
-|----|--------|------|-----------|---------|
-| ES-01 | Gerundio encadenado | 4 | language | 3+ gerundios seguidos (*aprovechando, generando, facilitando*) |
-| ES-02 | Apertura con contexto vago | 5 | content | Inicio con *"En el contexto actual de..."*, *"En el mundo de hoy..."* |
-| ES-03 | Tríada de abstractos | 3 | style | Listas de tres sustantivos abstractos (*eficiencia, innovación y sostenibilidad*) |
-| ES-04 | Tono sycofántico | 5 | communication | *"Excelente pregunta"*, *"Es un honor"*, *"Me alegra que preguntes"* |
-| ES-05 | Énfasis metacomentario | 4 | filler | *"Es importante destacar"*, *"Cabe señalar"*, *"Resulta fundamental"* |
-| ES-06 | Disclaimers de corte | 4 | communication | *"Como modelo de lenguaje"*, *"Mi conocimiento tiene fecha de corte"* |
-| ES-07 | Conclusiones genéricas | 3 | content | *"En conclusión, es fundamental..."*, *"En definitiva, podemos decir..."* |
-| ES-08 | Atribuciones vagas | 4 | content | *"Según los expertos"*, *"Los estudios demuestran"* (sin citar) |
-| ES-09 | Lenguaje excesivamente positivo | 3 | style | *innovador*, *revolucionario*, *transformador*, *disruptivo* (acumulación) |
-| ES-10 | Pasiva con ser innecesaria | 2 | language | *"es importante señalar"*, *"debe ser tenido en cuenta"* |
+| ID    | Nombre                          | Peso | Categoría     | Detecta                                                                           |
+| ----- | ------------------------------- | ---- | ------------- | --------------------------------------------------------------------------------- |
+| ES-01 | Gerundio encadenado             | 4    | language      | 3+ gerundios seguidos (_aprovechando, generando, facilitando_)                    |
+| ES-02 | Apertura con contexto vago      | 5    | content       | Inicio con _"En el contexto actual de..."_, _"En el mundo de hoy..."_             |
+| ES-03 | Tríada de abstractos            | 3    | style         | Listas de tres sustantivos abstractos (_eficiencia, innovación y sostenibilidad_) |
+| ES-04 | Tono sycofántico                | 5    | communication | _"Excelente pregunta"_, _"Es un honor"_, _"Me alegra que preguntes"_              |
+| ES-05 | Énfasis metacomentario          | 4    | filler        | _"Es importante destacar"_, _"Cabe señalar"_, _"Resulta fundamental"_             |
+| ES-06 | Disclaimers de corte            | 4    | communication | _"Como modelo de lenguaje"_, _"Mi conocimiento tiene fecha de corte"_             |
+| ES-07 | Conclusiones genéricas          | 3    | content       | _"En conclusión, es fundamental..."_, _"En definitiva, podemos decir..."_         |
+| ES-08 | Atribuciones vagas              | 4    | content       | _"Según los expertos"_, _"Los estudios demuestran"_ (sin citar)                   |
+| ES-09 | Lenguaje excesivamente positivo | 3    | style         | _innovador_, _revolucionario_, _transformador_, _disruptivo_ (acumulación)        |
+| ES-10 | Pasiva con ser innecesaria      | 2    | language      | _"es importante señalar"_, _"debe ser tenido en cuenta"_                          |
 
 ### Patrones en inglés (PatternEN-1 a PatternEN-29)
 
-| ID | Nombre | Peso | Detecta |
-|----|--------|------|---------|
-| EN-1 | Significance inflation | 4 | *game-changing, landmark, unprecedented* (acumulación) |
-| EN-2 | Notability name-dropping | 3 | *"according to experts"*, *"studies show"* (sin citar) |
-| EN-3 | Superficial -ing analyses | 4 | Participios encadenados vacíos |
-| EN-4 | Promotional language | 3 | Vocabulario de marketing inflado |
-| EN-5 | Vague attributions | 4 | *"researchers say"*, *"it is known that"* |
-| EN-6 | Formulaic challenges | 3 | Frases de desafío genéricas |
-| EN-7 | AI vocabulary | 5 | 500+ palabras y frases características de IA |
-| EN-8 | Copula avoidance | 3 | Evitar "is/are" con circunlocuciones |
-| EN-9 | Negative parallelisms | 3 | *"not only... but also"* en exceso |
-| EN-10 | Rule of three | 2 | Listas de exactamente tres elementos |
-| EN-11 | Synonym cycling | 2 | Repetición de sinónimos en párrafo |
-| EN-12 | False ranges | 2 | *"a wide range of"*, *"a variety of"* |
-| EN-13 | Em dash overuse | 2 | Uso excesivo de — en frases |
-| EN-14 | Boldface overuse | 2 | **Negrita** en exceso |
-| EN-15 | Inline-header lists | 3 | Listas con header inline bold |
-| EN-16 | Title Case headings | 1 | Cabeceras en Title Case |
-| EN-17 | Emoji overuse | 2 | Emojis de énfasis en exceso |
-| EN-18 | Curly quotes | 1 | Uso de comillas tipográficas `"..."` |
-| EN-19 | Chatbot artifacts | 5 | Frases de apertura/cierre de chatbot |
-| EN-20 | Cutoff disclaimers | 4 | *"As of my knowledge cutoff"* |
-| EN-21 | Sycophantic tone | 4 | *"Great question!"*, *"Absolutely!"* |
-| EN-22 | Filler phrases | 3 | *"it's worth noting"*, *"it is important to note"* |
-| EN-23 | Excessive hedging | 3 | *"may potentially"*, *"might possibly"* |
-| EN-24 | Generic conclusions | 3 | *"In conclusion, it is clear that"* |
-| EN-25 | Reasoning chain artifacts | 4 | *"Let's explore"*, *"Let's delve into"* |
-| EN-26 | Excessive structure | 3 | Estructuración excesiva sin contenido |
-| EN-27 | Confidence calibration | 3 | *"I believe"* + hedge en exceso |
-| EN-28 | Acknowledgment loops | 4 | Reconocimientos repetidos vacíos |
-| EN-29 | Invisible unicode | 4 | Zero-width spaces, soft hyphens ocultos |
+| ID    | Nombre                    | Peso | Detecta                                                |
+| ----- | ------------------------- | ---- | ------------------------------------------------------ |
+| EN-1  | Significance inflation    | 4    | _game-changing, landmark, unprecedented_ (acumulación) |
+| EN-2  | Notability name-dropping  | 3    | _"according to experts"_, _"studies show"_ (sin citar) |
+| EN-3  | Superficial -ing analyses | 4    | Participios encadenados vacíos                         |
+| EN-4  | Promotional language      | 3    | Vocabulario de marketing inflado                       |
+| EN-5  | Vague attributions        | 4    | _"researchers say"_, _"it is known that"_              |
+| EN-6  | Formulaic challenges      | 3    | Frases de desafío genéricas                            |
+| EN-7  | AI vocabulary             | 5    | 500+ palabras y frases características de IA           |
+| EN-8  | Copula avoidance          | 3    | Evitar "is/are" con circunlocuciones                   |
+| EN-9  | Negative parallelisms     | 3    | _"not only... but also"_ en exceso                     |
+| EN-10 | Rule of three             | 2    | Listas de exactamente tres elementos                   |
+| EN-11 | Synonym cycling           | 2    | Repetición de sinónimos en párrafo                     |
+| EN-12 | False ranges              | 2    | _"a wide range of"_, _"a variety of"_                  |
+| EN-13 | Em dash overuse           | 2    | Uso excesivo de — en frases                            |
+| EN-14 | Boldface overuse          | 2    | **Negrita** en exceso                                  |
+| EN-15 | Inline-header lists       | 3    | Listas con header inline bold                          |
+| EN-16 | Title Case headings       | 1    | Cabeceras en Title Case                                |
+| EN-17 | Emoji overuse             | 2    | Emojis de énfasis en exceso                            |
+| EN-18 | Curly quotes              | 1    | Uso de comillas tipográficas `"..."`                   |
+| EN-19 | Chatbot artifacts         | 5    | Frases de apertura/cierre de chatbot                   |
+| EN-20 | Cutoff disclaimers        | 4    | _"As of my knowledge cutoff"_                          |
+| EN-21 | Sycophantic tone          | 4    | _"Great question!"_, _"Absolutely!"_                   |
+| EN-22 | Filler phrases            | 3    | _"it's worth noting"_, _"it is important to note"_     |
+| EN-23 | Excessive hedging         | 3    | _"may potentially"_, _"might possibly"_                |
+| EN-24 | Generic conclusions       | 3    | _"In conclusion, it is clear that"_                    |
+| EN-25 | Reasoning chain artifacts | 4    | _"Let's explore"_, _"Let's delve into"_                |
+| EN-26 | Excessive structure       | 3    | Estructuración excesiva sin contenido                  |
+| EN-27 | Confidence calibration    | 3    | _"I believe"_ + hedge en exceso                        |
+| EN-28 | Acknowledgment loops      | 4    | Reconocimientos repetidos vacíos                       |
+| EN-29 | Invisible unicode         | 4    | Zero-width spaces, soft hyphens ocultos                |
 
 ---
 
@@ -846,23 +859,23 @@ const scanReport = formatScanReport(scanResult, 50 /* failAbove */);
 
 Mide la variación en la longitud de las oraciones. El texto humano es "irregular": mezcla oraciones cortas y largas. El texto de IA es mecánicamente uniforme.
 
-| Valor | Interpretación |
-|-------|---------------|
-| > 0.6 | Variación natural, text humano |
-| 0.4–0.6 | Moderado |
-| 0.2–0.4 | Algo uniforme, posible IA |
-| < 0.2 | Muy uniforme, alta probabilidad de IA |
+| Valor   | Interpretación                        |
+| ------- | ------------------------------------- |
+| > 0.6   | Variación natural, text humano        |
+| 0.4–0.6 | Moderado                              |
+| 0.2–0.4 | Algo uniforme, posible IA             |
+| < 0.2   | Muy uniforme, alta probabilidad de IA |
 
 ### Type-Token Ratio (TTR)
 
 Proporción de palabras únicas respecto al total. Valores más altos = vocabulario más diverso.
 
-| Valor | Interpretación |
-|-------|---------------|
-| > 0.65 | Vocabulario muy diverso |
-| 0.5–0.65 | Diversidad normal |
-| 0.35–0.5 | Algo repetitivo |
-| < 0.35 | Vocabulario muy repetitivo |
+| Valor    | Interpretación             |
+| -------- | -------------------------- |
+| > 0.65   | Vocabulario muy diverso    |
+| 0.5–0.65 | Diversidad normal          |
+| 0.35–0.5 | Algo repetitivo            |
+| < 0.35   | Vocabulario muy repetitivo |
 
 **Nota:** En español el TTR natural es más alto (~1.7× el inglés) por la morfología rica.
 
@@ -870,22 +883,22 @@ Proporción de palabras únicas respecto al total. Valores más altos = vocabula
 
 Fracción de trigramas (grupos de 3 palabras) que aparecen más de una vez. La IA reutiliza frases con más frecuencia.
 
-| Valor | Interpretación |
-|-------|---------------|
-| < 0.05 | Normal |
-| 0.05–0.10 | Algo repetitivo |
-| > 0.10 | Alta repetición, probable IA |
+| Valor     | Interpretación               |
+| --------- | ---------------------------- |
+| < 0.05    | Normal                       |
+| 0.05–0.10 | Algo repetitivo              |
+| > 0.10    | Alta repetición, probable IA |
 
 ### IFSZ (Flesch-Szigriszt, español)
 
 Índice de legibilidad adaptado al español. Valores entre 0 y 100.
 
-| Valor | Nivel |
-|-------|-------|
-| 80–100 | Muy fácil |
-| 60–80 | Normal |
-| 40–60 | Algo difícil |
-| 0–40 | Muy difícil |
+| Valor  | Nivel        |
+| ------ | ------------ |
+| 80–100 | Muy fácil    |
+| 60–80  | Normal       |
+| 40–60  | Algo difícil |
+| 0–40   | Muy difícil  |
 
 ### Flesch-Kincaid (inglés)
 
@@ -893,7 +906,7 @@ Nivel de grado escolar equivalente. La IA tiende a escribir consistentemente en 
 
 ### Connector Density (español)
 
-Densidad de conectores lógicos (*sin embargo, por lo tanto, no obstante, además*). La IA usa conectores con frecuencia muy superior a los humanos.
+Densidad de conectores lógicos (_sin embargo, por lo tanto, no obstante, además_). La IA usa conectores con frecuencia muy superior a los humanos.
 
 ---
 
@@ -912,11 +925,11 @@ Score = (Pattern Score × 0.70) + (Uniformity Score × 0.30)
 
 Junto al score se muestra un nivel de confiabilidad:
 
-| Nivel | Significado |
-|-------|-------------|
-| `high` | Muestra suficiente (≥150 palabras, ≥5 oraciones) |
-| `medium` | Muestra parcial (50–150 palabras) |
-| `low` | Muestra insuficiente (<50 palabras) |
+| Nivel    | Significado                                      |
+| -------- | ------------------------------------------------ |
+| `high`   | Muestra suficiente (≥150 palabras, ≥5 oraciones) |
+| `medium` | Muestra parcial (50–150 palabras)                |
+| `low`    | Muestra insuficiente (<50 palabras)              |
 
 Para scores bajos con texto corto, el análisis puede dar falsos negativos. La confiabilidad `high` requiere al menos 150 palabras.
 
@@ -924,12 +937,12 @@ Para scores bajos con texto corto, el análisis puede dar falsos negativos. La c
 
 ## Códigos de salida
 
-| Código | Cuándo ocurre |
-|--------|---------------|
-| `0` | Éxito |
-| `1` | Error: archivo no encontrado, argumento inválido, fallo de lectura |
-| `2` | `--fail-above`: algún archivo escaneado tiene score ≥ threshold |
-| `3` | `--fail-on-regression`: se encontraron regresiones respecto al baseline |
+| Código | Cuándo ocurre                                                           |
+| ------ | ----------------------------------------------------------------------- |
+| `0`    | Éxito                                                                   |
+| `1`    | Error: archivo no encontrado, argumento inválido, fallo de lectura      |
+| `2`    | `--fail-above`: algún archivo escaneado tiene score ≥ threshold         |
+| `3`    | `--fail-on-regression`: se encontraron regresiones respecto al baseline |
 
 Los códigos 2 y 3 sólo aplican al comando `scan`.
 
@@ -1010,12 +1023,12 @@ const { analyze } = require('./src/core/analyzer');
 function onSave(content, filePath) {
   const result = analyze(content, {
     lang: filePath.endsWith('.md') ? 'es' : 'en',
-    includeStats: false,  // más rápido
+    includeStats: false, // más rápido
   });
 
   if (result.score > 50) {
     showWarning(`Score de IA: ${result.score}/100`);
-    showFindings(result.findings.filter(f => f.weight >= 3));
+    showFindings(result.findings.filter((f) => f.weight >= 3));
   }
 }
 ```
@@ -1030,10 +1043,10 @@ const glob = require('glob');
 
 const files = glob.sync('docs/**/*.md');
 const results = await Promise.all(
-  files.map(async f => ({
+  files.map(async (f) => ({
     file: f,
     result: analyze(fs.readFileSync(f, 'utf8'), { lang: 'es', includeStats: false }),
-  }))
+  })),
 );
 
 results

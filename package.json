@@ -21,6 +21,9 @@
     "ai",
     "writing",
     "humanize",
+    "español",
+    "spanish",
+    "humanizador español",
     "llm",
     "detection",
     "text-analysis",
@@ -31,11 +34,11 @@
     "flesch-kincaid",
     "ai-detection"
   ],
-  "author": "Brandon Wise",
+  "author": "SitoSt",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/brandonwise/humanizer"
+    "url": "https://github.com/SitoSt/bilingual-humanicer"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.2",

@@ -1,4 +1,8 @@
-# humanizer
+# bilingual-humanicer
+
+> **Fork y refactorización completa de [brandonwise/humanizer](https://github.com/brandonwise/humanizer)**
+>
+> El proyecto original solo soportaba inglés. Para permitir escalabilidad a múltiples idiomas, se realizó una refactorización casi completa de la arquitectura, separando la lógica core de la presentación, añadiendo soporte nativo para español con patrones específicos (ES-01 a ES-20), y reorganizando el código en módulos reutilizables por idioma.
 
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 ![Tests](https://img.shields.io/badge/tests-318%20passing-brightgreen)
@@ -8,7 +12,7 @@ Detecta y elimina patrones de escritura generada por IA en **español e inglés*
 
 Analiza texto con **39 detectores de patrones** (29 EN + 10 ES), **500+ términos de vocabulario** en tres niveles, y **análisis estadístico** (burstiness, type-token ratio, legibilidad) — luego da sugerencias accionables para corregirlos.
 
-Skill para [OpenClaw](https://github.com/nichochar/openclaw) y herramienta CLI standalone.
+Skill para [OpenCode](https://github.com/anomalyco/opencode) y herramienta CLI standalone.
 
 Basado en [Wikipedia:Signs of AI writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing), [investigación estilométrica de Copyleaks](https://arxiv.org/abs/2503.01659) y [blader/humanizer](https://github.com/blader/humanizer).
 
@@ -21,8 +25,8 @@ Basado en [Wikipedia:Signs of AI writing](https://en.wikipedia.org/wiki/Wikipedi
 ### Como herramienta CLI
 
 ```bash
-git clone https://github.com/brandonwise/humanizer.git
-cd humanizer
+git clone https://github.com/SitoSt/bilingual-humanicer.git
+cd bilingual-humanicer
 npm install
 
 # Español (idioma por defecto)
@@ -81,16 +85,16 @@ humanizer analyze -f article.md --lang en
 
 ## Comandos
 
-| Comando | Descripción |
-|---------|-------------|
-| `score` | Puntuación rápida: `🟢 12/100` |
-| `analyze` | Análisis completo con patrones, estadísticas y confiabilidad |
-| `humanize` | Sugerencias agrupadas por prioridad + guidance de escritura |
-| `suggest` | Solo sugerencias, sin estadísticas |
-| `report` | Informe Markdown completo (para guardar o enviar) |
-| `stats` | Solo métricas estadísticas del texto |
-| `scan` | Escanea un directorio, rankea archivos, detecta hotspots entre archivos |
-| `compare` | Compara dos versiones y muestra qué patrones mejoraron/empeoraron |
+| Comando    | Descripción                                                             |
+| ---------- | ----------------------------------------------------------------------- |
+| `score`    | Puntuación rápida: `🟢 12/100`                                          |
+| `analyze`  | Análisis completo con patrones, estadísticas y confiabilidad            |
+| `humanize` | Sugerencias agrupadas por prioridad + guidance de escritura             |
+| `suggest`  | Solo sugerencias, sin estadísticas                                      |
+| `report`   | Informe Markdown completo (para guardar o enviar)                       |
+| `stats`    | Solo métricas estadísticas del texto                                    |
+| `scan`     | Escanea un directorio, rankea archivos, detecta hotspots entre archivos |
+| `compare`  | Compara dos versiones y muestra qué patrones mejoraron/empeoraron       |
 
 Todas las formas de leer texto:
 
@@ -114,12 +118,12 @@ humanizer compare --before v1.md --after v2.md
 Score = (Pattern Score × 0.70) + (Uniformity Score × 0.30)
 ```
 
-| Badge | Rango | Nivel |
-|-------|-------|-------|
-| 🟢 | 0–19 | Mostly human-sounding |
-| 🟡 | 20–44 | Lightly AI-touched |
-| 🟠 | 45–69 | Moderately AI-influenced |
-| 🔴 | 70–100 | Heavily AI-generated |
+| Badge | Rango  | Nivel                    |
+| ----- | ------ | ------------------------ |
+| 🟢    | 0–19   | Mostly human-sounding    |
+| 🟡    | 20–44  | Lightly AI-touched       |
+| 🟠    | 45–69  | Moderately AI-influenced |
+| 🔴    | 70–100 | Heavily AI-generated     |
 
 Junto al score se muestra un nivel de **confiabilidad** (`high` / `medium` / `low`) basado en la longitud del texto. Confiabilidad alta requiere ≥150 palabras.
 
@@ -153,34 +157,35 @@ Junto al score se muestra un nivel de **confiabilidad** (`high` / `medium` / `lo
 
 ## Análisis estadístico
 
-| Métrica | Texto humano | Texto IA | Por qué importa |
-|---------|-------------|----------|-----------------|
-| **Burstiness** | 0.5–1.0 | 0.1–0.3 | Los humanos escriben en ráfagas: oraciones cortas y largas mezcladas. La IA es metrónomo. |
-| **Type-token ratio** | 0.5–0.7 | 0.3–0.5 | Los humanos usan vocabulario más variado. La IA recicla las mismas palabras. |
-| **Sentence CoV** | 0.4–0.8 | 0.15–0.35 | Coeficiente de variación de longitud de oraciones. Bajo = uniformidad robótica. |
-| **Trigram repetition** | < 0.05 | > 0.10 | La IA reutiliza las mismas frases de 3 palabras con más frecuencia. |
-| **IFSZ** (español) | 60–85 | 50–65 | Índice Flesch-Szigriszt. La IA tiende a niveles de legibilidad consistentes. |
-| **Flesch-Kincaid** (inglés) | Varía | 8–12 | La IA tiende a escribir en un nivel de grado constante. |
+| Métrica                     | Texto humano | Texto IA  | Por qué importa                                                                           |
+| --------------------------- | ------------ | --------- | ----------------------------------------------------------------------------------------- |
+| **Burstiness**              | 0.5–1.0      | 0.1–0.3   | Los humanos escriben en ráfagas: oraciones cortas y largas mezcladas. La IA es metrónomo. |
+| **Type-token ratio**        | 0.5–0.7      | 0.3–0.5   | Los humanos usan vocabulario más variado. La IA recicla las mismas palabras.              |
+| **Sentence CoV**            | 0.4–0.8      | 0.15–0.35 | Coeficiente de variación de longitud de oraciones. Bajo = uniformidad robótica.           |
+| **Trigram repetition**      | < 0.05       | > 0.10    | La IA reutiliza las mismas frases de 3 palabras con más frecuencia.                       |
+| **IFSZ** (español)          | 60–85        | 50–65     | Índice Flesch-Szigriszt. La IA tiende a niveles de legibilidad consistentes.              |
+| **Flesch-Kincaid** (inglés) | Varía        | 8–12      | La IA tiende a escribir en un nivel de grado constante.                                   |
 
 ---
 
 ## Soporte bilingüe
 
-| Aspecto | Español (`--lang es`, defecto) | Inglés (`--lang en`) |
-|---------|-------------------------------|----------------------|
-| Patrones activos | ES-01–ES-10 + PatternEN-7 (vocabulario IA) | PatternEN-1–29 |
-| Legibilidad | IFSZ (Flesch-Szigriszt) | Flesch-Kincaid grade |
-| Métrica extra | Densidad de conectores | — |
-| Vocabulario | ~400 términos ES inflados | 500+ términos AI EN |
+| Aspecto          | Español (`--lang es`, defecto)             | Inglés (`--lang en`) |
+| ---------------- | ------------------------------------------ | -------------------- |
+| Patrones activos | ES-01–ES-10 + PatternEN-7 (vocabulario IA) | PatternEN-1–29       |
+| Legibilidad      | IFSZ (Flesch-Szigriszt)                    | Flesch-Kincaid grade |
+| Métrica extra    | Densidad de conectores                     | —                    |
+| Vocabulario      | ~400 términos ES inflados                  | 500+ términos AI EN  |
 
 **Patrones exclusivos del español:**
-- Gerundios encadenados (*aprovechando las oportunidades, generando valor, facilitando…*)
-- Aperturas con contexto vago (*En el contexto actual de la transformación digital…*)
-- Tríadas de abstractos (*eficiencia, innovación y sostenibilidad*)
-- Tono sycofántico (*Excelente pregunta, es un honor responder…*)
-- Énfasis metacomentario (*Es importante destacar, cabe señalar, resulta fundamental…*)
-- Conclusiones genéricas (*En conclusión, es fundamental considerar…*)
-- Atribuciones vagas (*Según los expertos, los estudios demuestran…*)
+
+- Gerundios encadenados (_aprovechando las oportunidades, generando valor, facilitando…_)
+- Aperturas con contexto vago (_En el contexto actual de la transformación digital…_)
+- Tríadas de abstractos (_eficiencia, innovación y sostenibilidad_)
+- Tono sycofántico (_Excelente pregunta, es un honor responder…_)
+- Énfasis metacomentario (_Es importante destacar, cabe señalar, resulta fundamental…_)
+- Conclusiones genéricas (_En conclusión, es fundamental considerar…_)
+- Atribuciones vagas (_Según los expertos, los estudios demuestran…_)
 
 ---
 
@@ -264,39 +269,39 @@ const s = score('Tu texto aquí', { lang: 'es' }); // 0-100
 
 // Análisis completo
 const result = analyze(text, {
-  lang: 'es',          // 'es' | 'en'
-  verbose: false,      // true: todos los matches
-  ignoreCode: false,   // true: ignora bloques de código
+  lang: 'es', // 'es' | 'en'
+  verbose: false, // true: todos los matches
+  ignoreCode: false, // true: ignora bloques de código
   includeStats: true,
 });
 
-console.log(result.score);           // 0-100
-console.log(result.patternScore);    // componente de patrones (70%)
+console.log(result.score); // 0-100
+console.log(result.patternScore); // componente de patrones (70%)
 console.log(result.uniformityScore); // componente estadístico (30%)
-console.log(result.reliability);     // { level, score, recommendation }
-console.log(result.stats);           // burstiness, typeTokenRatio, ifsz…
-console.log(result.findings);        // patrones detectados con matches
-console.log(result.categories);      // agrupado por categoría
+console.log(result.reliability); // { level, score, recommendation }
+console.log(result.stats); // burstiness, typeTokenRatio, ifsz…
+console.log(result.findings); // patrones detectados con matches
+console.log(result.categories); // agrupado por categoría
 ```
 
 ```javascript
 const { humanize, autoFix } = require('./src/core/humanizer');
 
 const result = humanize(text, { lang: 'es', autofix: true });
-console.log(result.critical);        // issues con peso ≥ 4
-console.log(result.important);       // issues con peso 2–3
-console.log(result.guidance);        // consejos de escritura
-console.log(result.autofix.text);    // texto corregido
-console.log(result.autofix.fixes);   // lista de correcciones aplicadas
+console.log(result.critical); // issues con peso ≥ 4
+console.log(result.important); // issues con peso 2–3
+console.log(result.guidance); // consejos de escritura
+console.log(result.autofix.text); // texto corregido
+console.log(result.autofix.fixes); // lista de correcciones aplicadas
 ```
 
 ```javascript
 const { scanPath, compareScanResults } = require('./src/workflows');
 
 const scan = scanPath('docs', { exts: ['.md'], lang: 'es', ignoreCode: true });
-console.log(scan.summary);           // { scannedFiles, averageScore, maxScore… }
-console.log(scan.files);             // ordenado por score desc
-console.log(scan.patternHotspots);   // patrones más frecuentes entre archivos
+console.log(scan.summary); // { scannedFiles, averageScore, maxScore… }
+console.log(scan.files); // ordenado por score desc
+console.log(scan.patternHotspots); // patrones más frecuentes entre archivos
 ```
 
 → [Documentación completa de la API](docs/GUIDE.md#api-programática)
@@ -306,9 +311,11 @@ console.log(scan.patternHotspots);   // patrones más frecuentes entre archivos
 ## Ejemplo antes/después
 
 **Antes (score: 78):**
+
 > ¡Excelente pregunta! En el contexto actual de la transformación digital, es importante destacar que las herramientas de IA están generando un impacto transformador, aprovechando las oportunidades, potenciando las capacidades y facilitando el crecimiento. Según los expertos, esto resulta fundamental para el ecosistema empresarial. En conclusión, el futuro es prometedor.
 
 **Después (score: 6):**
+
 > Las herramientas de IA reducen el tiempo de boilerplate. En un estudio de Google de 2024, los desarrolladores con Copilot terminaron funciones simples un 55% más rápido, pero no mejoraron en debugging ni arquitectura. Las uso para tests y configuración. No las uso para razonar.
 
 ---
@@ -390,17 +397,17 @@ humanizer/
 
 ## Qué lo diferencia
 
-| Característica | humanizer | GPTZero | Copyleaks | ZeroGPT |
-|----------------|-----------|---------|-----------|---------|
-| Open source | ✅ | ❌ | ❌ | ❌ |
-| Scoring transparente | ✅ Explicable por patrón | ❌ Caja negra | ❌ Caja negra | ❌ Caja negra |
-| Sugerencias accionables | ✅ Por patrón con fix | ❌ Solo score | ❌ Solo score | ❌ Solo score |
-| Auto-fix | ✅ Correcciones mecánicas seguras | ❌ | ❌ | ❌ |
-| Soporte español | ✅ 10 patrones ES + IFSZ | Parcial | Parcial | ❌ |
-| Análisis estadístico | ✅ Burstiness, TTR, IFSZ/FK | ✅ Perplexity | ✅ Estilométrico | ❌ |
-| Sin API key | ✅ | ❌ | ❌ | ❌ |
-| Funciona offline | ✅ | ❌ | ❌ | ❌ |
-| Sin dependencias de producción | ✅ | N/A | N/A | N/A |
+| Característica                 | humanizer                         | GPTZero       | Copyleaks        | ZeroGPT       |
+| ------------------------------ | --------------------------------- | ------------- | ---------------- | ------------- |
+| Open source                    | ✅                                | ❌            | ❌               | ❌            |
+| Scoring transparente           | ✅ Explicable por patrón          | ❌ Caja negra | ❌ Caja negra    | ❌ Caja negra |
+| Sugerencias accionables        | ✅ Por patrón con fix             | ❌ Solo score | ❌ Solo score    | ❌ Solo score |
+| Auto-fix                       | ✅ Correcciones mecánicas seguras | ❌            | ❌               | ❌            |
+| Soporte español                | ✅ 10 patrones ES + IFSZ          | Parcial       | Parcial          | ❌            |
+| Análisis estadístico           | ✅ Burstiness, TTR, IFSZ/FK       | ✅ Perplexity | ✅ Estilométrico | ❌            |
+| Sin API key                    | ✅                                | ❌            | ❌               | ❌            |
+| Funciona offline               | ✅                                | ❌            | ❌               | ❌            |
+| Sin dependencias de producción | ✅                                | N/A           | N/A              | N/A           |
 
 ---
 
