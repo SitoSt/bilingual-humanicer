@@ -537,7 +537,7 @@ const PATTERNS_ES = [
     weight: 4,
     detect(text) {
       const patterns = [
-        /\ben este (artículo|post|texto|documento|ensayo) (vamos a|te |exploraremos|analizaremos|abordaremos|trataremos|veremos)\b/gi,
+        /\ben este (artículo|post|texto|documento|ensayo) (vamos a|te\b|exploraremos|analizaremos|abordaremos|trataremos|veremos)/gi,
         /\ba lo largo de este (artículo|post|texto|documento|ensayo)\b/gi,
         /\ben las (siguientes|próximas) (líneas|páginas|secciones|palabras)\b/gi,
         /\beste (artículo|post|texto|documento) (tiene como objetivo|busca|pretende|se propone)\b/gi,
