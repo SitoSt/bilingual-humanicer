@@ -4,8 +4,8 @@ info:
   description: AI writing detection and humanization API. Detects 24 patterns of AI-generated text and provides actionable suggestions.
   version: 2.1.0
   contact:
-    name: Brandon Wise
-    url: https://github.com/brandonwise/humanizer
+    name: SitoSt
+    url: https://github.com/SitoSt/bilingual-humanicer
 
 servers:
   - url: https://humanizer.example.com/api

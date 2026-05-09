@@ -122,9 +122,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - ES-17 and ES-18 trailing space in te-pattern alternation
 
-[unreleased]: https://github.com/brandonwise/humanizer/compare/v3.1.0...HEAD
-[3.1.0]: https://github.com/brandonwise/humanizer/compare/v3.0.0...v3.1.0
-[3.0.0]: https://github.com/brandonwise/humanizer/compare/v2.2.0...v3.0.0
-[2.2.0]: https://github.com/brandonwise/humanizer/compare/v2.1.0...v2.2.0
-[2.1.0]: https://github.com/brandonwise/humanizer/compare/v1.0.0...v2.1.0
-[1.0.0]: https://github.com/brandonwise/humanizer/compare/ef05fe6...v1.0.0
+[unreleased]: https://github.com/SitoSt/bilingual-humanicer/compare/v3.1.0...HEAD
+[3.1.0]: https://github.com/SitoSt/bilingual-humanicer/compare/v3.0.0...v3.1.0
+[3.0.0]: https://github.com/SitoSt/bilingual-humanicer/compare/v2.2.0...v3.0.0
+[2.2.0]: https://github.com/SitoSt/bilingual-humanicer/compare/v2.1.0...v2.2.0
+[2.1.0]: https://github.com/SitoSt/bilingual-humanicer/compare/v1.0.0...v2.1.0
+[1.0.0]: https://github.com/SitoSt/bilingual-humanicer/compare/ef05fe6...v1.0.0
