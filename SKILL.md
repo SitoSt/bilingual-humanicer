@@ -1,6 +1,6 @@
 ---
 name: humanizer
-version: 3.0.0
+version: 3.1.0
 description: >
   Detecta y elimina patrones de escritura generada por IA en español e inglés.
   Por defecto opera en español. Usar --lang en para inglés.
@@ -25,6 +25,7 @@ en español.
 ## Cuando analices texto en español, detecta:
 
 ### Señales de vocabulario (las más visibles)
+
 - **Tier 1** — flaggear siempre: fundamental, crucial, esencial, primordial, invaluable,
   trascendental, revolucionario, innovador, vanguardista, disruptivo, robusto, integral,
   holístico, paradigma, sinergia, ecosistema, potenciar, optimizar, empoderar, apalancar
@@ -33,20 +34,22 @@ en español.
   resulta fundamental, en el mundo actual, hoy en día, a lo largo de los años
 
 ### Patrones gramaticales y estructurales
-| # | Patrón | Señal |
-|---|--------|-------|
-| PatternES-01 | Gerundio encadenado | 3+ gerunds en la misma frase |
-| PatternES-02 | Apertura con contexto vago | "En el mundo actual...", "En la era digital..." |
-| PatternES-03 | Triada de abstractos | "innovación, creatividad y transformación" |
-| PatternES-04 | Tono sycofántico | "¡Excelente pregunta!", "Con mucho gusto..." |
-| PatternES-05 | Énfasis metacomentario | "Cabe destacar que", "Es importante señalar" |
-| PatternES-06 | Disclaimers de corte | "Como modelo de lenguaje", "Hasta mi fecha de corte" |
-| PatternES-07 | Conclusiones genéricas | "El futuro es prometedor", "Estamos ante un momento histórico" |
-| PatternES-08 | Atribuciones vagas | "Los expertos señalan", "Múltiples estudios demuestran" |
-| PatternES-09 | Lenguaje excesivamente positivo | "Avance revolucionario", "Resultados excelentes" |
-| PatternES-10 | Pasiva con ser innecesaria | "ha sido desarrollado por" (usar pasiva refleja) |
+
+| #            | Patrón                          | Señal                                                          |
+| ------------ | ------------------------------- | -------------------------------------------------------------- |
+| PatternES-01 | Gerundio encadenado             | 3+ gerunds en la misma frase                                   |
+| PatternES-02 | Apertura con contexto vago      | "En el mundo actual...", "En la era digital..."                |
+| PatternES-03 | Triada de abstractos            | "innovación, creatividad y transformación"                     |
+| PatternES-04 | Tono sycofántico                | "¡Excelente pregunta!", "Con mucho gusto..."                   |
+| PatternES-05 | Énfasis metacomentario          | "Cabe destacar que", "Es importante señalar"                   |
+| PatternES-06 | Disclaimers de corte            | "Como modelo de lenguaje", "Hasta mi fecha de corte"           |
+| PatternES-07 | Conclusiones genéricas          | "El futuro es prometedor", "Estamos ante un momento histórico" |
+| PatternES-08 | Atribuciones vagas              | "Los expertos señalan", "Múltiples estudios demuestran"        |
+| PatternES-09 | Lenguaje excesivamente positivo | "Avance revolucionario", "Resultados excelentes"               |
+| PatternES-10 | Pasiva con ser innecesaria      | "ha sido desarrollado por" (usar pasiva refleja)               |
 
 ### Indicadores estadísticos (invisibles al ojo, pero reales)
+
 - **Burstiness baja**: todas las frases tienen longitud similar (IA: CV < 0.35; humano: > 0.6)
 - **TTR uniforme**: vocabulario igualmente diverso en cada párrafo (humano varía entre párrafos)
 - **HLR baja**: pocas palabras que aparecen solo una vez (la IA evita lo infrecuente)
@@ -70,16 +73,17 @@ attributions, em dash overuse, boldface overuse, chatbot artifacts, sycophantic 
 filler phrases, y más.
 
 ### Patrones en inglés (--lang en)
-| # | Patrón | Señal |
-|---|--------|-------|
-| PatternEN-1 | Significance inflation | "marking a pivotal moment in the evolution of..." |
-| PatternEN-2 | Notability name-dropping | Lista de medios sin afirmaciones concretas |
-| PatternEN-4 | Promotional language | "nestled", "breathtaking", "stunning" |
-| PatternEN-5 | Vague attributions | "Experts believe", "Studies show" |
-| PatternEN-7 | AI vocabulary | "delve", "tapestry", "landscape", "seamless" |
-| PatternEN-21 | Sycophantic tone | "Great question!", "You're absolutely right" |
-| PatternEN-22 | Filler phrases | "in order to", "due to the fact that" |
-| PatternEN-25 | Reasoning chain | "Let me think", "Step 1:", "Breaking this down" |
+
+| #            | Patrón                   | Señal                                             |
+| ------------ | ------------------------ | ------------------------------------------------- |
+| PatternEN-1  | Significance inflation   | "marking a pivotal moment in the evolution of..." |
+| PatternEN-2  | Notability name-dropping | Lista de medios sin afirmaciones concretas        |
+| PatternEN-4  | Promotional language     | "nestled", "breathtaking", "stunning"             |
+| PatternEN-5  | Vague attributions       | "Experts believe", "Studies show"                 |
+| PatternEN-7  | AI vocabulary            | "delve", "tapestry", "landscape", "seamless"      |
+| PatternEN-21 | Sycophantic tone         | "Great question!", "You're absolutely right"      |
+| PatternEN-22 | Filler phrases           | "in order to", "due to the fact that"             |
+| PatternEN-25 | Reasoning chain          | "Let me think", "Step 1:", "Breaking this down"   |
 
 ## Tu proceso
 
