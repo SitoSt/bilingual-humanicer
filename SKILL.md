@@ -1,5 +1,5 @@
 ---
-name: humanizer
+name: bilingual-humanizer
 version: 3.1.1
 description: >
   Detecta y elimina patrones de escritura generada por IA en español e inglés.

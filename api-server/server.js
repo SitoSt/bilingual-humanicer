@@ -27,12 +27,15 @@ const { computeStats } = await import('../src/core/stats.js');
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const PORT = process.env.PORT || 3000;
-const MAX_BODY_SIZE = 100 * 1024; // 100KB max request body
+const MAX_BODY_SIZE = 1024 * 1024; // 1MB max request body
 
-// CORS - restrict to localhost by default, use CORS_ORIGIN env var to configure
-const CORS_ORIGIN = process.env.CORS_ORIGIN || 'localhost';
+// CORS - must be explicitly configured via CORS_ORIGIN env var (no wildcard allowed)
+const CORS_ORIGIN = process.env.CORS_ORIGIN;
+if (!CORS_ORIGIN) {
+  console.warn('WARNING: CORS_ORIGIN not set. API server will reject cross-origin requests.');
+}
 const corsHeaders = {
-  'Access-Control-Allow-Origin': CORS_ORIGIN,
+  'Access-Control-Allow-Origin': CORS_ORIGIN || 'none',
   'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
   'Access-Control-Allow-Headers': 'Content-Type',
 };
@@ -72,6 +75,15 @@ function sendJson(res, data, status = 200) {
 
 // Request handler
 async function handleRequest(req, res) {
+  // Reject cross-origin requests if CORS_ORIGIN is not configured
+  if (req.headers['origin'] && !CORS_ORIGIN) {
+    res.writeHead(403, { 'Content-Type': 'application/json' });
+    res.end(
+      JSON.stringify({ error: 'CORS not configured. Set CORS_ORIGIN environment variable.' }),
+    );
+    return;
+  }
+
   // Handle CORS preflight
   if (req.method === 'OPTIONS') {
     res.writeHead(204, corsHeaders);
