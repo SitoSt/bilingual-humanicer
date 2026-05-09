@@ -1,0 +1,7 @@
+api-server/
+scripts/
+tests/
+openai-gpt/
+docs/
+vitest.config.js
+eslint.config.js
