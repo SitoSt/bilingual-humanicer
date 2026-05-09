@@ -32,4 +32,5 @@ coverage/
 .nyc_output/
 
 # Development docs (plans, specs, brainstorming)
-docs/superpowers/
+docs/superpowers/*
+.claude/*
