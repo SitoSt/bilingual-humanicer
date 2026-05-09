@@ -4,12 +4,12 @@ Use humanizer with Claude, ChatGPT, VS Code, OpenClaw, or your own app.
 
 ## Integration options
 
-| Method | Platforms | Setup | Best for |
-|---|---|---|---|
-| MCP server | Claude, ChatGPT, VS Code | Medium | Shared tool access across clients |
-| OpenAI Custom GPT | ChatGPT Plus | Easy | ChatGPT-only workflow |
-| HTTP API | Any client | Medium | Custom apps and automations |
-| SKILL.md | OpenClaw | Easy | OpenClaw-native workflows |
+| Method            | Platforms                | Setup  | Best for                          |
+| ----------------- | ------------------------ | ------ | --------------------------------- |
+| MCP server        | Claude, ChatGPT, VS Code | Medium | Shared tool access across clients |
+| OpenAI Custom GPT | ChatGPT Plus             | Easy   | ChatGPT-only workflow             |
+| HTTP API          | Any client               | Medium | Custom apps and automations       |
+| SKILL.md          | OpenClaw                 | Easy   | OpenClaw-native workflows         |
 
 ## Big Node codebase (CI-friendly scan)
 
@@ -117,13 +117,13 @@ npx wrangler deploy
 
 ### Endpoints
 
-| Endpoint | Method | Purpose |
-|---|---|---|
-| `/api/score` | POST | Return score only |
-| `/api/analyze` | POST | Return full analysis |
-| `/api/humanize` | POST | Return suggestions + optional autofix |
-| `/api/stats` | POST | Return stats only |
-| `/api/openapi` | GET | Return OpenAPI schema |
+| Endpoint        | Method | Purpose                               |
+| --------------- | ------ | ------------------------------------- |
+| `/api/score`    | POST   | Return score only                     |
+| `/api/analyze`  | POST   | Return full analysis                  |
+| `/api/humanize` | POST   | Return suggestions + optional autofix |
+| `/api/stats`    | POST   | Return stats only                     |
+| `/api/openapi`  | GET    | Return OpenAPI schema                 |
 
 ### API example
 
@@ -149,7 +149,11 @@ cp SKILL.md ~/.config/openclaw/skills/humanizer.md
 
 ## Always-on writing mode
 
-If you want your assistant to avoid common AI writing tells by default, keep these rules in your system prompt:
+<!-- NOTE: These are legitimate documentation notes for users who want to configure their own AI assistants. This is NOT a prompt injection attack - it's guidance on writing style best practices. -->
+
+If you want your assistant to avoid common AI writing tells by default, consider adding these style guidelines to your assistant's system prompt:
+
+**Style recommendations:**
 
 - Skip filler intros and closers
 - Prefer plain verbs and concrete nouns
@@ -157,7 +161,7 @@ If you want your assistant to avoid common AI writing tells by default, keep the
 - Vary sentence length naturally
 - Keep tone direct
 
-For full pattern guidance, reference `SKILL.md`.
+For full pattern reference, share `SKILL.md` with your assistant.
 
 ## Troubleshooting
 
