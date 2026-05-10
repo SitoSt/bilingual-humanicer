@@ -10,7 +10,7 @@
 
 Detecta y elimina patrones de escritura generada por IA en **español e inglés**.
 
-Analiza texto con **39 detectores de patrones** (29 EN + 10 ES), **500+ términos de vocabulario** en tres niveles, y **análisis estadístico** (burstiness, type-token ratio, legibilidad) — luego da sugerencias accionables para corregirlos.
+Analiza texto con **49 detectores de patrones** (29 EN + 20 ES), **500+ términos de vocabulario** en tres niveles, y **análisis estadístico** (burstiness, type-token ratio, legibilidad) — luego da sugerencias accionables para corregirlos.
 
 Skill para [OpenCode](https://github.com/anomalyco/opencode) y herramienta CLI standalone.
 
@@ -139,7 +139,7 @@ Junto al score se muestra un nivel de **confiabilidad** (`high` / `medium` / `lo
 ├─────────────────────────┼────────────────────────────┤
 │ • 39 detectores de      │ • Burstiness (variación    │
 │   patrones (29 EN,      │   longitud de oraciones)   │
-│   10 ES)                │ • Type-token ratio         │
+│   20 ES)               │ • Type-token ratio         │
 │ • 500+ términos de      │ • Repetición de trigramas  │
 │   vocabulario (3 tiers) │ • Legibilidad (IFSZ / FK)  │
 │ • Scoring por densidad  │ • Densidad de conectores   │
@@ -172,7 +172,7 @@ Junto al score se muestra un nivel de **confiabilidad** (`high` / `medium` / `lo
 
 | Aspecto          | Español (`--lang es`, defecto)             | Inglés (`--lang en`) |
 | ---------------- | ------------------------------------------ | -------------------- |
-| Patrones activos | ES-01–ES-10 + PatternEN-7 (vocabulario IA) | PatternEN-1–29       |
+| Patrones activos | ES-01–ES-20 + PatternEN-7 (vocabulario IA) | PatternEN-1–29       |
 | Legibilidad      | IFSZ (Flesch-Szigriszt)                    | Flesch-Kincaid grade |
 | Métrica extra    | Densidad de conectores                     | —                    |
 | Vocabulario      | ~400 términos ES inflados                  | 500+ términos AI EN  |
@@ -373,7 +373,7 @@ humanizer/
 │   │   ├── utils.js          # Helpers de labels y texto
 │   │   └── patterns/         # 39 detectores de patrones
 │   │       ├── en.js         # PatternEN-1 a PatternEN-29
-│   │       └── es.js         # ES-01 a ES-10
+│   │       └── es.js         # ES-01 a ES-20
 │   ├── formatters/           # Texto plano, sin ANSI
 │   │   ├── report.js         # formatText(), formatMarkdown(), buildSummary()
 │   │   ├── suggestions.js    # formatGroupedSuggestions()
@@ -403,7 +403,7 @@ humanizer/
 | Scoring transparente           | ✅ Explicable por patrón          | ❌ Caja negra | ❌ Caja negra    | ❌ Caja negra |
 | Sugerencias accionables        | ✅ Por patrón con fix             | ❌ Solo score | ❌ Solo score    | ❌ Solo score |
 | Auto-fix                       | ✅ Correcciones mecánicas seguras | ❌            | ❌               | ❌            |
-| Soporte español                | ✅ 10 patrones ES + IFSZ          | Parcial       | Parcial          | ❌            |
+| Soporte español                | ✅ 20 patrones ES + IFSZ          | Parcial       | Parcial          | ❌            |
 | Análisis estadístico           | ✅ Burstiness, TTR, IFSZ/FK       | ✅ Perplexity | ✅ Estilométrico | ❌            |
 | Sin API key                    | ✅                                | ❌            | ❌               | ❌            |
 | Funciona offline               | ✅                                | ❌            | ❌               | ❌            |

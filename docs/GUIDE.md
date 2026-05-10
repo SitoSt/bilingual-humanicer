@@ -1,6 +1,6 @@
 # Humanizer — Guía completa de uso
 
-Humanizer detecta y elimina patrones de escritura generada por IA. Analiza texto con **29 detectores de patrones** (EN) + **10 detectores de patrones** (ES), **500+ términos de vocabulario** en tres niveles, y **análisis estadístico** (burstiness, type-token ratio, legibilidad).
+Humanizer detecta y elimina patrones de escritura generada por IA. Analiza texto con **49 detectores de patrones** (EN) + **20 detectores de patrones** (ES), **500+ términos de vocabulario** en tres niveles, y **análisis estadístico** (burstiness, type-token ratio, legibilidad).
 
 ---
 
@@ -476,12 +476,12 @@ humanizer analyze -f article.md --lang en
 
 | Aspecto             | Español (`es`)              | Inglés (`en`)              |
 | ------------------- | --------------------------- | -------------------------- |
-| Patrones activos    | ES-01 a ES-10 + PatternEN-7 | PatternEN-1 a PatternEN-29 |
+| Patrones activos    | ES-01 a ES-20 + PatternEN-7 | PatternEN-1 a PatternEN-29 |
 | Métrica legibilidad | IFSZ (Flesch-Szigriszt)     | Flesch-Kincaid grade level |
 | Vocabulario         | `src/locales/es.js`         | `src/vocabulary.js`        |
 | Métrica adicional   | connector density           | —                          |
 
-Los **11 patrones en español** detectan:
+Los **20 patrones en español** detectan:
 
 - Gerundios encadenados (_aprovechando las oportunidades, generando valor, facilitando el crecimiento_)
 - Aperturas con contexto vago (_En el contexto actual de la transformación digital…_)
@@ -801,7 +801,7 @@ const scanReport = formatScanReport(scanResult, 50 /* failAbove */);
 
 ## Referencia de patrones
 
-### Patrones en español (ES-01 a ES-10)
+### Patrones en español (ES-01 a ES-20)
 
 | ID    | Nombre                          | Peso | Categoría     | Detecta                                                                           |
 | ----- | ------------------------------- | ---- | ------------- | --------------------------------------------------------------------------------- |
