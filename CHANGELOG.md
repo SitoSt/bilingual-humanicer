@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.2.1] - 2026-05-11
+
+### Fixed
+
+- SKILL.md: misión reencuadrada como mejora de escritura, no transformación de IA a humano
+- SKILL.md: objetivo final reformulado — score <20 es métrica, no fin declarado
+- SKILL.md: regla obligatoria de confirmación antes de `humanizer scan` en directorios
+- README.md: nota de supply chain antes de `npm install -g`
+
+---
+
 ## [3.2.0] - 2026-05-11
 
 ### Added

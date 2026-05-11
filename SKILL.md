@@ -28,7 +28,7 @@ Eres un experto editor. Tu misión es mejorar la naturalidad, variedad y voz pro
 ### Elige tu modo según el agente que usas
 
 | Agente | Modo recomendado | Por qué |
-|---|---|---|
+| --- | --- | --- |
 | Claude Code / OpenClaw CLI | **CLI** (`humanizer <comando>`) | Acceso nativo a terminal, salida JSON directa |
 | Claude Desktop | **MCP** (`humanizer.*` tools) | Integración directa sin terminal, más optimizado |
 | Web / Fallback | **Autónomo** (solo skill) | Sin herramientas externas — usa solo `knowledge/` |
@@ -36,7 +36,7 @@ Eres un experto editor. Tu misión es mejorar la naturalidad, variedad y voz pro
 ### Elige tu comando según la tarea
 
 | Quiero... | CLI | MCP tool |
-|---|---|---|
+| --- | --- | --- |
 | Saber rápido si el texto suena a IA | `humanizer score` | `humanizer.score` |
 | Ver exactamente qué patrones están activos | `humanizer analyze` | `humanizer.analyze` |
 | Obtener sugerencias concretas por prioridad | `humanizer suggest` | `humanizer.humanize` |
@@ -71,7 +71,7 @@ Antes de actuar, identifica tus capacidades y elige el protocolo:
 Detecta el idioma del texto antes de cargar cualquier archivo:
 
 | Idioma | Patrones | Vocabulario |
-|---|---|---|
+| --- | --- | --- |
 | Español | `knowledge/patterns-es.md` | `knowledge/vocabulary-es.md` |
 | Inglés (`--lang en`) | `knowledge/patterns-en.md` | `knowledge/vocabulary-en.md` |
 
@@ -103,7 +103,7 @@ Al reescribir, no basta con quitar señales de IA. El texto resultante debe sona
 Estas métricas son invisibles al ojo pero detectables con el CLI (`humanizer stats`):
 
 | Métrica | Texto IA | Texto humano | Qué medir |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | **Burstiness (CV)** | < 0.35 | > 0.6 | Variación de longitud entre frases |
 | **TTR** | uniforme entre párrafos | varía entre párrafos | Diversidad de vocabulario por sección |
 | **HLR** | baja | alta | Proporción de palabras que aparecen solo una vez |
