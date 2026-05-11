@@ -2,7 +2,7 @@ const { findMatches } = require('./helpers');
 
 const PATTERNS_ES = [
   {
-    id: 'ES-01',
+    id: 'PatternES-01',
     name: 'Gerundio encadenado',
     category: 'language',
     langs: ['es'],
@@ -21,7 +21,7 @@ const PATTERNS_ES = [
   },
 
   {
-    id: 'ES-02',
+    id: 'PatternES-02',
     name: 'Apertura con contexto vago',
     category: 'content',
     langs: ['es'],
@@ -58,7 +58,7 @@ const PATTERNS_ES = [
   },
 
   {
-    id: 'ES-03',
+    id: 'PatternES-03',
     name: 'Triada de abstractos',
     category: 'language',
     langs: ['es'],
@@ -78,7 +78,7 @@ const PATTERNS_ES = [
   },
 
   {
-    id: 'ES-04',
+    id: 'PatternES-04',
     name: 'Tono sycofántico',
     category: 'communication',
     langs: ['es'],
@@ -105,7 +105,7 @@ const PATTERNS_ES = [
   },
 
   {
-    id: 'ES-05',
+    id: 'PatternES-05',
     name: 'Énfasis metacomentario',
     category: 'filler',
     langs: ['es'],
@@ -132,7 +132,7 @@ const PATTERNS_ES = [
   },
 
   {
-    id: 'ES-06',
+    id: 'PatternES-06',
     name: 'Disclaimers de corte (español)',
     category: 'communication',
     langs: ['es'],
@@ -156,7 +156,7 @@ const PATTERNS_ES = [
   },
 
   {
-    id: 'ES-07',
+    id: 'PatternES-07',
     name: 'Conclusiones genéricas (español)',
     category: 'filler',
     langs: ['es'],
@@ -196,7 +196,7 @@ const PATTERNS_ES = [
   },
 
   {
-    id: 'ES-08',
+    id: 'PatternES-08',
     name: 'Atribuciones vagas (español)',
     category: 'content',
     langs: ['es'],
@@ -228,7 +228,7 @@ const PATTERNS_ES = [
   },
 
   {
-    id: 'ES-09',
+    id: 'PatternES-09',
     name: 'Lenguaje excesivamente positivo',
     category: 'content',
     langs: ['es'],
@@ -263,7 +263,7 @@ const PATTERNS_ES = [
   },
 
   {
-    id: 'ES-10',
+    id: 'PatternES-10',
     name: 'Pasiva con ser innecesaria',
     category: 'language',
     langs: ['es'],
@@ -293,7 +293,7 @@ const PATTERNS_ES = [
     },
   },
   {
-    id: 'ES-11',
+    id: 'PatternES-11',
     name: 'Framing de análisis',
     category: 'filler',
     langs: ['es'],
@@ -324,7 +324,7 @@ const PATTERNS_ES = [
   },
 
   {
-    id: 'ES-12',
+    id: 'PatternES-12',
     name: 'Copula avoidance española',
     category: 'language',
     langs: ['es'],
@@ -349,7 +349,7 @@ const PATTERNS_ES = [
   },
 
   {
-    id: 'ES-13',
+    id: 'PatternES-13',
     name: 'Pregunta retórica de apertura',
     category: 'content',
     langs: ['es'],
@@ -377,7 +377,7 @@ const PATTERNS_ES = [
   },
 
   {
-    id: 'ES-14',
+    id: 'PatternES-14',
     name: 'Hedging excesivo',
     category: 'filler',
     langs: ['es'],
@@ -405,7 +405,7 @@ const PATTERNS_ES = [
   },
 
   {
-    id: 'ES-15',
+    id: 'PatternES-15',
     name: 'Paralelismo negativo',
     category: 'language',
     langs: ['es'],
@@ -429,7 +429,7 @@ const PATTERNS_ES = [
   },
 
   {
-    id: 'ES-16',
+    id: 'PatternES-16',
     name: 'Desafíos formulaicos',
     category: 'content',
     langs: ['es'],
@@ -460,7 +460,7 @@ const PATTERNS_ES = [
   },
 
   {
-    id: 'ES-17',
+    id: 'PatternES-17',
     name: 'Estructura excesiva',
     category: 'style',
     langs: ['es'],
@@ -528,7 +528,7 @@ const PATTERNS_ES = [
   },
 
   {
-    id: 'ES-18',
+    id: 'PatternES-18',
     name: 'Apertura de artículo formulaica',
     category: 'filler',
     langs: ['es'],
@@ -559,7 +559,7 @@ const PATTERNS_ES = [
   },
 
   {
-    id: 'ES-19',
+    id: 'PatternES-19',
     name: 'Cierre de chatbot español',
     category: 'communication',
     langs: ['es'],
@@ -585,7 +585,7 @@ const PATTERNS_ES = [
   },
 
   {
-    id: 'ES-20',
+    id: 'PatternES-20',
     name: 'Clickbait de guía',
     category: 'content',
     langs: ['es'],

@@ -29,7 +29,7 @@ describe('Full pipeline — Spanish texts', () => {
       'Cabe destacar que es importante senalar los aspectos fundamentales del ecosistema.';
     const result = analyze(text, { lang: 'es' });
     const patternIds = result.findings.map((f) => f.patternId);
-    expect(patternIds.some((id) => id === 'ES-05' || id === 'PatternEN-7')).toBe(true);
+    expect(patternIds.some((id) => id === 'PatternES-05' || id === 'PatternEN-7')).toBe(true);
   });
 
   it('does not use English patterns for Spanish text', () => {

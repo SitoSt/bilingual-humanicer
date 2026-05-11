@@ -4,8 +4,8 @@ import { createPatterns } from '../../../../src/core/patterns/index.js';
 const esPatterns = createPatterns('es');
 const getPattern = (id) => esPatterns.find((p) => p.id === id);
 
-describe('ES-01: Gerundio encadenado', () => {
-  const p = () => getPattern('ES-01');
+describe('PatternES-01: Gerundio encadenado', () => {
+  const p = () => getPattern('PatternES-01');
   it('exists', () => expect(p()).toBeDefined());
 
   it('detects 3 gerundios in same sentence', () => {
@@ -26,8 +26,8 @@ describe('ES-01: Gerundio encadenado', () => {
 });
 
 // ES-01 threshold change: now detects 2+ gerundios
-describe('ES-01: threshold change — 2 gerundios', () => {
-  const p = () => getPattern('ES-01');
+describe('PatternES-01: threshold change — 2 gerundios', () => {
+  const p = () => getPattern('PatternES-01');
 
   it('now detects 2 gerundios in same sentence', () => {
     expect(
@@ -43,8 +43,8 @@ describe('ES-01: threshold change — 2 gerundios', () => {
 });
 
 // ES-02 new openers
-describe('ES-02: new vague openers', () => {
-  const p = () => getPattern('ES-02');
+describe('PatternES-02: new vague openers', () => {
+  const p = () => getPattern('PatternES-02');
 
   it('detects "Vivimos en un momento en que"', () => {
     expect(
@@ -90,8 +90,8 @@ describe('ES-02: new vague openers', () => {
 });
 
 // ES-03 expanded abstract nouns
-describe('ES-03: expanded abstract nouns list', () => {
-  const p = () => getPattern('ES-03');
+describe('PatternES-03: expanded abstract nouns list', () => {
+  const p = () => getPattern('PatternES-03');
 
   it('detects triada with new nouns: liderazgo, talento, diversidad', () => {
     expect(
@@ -112,8 +112,8 @@ describe('ES-03: expanded abstract nouns list', () => {
   });
 });
 
-describe('ES-02: Apertura con contexto vago', () => {
-  const p = () => getPattern('ES-02');
+describe('PatternES-02: Apertura con contexto vago', () => {
+  const p = () => getPattern('PatternES-02');
   it('exists', () => expect(p()).toBeDefined());
 
   it('detects "En el mundo actual"', () => {
@@ -132,8 +132,8 @@ describe('ES-02: Apertura con contexto vago', () => {
   });
 });
 
-describe('ES-03: Triada de adjetivos/sustantivos abstractos', () => {
-  const p = () => getPattern('ES-03');
+describe('PatternES-03: Triada de adjetivos/sustantivos abstractos', () => {
+  const p = () => getPattern('PatternES-03');
   it('exists', () => expect(p()).toBeDefined());
 
   it('detects triada with "y"', () => {
@@ -142,8 +142,8 @@ describe('ES-03: Triada de adjetivos/sustantivos abstractos', () => {
   });
 });
 
-describe('ES-04: Tono sycofántico', () => {
-  const p = () => getPattern('ES-04');
+describe('PatternES-04: Tono sycofántico', () => {
+  const p = () => getPattern('PatternES-04');
   it('exists', () => expect(p()).toBeDefined());
 
   it('detects "excelente pregunta"', () => {
@@ -154,8 +154,8 @@ describe('ES-04: Tono sycofántico', () => {
   });
 });
 
-describe('ES-05: Énfasis metacomentario', () => {
-  const p = () => getPattern('ES-05');
+describe('PatternES-05: Énfasis metacomentario', () => {
+  const p = () => getPattern('PatternES-05');
   it('exists', () => expect(p()).toBeDefined());
 
   it('detects "cabe destacar que"', () => {
@@ -173,8 +173,8 @@ describe('ES-05: Énfasis metacomentario', () => {
   });
 });
 
-describe('ES-06: Disclaimers de corte (español)', () => {
-  const p = () => getPattern('ES-06');
+describe('PatternES-06: Disclaimers de corte (español)', () => {
+  const p = () => getPattern('PatternES-06');
   it('exists', () => expect(p()).toBeDefined());
 
   it('detects "como modelo de lenguaje"', () => {
@@ -187,8 +187,8 @@ describe('ES-06: Disclaimers de corte (español)', () => {
   });
 });
 
-describe('ES-07: Conclusiones genéricas (español)', () => {
-  const p = () => getPattern('ES-07');
+describe('PatternES-07: Conclusiones genéricas (español)', () => {
+  const p = () => getPattern('PatternES-07');
   it('exists', () => expect(p()).toBeDefined());
 
   it('detects "el futuro es prometedor"', () => {
@@ -201,8 +201,8 @@ describe('ES-07: Conclusiones genéricas (español)', () => {
   });
 });
 
-describe('ES-08: Atribuciones vagas (español)', () => {
-  const p = () => getPattern('ES-08');
+describe('PatternES-08: Atribuciones vagas (español)', () => {
+  const p = () => getPattern('PatternES-08');
   it('exists', () => expect(p()).toBeDefined());
 
   it('detects "los expertos señalan"', () => {
@@ -215,8 +215,8 @@ describe('ES-08: Atribuciones vagas (español)', () => {
   });
 });
 
-describe('ES-09: Lenguaje excesivamente positivo', () => {
-  const p = () => getPattern('ES-09');
+describe('PatternES-09: Lenguaje excesivamente positivo', () => {
+  const p = () => getPattern('PatternES-09');
   it('exists', () => expect(p()).toBeDefined());
 
   it('detects "resultados excelentes"', () => {
@@ -227,8 +227,8 @@ describe('ES-09: Lenguaje excesivamente positivo', () => {
   });
 });
 
-describe('ES-10: Pasiva con ser innecesaria', () => {
-  const p = () => getPattern('ES-10');
+describe('PatternES-10: Pasiva con ser innecesaria', () => {
+  const p = () => getPattern('PatternES-10');
   it('exists', () => expect(p()).toBeDefined());
 
   it('detects "ha sido desarrollado por"', () => {
@@ -241,8 +241,8 @@ describe('ES-10: Pasiva con ser innecesaria', () => {
   });
 });
 
-describe('ES-04: closing sycophancy', () => {
-  const p = () => getPattern('ES-04');
+describe('PatternES-04: closing sycophancy', () => {
+  const p = () => getPattern('PatternES-04');
 
   it('detects "espero haber sido de ayuda"', () => {
     expect(p().detect('Espero haber sido de ayuda.').length).toBeGreaterThan(0);
@@ -259,8 +259,8 @@ describe('ES-04: closing sycophancy', () => {
   });
 });
 
-describe('ES-07: expanded generic conclusions', () => {
-  const p = () => getPattern('ES-07');
+describe('PatternES-07: expanded generic conclusions', () => {
+  const p = () => getPattern('PatternES-07');
 
   it('detects "todo apunta a que"', () => {
     expect(p().detect('Todo apunta a que el sector seguirá creciendo.').length).toBeGreaterThan(0);
@@ -289,8 +289,8 @@ describe('ES-07: expanded generic conclusions', () => {
   });
 });
 
-describe('ES-08: expanded vague attributions', () => {
-  const p = () => getPattern('ES-08');
+describe('PatternES-08: expanded vague attributions', () => {
+  const p = () => getPattern('PatternES-08');
 
   it('detects "los datos revelan"', () => {
     expect(p().detect('Los datos revelan que el método es efectivo.').length).toBeGreaterThan(0);
@@ -307,8 +307,8 @@ describe('ES-08: expanded vague attributions', () => {
   });
 });
 
-describe('ES-09: expanded positive language', () => {
-  const p = () => getPattern('ES-09');
+describe('PatternES-09: expanded positive language', () => {
+  const p = () => getPattern('PatternES-09');
 
   it('detects "experiencia enriquecedora"', () => {
     expect(
@@ -329,8 +329,8 @@ describe('ES-09: expanded positive language', () => {
   });
 });
 
-describe('ES-10: expanded unnecessary passive', () => {
-  const p = () => getPattern('ES-10');
+describe('PatternES-10: expanded unnecessary passive', () => {
+  const p = () => getPattern('PatternES-10');
 
   it('detects "debe ser considerado"', () => {
     expect(p().detect('Este factor debe ser considerado en el análisis.').length).toBeGreaterThan(
@@ -361,8 +361,8 @@ describe('ES-10: expanded unnecessary passive', () => {
   });
 });
 
-describe('ES-11: Framing de análisis', () => {
-  const p = () => getPattern('ES-11');
+describe('PatternES-11: Framing de análisis', () => {
+  const p = () => getPattern('PatternES-11');
   it('exists', () => expect(p()).toBeDefined());
 
   it('detects "procedemos a analizar"', () => {
@@ -392,8 +392,8 @@ describe('ES-11: Framing de análisis', () => {
   });
 });
 
-describe('ES-12: Copula avoidance española', () => {
-  const p = () => getPattern('ES-12');
+describe('PatternES-12: Copula avoidance española', () => {
+  const p = () => getPattern('PatternES-12');
   it('exists', () => expect(p()).toBeDefined());
 
   it('detects "sirve como"', () => {
@@ -421,8 +421,8 @@ describe('ES-12: Copula avoidance española', () => {
   });
 });
 
-describe('ES-13: Pregunta retórica de apertura', () => {
-  const p = () => getPattern('ES-13');
+describe('PatternES-13: Pregunta retórica de apertura', () => {
+  const p = () => getPattern('PatternES-13');
   it('exists', () => expect(p()).toBeDefined());
 
   it('detects "¿Alguna vez te has preguntado" at start', () => {
@@ -448,8 +448,8 @@ describe('ES-13: Pregunta retórica de apertura', () => {
   });
 });
 
-describe('ES-14: Hedging excesivo', () => {
-  const p = () => getPattern('ES-14');
+describe('PatternES-14: Hedging excesivo', () => {
+  const p = () => getPattern('PatternES-14');
   it('exists', () => expect(p()).toBeDefined());
 
   it('detects "podría decirse que"', () => {
@@ -479,8 +479,8 @@ describe('ES-14: Hedging excesivo', () => {
   });
 });
 
-describe('ES-15: Paralelismo negativo', () => {
-  const p = () => getPattern('ES-15');
+describe('PatternES-15: Paralelismo negativo', () => {
+  const p = () => getPattern('PatternES-15');
   it('exists', () => expect(p()).toBeDefined());
 
   it('detects "no solo X sino también Y"', () => {
@@ -506,8 +506,8 @@ describe('ES-15: Paralelismo negativo', () => {
   });
 });
 
-describe('ES-16: Desafíos formulaicos', () => {
-  const p = () => getPattern('ES-16');
+describe('PatternES-16: Desafíos formulaicos', () => {
+  const p = () => getPattern('PatternES-16');
   it('exists', () => expect(p()).toBeDefined());
 
   it('detects "a pesar de los retos"', () => {
@@ -533,8 +533,8 @@ describe('ES-16: Desafíos formulaicos', () => {
   });
 });
 
-describe('ES-17: Estructura excesiva', () => {
-  const p = () => getPattern('ES-17');
+describe('PatternES-17: Estructura excesiva', () => {
+  const p = () => getPattern('PatternES-17');
   it('exists', () => expect(p()).toBeDefined());
 
   it('detects bold inline header in bullet', () => {
@@ -555,8 +555,8 @@ describe('ES-17: Estructura excesiva', () => {
   });
 });
 
-describe('ES-18: Apertura de artículo formulaica', () => {
-  const p = () => getPattern('ES-18');
+describe('PatternES-18: Apertura de artículo formulaica', () => {
+  const p = () => getPattern('PatternES-18');
   it('exists', () => expect(p()).toBeDefined());
 
   it('detects "En este artículo vamos a explorar"', () => {
@@ -585,8 +585,8 @@ describe('ES-18: Apertura de artículo formulaica', () => {
   });
 });
 
-describe('ES-19: Cierre de chatbot español', () => {
-  const p = () => getPattern('ES-19');
+describe('PatternES-19: Cierre de chatbot español', () => {
+  const p = () => getPattern('PatternES-19');
   it('exists', () => expect(p()).toBeDefined());
 
   it('detects "espero que esto te haya sido útil"', () => {
@@ -612,8 +612,8 @@ describe('ES-19: Cierre de chatbot español', () => {
   });
 });
 
-describe('ES-20: Clickbait de guía', () => {
-  const p = () => getPattern('ES-20');
+describe('PatternES-20: Clickbait de guía', () => {
+  const p = () => getPattern('PatternES-20');
   it('exists', () => expect(p()).toBeDefined());
 
   it('detects "todo lo que necesitas saber sobre"', () => {
