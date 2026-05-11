@@ -73,8 +73,10 @@ Herramientas disponibles: `humanizer.score`, `humanizer.analyze`, `humanizer.hum
 
 ### Opción C — CLI (Claude Code, terminal)
 
+> **Nota de seguridad:** el CLI y el MCP server se instalan desde npm/GitHub y contienen código fuente que no forma parte del artefacto revisado en ClawHub. Revisa el [repositorio](https://github.com/SitoSt/bilingual-humanicer) antes de instalar, y usa una versión pinada si lo integras en entornos de producción.
+
 ```bash
-npm install -g bilingual-humanizer
+npm install -g bilingual-humanizer@3.2.0
 humanizer --help
 ```
 
