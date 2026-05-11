@@ -2,7 +2,7 @@
 
 > **Fork y refactorización completa de [brandonwise/humanizer](https://github.com/brandonwise/humanizer)**
 >
-> El proyecto original solo soportaba inglés. Para permitir escalabilidad a múltiples idiomas, se realizó una refactorización casi completa de la arquitectura, separando la lógica core de la presentación, añadiendo soporte nativo para español con patrones específicos (ES-01 a ES-20), y reorganizando el código en módulos reutilizables por idioma.
+> El proyecto original solo soportaba inglés. Para permitir escalabilidad a múltiples idiomas, se realizó una refactorización casi completa de la arquitectura, separando la lógica core de la presentación, añadiendo soporte nativo para español con patrones específicos (PatternES-01 a PatternES-20), y reorganizando el código en módulos reutilizables por idioma.
 
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 ![Tests](https://img.shields.io/badge/tests-318%20passing-brightgreen)
@@ -12,7 +12,7 @@ Detecta y elimina patrones de escritura generada por IA en **español e inglés*
 
 Analiza texto con **49 detectores de patrones** (29 EN + 20 ES), **500+ términos de vocabulario** en tres niveles, y **análisis estadístico** (burstiness, type-token ratio, legibilidad) — luego da sugerencias accionables para corregirlos.
 
-Skill para [OpenCode](https://github.com/anomalyco/opencode) y herramienta CLI standalone.
+Disponible como **skill para agentes** (OpenClaw, Claude Desktop), **MCP server** y **CLI standalone**.
 
 Basado en [Wikipedia:Signs of AI writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing), [investigación estilométrica de Copyleaks](https://arxiv.org/abs/2503.01659) y [blader/humanizer](https://github.com/blader/humanizer).
 
@@ -22,34 +22,68 @@ Basado en [Wikipedia:Signs of AI writing](https://en.wikipedia.org/wiki/Wikipedi
 
 ## Instalación
 
-### Como herramienta CLI
+Elige según tu agente o entorno:
+
+| Agente / Entorno | Cómo instalar la skill | CLI / MCP |
+| --- | --- | --- |
+| OpenClaw | `clawhub install bilingual-humanicer` | `npm install -g bilingual-humanizer` |
+| Claude Code | Clonar repo + copiar `SKILL.md` y `knowledge/` | `npm install -g bilingual-humanizer` |
+| Claude Desktop | Clonar repo + copiar `SKILL.md` y `knowledge/` | Configurar MCP server |
+| Desarrolladores | Clonar repo | Código fuente + tests incluidos |
+
+### Opción A — Skill (todos los agentes)
+
+La skill funciona de forma autónoma con su `knowledge/` — el agente aplica los 49 detectores de patrones directamente, sin herramientas externas.
+
+**OpenClaw:** instala con un solo comando:
+
+```bash
+clawhub install bilingual-humanicer
+```
+
+**Claude Code, Claude Desktop y otros agentes:** clona el repositorio y copia `SKILL.md` y la carpeta `knowledge/` al directorio de skills de tu agente:
 
 ```bash
 git clone https://github.com/SitoSt/bilingual-humanicer.git
-cd bilingual-humanicer
-npm install
-
-# Español (idioma por defecto)
-echo "En conclusión, es importante destacar el impacto transformador." | node src/cli/index.js score
-
-# Inglés
-echo "This serves as a testament to innovation." | node src/cli/index.js score --lang en
+# Luego copia SKILL.md y knowledge/ a la ubicación que tu agente reconoce
 ```
 
-### Instalación global
+Para análisis estadístico preciso (burstiness, TTR, score numérico), combínala con el MCP server (opción B) o la CLI (opción C).
+
+### Opción B — MCP server (Claude Desktop)
 
 ```bash
-npm install -g .
-
-humanizer score -f borrador.md
-humanizer analyze -f artículo.txt
-humanizer humanize --autofix -f post.md
+npm install -g bilingual-humanizer
 ```
 
-### Como skill de OpenClaw
+Añade a tu `claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "humanizer": {
+      "command": "node",
+      "args": ["/ruta/a/bilingual-humanicer/mcp-server/index.js"]
+    }
+  }
+}
+```
+
+Herramientas disponibles: `humanizer.score`, `humanizer.analyze`, `humanizer.humanize`, `humanizer.stats`.
+
+### Opción C — CLI (Claude Code, terminal)
 
 ```bash
-cp SKILL.md ~/.config/openclaw/skills/humanizer.md
+npm install -g bilingual-humanizer
+humanizer --help
+```
+
+O sin instalación global:
+
+```bash
+git clone https://github.com/SitoSt/bilingual-humanicer.git
+cd bilingual-humanicer && npm install
+node src/cli/index.js --help
 ```
 
 ---
@@ -114,7 +148,7 @@ humanizer compare --before v1.md --after v2.md
 
 ## Puntuación
 
-```
+```text
 Score = (Pattern Score × 0.70) + (Uniformity Score × 0.30)
 ```
 
@@ -131,7 +165,7 @@ Junto al score se muestra un nivel de **confiabilidad** (`high` / `medium` / `lo
 
 ## Arquitectura del motor de scoring
 
-```
+```text
 ┌──────────────────────────────────────────────────────┐
 │                 Score compuesto (0-100)               │
 ├─────────────────────────┬────────────────────────────┤
@@ -170,12 +204,12 @@ Junto al score se muestra un nivel de **confiabilidad** (`high` / `medium` / `lo
 
 ## Soporte bilingüe
 
-| Aspecto          | Español (`--lang es`, defecto)             | Inglés (`--lang en`) |
-| ---------------- | ------------------------------------------ | -------------------- |
-| Patrones activos | ES-01–ES-20 + PatternEN-7 (vocabulario IA) | PatternEN-1–29       |
-| Legibilidad      | IFSZ (Flesch-Szigriszt)                    | Flesch-Kincaid grade |
-| Métrica extra    | Densidad de conectores                     | —                    |
-| Vocabulario      | ~400 términos ES inflados                  | 500+ términos AI EN  |
+| Aspecto | Español (`--lang es`, defecto) | Inglés (`--lang en`) |
+| --- | --- | --- |
+| Patrones activos | PatternES-01–20 + PatternEN-7 (vocab. IA) | PatternEN-1–29 |
+| Legibilidad | IFSZ (Flesch-Szigriszt) | Flesch-Kincaid grade |
+| Métrica extra | Densidad de conectores | — |
+| Vocabulario | ~400 términos ES inflados | 500+ términos AI EN |
 
 **Patrones exclusivos del español:**
 
@@ -191,7 +225,7 @@ Junto al score se muestra un nivel de **confiabilidad** (`high` / `medium` / `lo
 
 ## Opciones
 
-```
+```text
 -f, --file <ruta>          Leer desde archivo (por defecto: stdin)
 --lang <en|es>             Idioma de análisis (defecto: es)
 --json                     Salida en JSON
@@ -308,25 +342,13 @@ console.log(scan.patternHotspots); // patrones más frecuentes entre archivos
 
 ---
 
-## Ejemplo antes/después
-
-**Antes (score: 78):**
-
-> ¡Excelente pregunta! En el contexto actual de la transformación digital, es importante destacar que las herramientas de IA están generando un impacto transformador, aprovechando las oportunidades, potenciando las capacidades y facilitando el crecimiento. Según los expertos, esto resulta fundamental para el ecosistema empresarial. En conclusión, el futuro es prometedor.
-
-**Después (score: 6):**
-
-> Las herramientas de IA reducen el tiempo de boilerplate. En un estudio de Google de 2024, los desarrolladores con Copilot terminaron funciones simples un 55% más rápido, pero no mejoraron en debugging ni arquitectura. Las uso para tests y configuración. No las uso para razonar.
-
----
-
 ## Bake-in: Que tu agente escriba siempre como humano
 
 La forma más efectiva de usar humanizer no es corregir después, sino evitar los patrones desde el inicio.
 
 ### Para Claude (`CLAUDE.md`)
 
-```
+```text
 Escribe como un humano directo, no como una IA. Nunca uses: "destacar",
 "transformador", "exhaustivo", "fundamental", "paradigma", "potenciar",
 "ecosistema", "En el contexto actual", "Es importante señalar", "Cabe destacar",
@@ -338,7 +360,7 @@ no con "el futuro es prometedor".
 
 ### Para ChatGPT (Custom Instructions)
 
-```
+```text
 Write like a specific human, not a generic AI. Never use: delve, tapestry,
 vibrant, crucial, robust, seamless, groundbreaking, transformative, leverage,
 synergy, paramount. Never write "Great question!" or "I hope this helps!".
@@ -357,7 +379,7 @@ echo "Respuesta de tu agente aquí" | humanizer score
 
 ## Estructura del proyecto
 
-```
+```text
 humanizer/
 ├── src/
 │   ├── constants.js          # DEFAULT_LANG, SCORE_THRESHOLDS, scoreLabel
@@ -373,7 +395,7 @@ humanizer/
 │   │   ├── utils.js          # Helpers de labels y texto
 │   │   └── patterns/         # 39 detectores de patrones
 │   │       ├── en.js         # PatternEN-1 a PatternEN-29
-│   │       └── es.js         # ES-01 a ES-20
+│   │       └── es.js         # PatternES-01 a PatternES-20
 │   ├── formatters/           # Texto plano, sin ANSI
 │   │   ├── report.js         # formatText(), formatMarkdown(), buildSummary()
 │   │   ├── suggestions.js    # formatGroupedSuggestions()

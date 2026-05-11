@@ -28,56 +28,7 @@ Humanizer detecta y elimina patrones de escritura generada por IA. Analiza texto
 12. [Códigos de salida](#códigos-de-salida)
 13. [Recetas y casos de uso](#recetas-y-casos-de-uso)
 
----
-
-## Instalación
-
-### Como herramienta CLI (standalone)
-
-```bash
-git clone https://github.com/SitoSt/bilingual-humanicer.git
-cd bilingual-humanicer
-npm install
-
-# Verificar instalación
-echo "Este análisis exhaustivo demuestra el impacto transformador." | node src/cli/index.js score
-```
-
-### Instalación global
-
-```bash
-npm install -g .
-
-# Ahora disponible como comando global
-humanizer score < borrador.txt
-```
-
-### Como skill de OpenClaw
-
-```bash
-cp SKILL.md ~/.config/openclaw/skills/humanizer.md
-```
-
----
-
-## Quickstart
-
-```bash
-# Puntuación rápida de un archivo
-humanizer score -f borrador.md
-
-# Análisis completo con matches
-humanizer analyze -f artículo.txt
-
-# Sugerencias de humanización
-humanizer humanize -f post.md
-
-# Aplicar correcciones automáticas
-humanizer humanize --autofix -f post.md > post-corregido.md
-
-# Escanear toda una carpeta de documentación
-humanizer scan docs --ext md,txt --fail-above 50
-```
+→ Para instalación, ver [README.md](../README.md#instalación).
 
 El idioma por defecto es **español**. Para inglés: `--lang en`.
 
@@ -476,7 +427,7 @@ humanizer analyze -f article.md --lang en
 
 | Aspecto             | Español (`es`)              | Inglés (`en`)              |
 | ------------------- | --------------------------- | -------------------------- |
-| Patrones activos    | ES-01 a ES-20 + PatternEN-7 | PatternEN-1 a PatternEN-29 |
+| Patrones activos    | PatternES-01 a PatternES-20 + PatternEN-7 | PatternEN-1 a PatternEN-29 |
 | Métrica legibilidad | IFSZ (Flesch-Szigriszt)     | Flesch-Kincaid grade level |
 | Vocabulario         | `src/locales/es.js`         | `src/vocabulary.js`        |
 | Métrica adicional   | connector density           | —                          |
@@ -801,54 +752,7 @@ const scanReport = formatScanReport(scanResult, 50 /* failAbove */);
 
 ## Referencia de patrones
 
-### Patrones en español (ES-01 a ES-20)
-
-| ID    | Nombre                          | Peso | Categoría     | Detecta                                                                           |
-| ----- | ------------------------------- | ---- | ------------- | --------------------------------------------------------------------------------- |
-| ES-01 | Gerundio encadenado             | 4    | language      | 3+ gerundios seguidos (_aprovechando, generando, facilitando_)                    |
-| ES-02 | Apertura con contexto vago      | 5    | content       | Inicio con _"En el contexto actual de..."_, _"En el mundo de hoy..."_             |
-| ES-03 | Tríada de abstractos            | 3    | style         | Listas de tres sustantivos abstractos (_eficiencia, innovación y sostenibilidad_) |
-| ES-04 | Tono sycofántico                | 5    | communication | _"Excelente pregunta"_, _"Es un honor"_, _"Me alegra que preguntes"_              |
-| ES-05 | Énfasis metacomentario          | 4    | filler        | _"Es importante destacar"_, _"Cabe señalar"_, _"Resulta fundamental"_             |
-| ES-06 | Disclaimers de corte            | 4    | communication | _"Como modelo de lenguaje"_, _"Mi conocimiento tiene fecha de corte"_             |
-| ES-07 | Conclusiones genéricas          | 3    | content       | _"En conclusión, es fundamental..."_, _"En definitiva, podemos decir..."_         |
-| ES-08 | Atribuciones vagas              | 4    | content       | _"Según los expertos"_, _"Los estudios demuestran"_ (sin citar)                   |
-| ES-09 | Lenguaje excesivamente positivo | 3    | style         | _innovador_, _revolucionario_, _transformador_, _disruptivo_ (acumulación)        |
-| ES-10 | Pasiva con ser innecesaria      | 2    | language      | _"es importante señalar"_, _"debe ser tenido en cuenta"_                          |
-
-### Patrones en inglés (PatternEN-1 a PatternEN-29)
-
-| ID    | Nombre                    | Peso | Detecta                                                |
-| ----- | ------------------------- | ---- | ------------------------------------------------------ |
-| EN-1  | Significance inflation    | 4    | _game-changing, landmark, unprecedented_ (acumulación) |
-| EN-2  | Notability name-dropping  | 3    | _"according to experts"_, _"studies show"_ (sin citar) |
-| EN-3  | Superficial -ing analyses | 4    | Participios encadenados vacíos                         |
-| EN-4  | Promotional language      | 3    | Vocabulario de marketing inflado                       |
-| EN-5  | Vague attributions        | 4    | _"researchers say"_, _"it is known that"_              |
-| EN-6  | Formulaic challenges      | 3    | Frases de desafío genéricas                            |
-| EN-7  | AI vocabulary             | 5    | 500+ palabras y frases características de IA           |
-| EN-8  | Copula avoidance          | 3    | Evitar "is/are" con circunlocuciones                   |
-| EN-9  | Negative parallelisms     | 3    | _"not only... but also"_ en exceso                     |
-| EN-10 | Rule of three             | 2    | Listas de exactamente tres elementos                   |
-| EN-11 | Synonym cycling           | 2    | Repetición de sinónimos en párrafo                     |
-| EN-12 | False ranges              | 2    | _"a wide range of"_, _"a variety of"_                  |
-| EN-13 | Em dash overuse           | 2    | Uso excesivo de — en frases                            |
-| EN-14 | Boldface overuse          | 2    | **Negrita** en exceso                                  |
-| EN-15 | Inline-header lists       | 3    | Listas con header inline bold                          |
-| EN-16 | Title Case headings       | 1    | Cabeceras en Title Case                                |
-| EN-17 | Emoji overuse             | 2    | Emojis de énfasis en exceso                            |
-| EN-18 | Curly quotes              | 1    | Uso de comillas tipográficas `"..."`                   |
-| EN-19 | Chatbot artifacts         | 5    | Frases de apertura/cierre de chatbot                   |
-| EN-20 | Cutoff disclaimers        | 4    | _"As of my knowledge cutoff"_                          |
-| EN-21 | Sycophantic tone          | 4    | _"Great question!"_, _"Absolutely!"_                   |
-| EN-22 | Filler phrases            | 3    | _"it's worth noting"_, _"it is important to note"_     |
-| EN-23 | Excessive hedging         | 3    | _"may potentially"_, _"might possibly"_                |
-| EN-24 | Generic conclusions       | 3    | _"In conclusion, it is clear that"_                    |
-| EN-25 | Reasoning chain artifacts | 4    | _"Let's explore"_, _"Let's delve into"_                |
-| EN-26 | Excessive structure       | 3    | Estructuración excesiva sin contenido                  |
-| EN-27 | Confidence calibration    | 3    | _"I believe"_ + hedge en exceso                        |
-| EN-28 | Acknowledgment loops      | 4    | Reconocimientos repetidos vacíos                       |
-| EN-29 | Invisible unicode         | 4    | Zero-width spaces, soft hyphens ocultos                |
+→ Ver `knowledge/patterns-es.md` (PatternES-01 a PatternES-20) y `knowledge/patterns-en.md` (PatternEN-1 a PatternEN-29) para la referencia completa con descripciones y fixes.
 
 ---
 

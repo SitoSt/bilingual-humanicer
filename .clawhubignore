@@ -1,0 +1,21 @@
+# Excluir código fuente y archivos de desarrollo
+# ClawHub solo distribuye la skill (SKILL.md + knowledge/) y documentación esencial
+
+src/
+mcp-server/
+tests/
+scripts/
+references/
+docs/
+assets/
+api-server/
+node_modules/
+.github/
+.claude/
+
+eslint.config.js
+vitest.config.js
+.editorconfig
+.gitignore
+.npmignore
+.prettierrc

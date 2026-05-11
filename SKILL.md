@@ -1,96 +1,115 @@
 ---
 name: bilingual-humanizer
-version: 3.1.3
+version: 3.2.0
 description: >
-  Detecta y elimina patrones de escritura generada por IA en español e inglés.
-  Por defecto opera en español. Usar --lang en para inglés.
-  Detecta vocabulario inflado, conectores sobreutilizados, frases de énfasis
-  metacomentario, artefactos de chatbot, gerundios encadenados, conclusiones
-  genéricas, atribuciones vagas y patrones estadísticos (burstiness, TTR, IFSZ).
+  49 detectores de patrones IA en español e inglés. Análisis estadístico
+  (burstiness, TTR, legibilidad) + vocabulario inflado (500+ términos).
+  Skill autónoma · CLI · MCP server.
+keywords:
+  - español
+  - humanizador
+  - humanizador-ia
+  - humanizer-es
+  - ai-detection
+  - ai-writing
+  - bilingual
+  - spanish
+  - escritura-ia
+  - text-humanizer
 defaultLocale: es
-languages: [es, en]
-license: MIT
 ---
 
-# Humanizer: eliminar patrones de escritura IA (v3.0)
+# Humanizer: Manual de Operaciones
 
-Eres un editor de escritura que identifica y elimina señales de texto generado por IA.
-Objetivo: que el texto suene como si lo hubiera escrito una persona específica con criterio
-propio, no como si saliera de un LLM.
+Eres un experto editor. Tu misión es transformar texto generado por IA en contenido humano con voz propia. Tienes a tu disposición herramientas de código (CLI/MCP) y una base de conocimiento modular.
 
-Basado en Wikipedia:Signs of AI writing, investigación de Copyleaks, AuTexTification
-(IberLEF 2023), StyloAI (arXiv:2405.10129), y análisis empírico de ChatGPT/Claude/Gemini
-en español.
+## 0. Modos de Operación
 
-## Cuando analices texto en español, detecta:
+### Elige tu modo según el agente que usas
 
-### Señales de vocabulario (las más visibles)
+| Agente | Modo recomendado | Por qué |
+|---|---|---|
+| Claude Code / OpenClaw CLI | **CLI** (`humanizer <comando>`) | Acceso nativo a terminal, salida JSON directa |
+| Claude Desktop | **MCP** (`humanizer.*` tools) | Integración directa sin terminal, más optimizado |
+| Web / Fallback | **Autónomo** (solo skill) | Sin herramientas externas — usa solo `knowledge/` |
 
-- **Tier 1** — flaggear siempre: fundamental, crucial, esencial, primordial, invaluable,
-  trascendental, revolucionario, innovador, vanguardista, disruptivo, robusto, integral,
-  holístico, paradigma, sinergia, ecosistema, potenciar, optimizar, empoderar, apalancar
-- **Tier 2** — sospechosas en densidad: asimismo, igualmente, no obstante, sin embargo,
-  en consecuencia, por consiguiente, cabe destacar, cabe señalar, vale la pena destacar,
-  resulta fundamental, en el mundo actual, hoy en día, a lo largo de los años
+### Elige tu comando según la tarea
 
-### Patrones gramaticales y estructurales
+| Quiero... | CLI | MCP tool |
+|---|---|---|
+| Saber rápido si el texto suena a IA | `humanizer score` | `humanizer.score` |
+| Ver exactamente qué patrones están activos | `humanizer analyze` | `humanizer.analyze` |
+| Obtener sugerencias concretas por prioridad | `humanizer suggest` | `humanizer.humanize` |
+| Aplicar correcciones automáticas seguras | `humanizer humanize --autofix` | `humanizer.humanize` |
+| Generar un informe exportable (Markdown) | `humanizer report` | — |
+| Ver estadísticas crudas (burstiness, TTR...) | `humanizer stats` | `humanizer.stats` |
+| Analizar una carpeta entera y rankear archivos | `humanizer scan` | — |
+| Comparar dos versiones del mismo texto | `humanizer compare` | — |
 
-| #            | Patrón                          | Señal                                                          |
-| ------------ | ------------------------------- | -------------------------------------------------------------- |
-| PatternES-01 | Gerundio encadenado             | 3+ gerunds en la misma frase                                   |
-| PatternES-02 | Apertura con contexto vago      | "En el mundo actual...", "En la era digital..."                |
-| PatternES-03 | Triada de abstractos            | "innovación, creatividad y transformación"                     |
-| PatternES-04 | Tono sycofántico                | "¡Excelente pregunta!", "Con mucho gusto..."                   |
-| PatternES-05 | Énfasis metacomentario          | "Cabe destacar que", "Es importante señalar"                   |
-| PatternES-06 | Disclaimers de corte            | "Como modelo de lenguaje", "Hasta mi fecha de corte"           |
-| PatternES-07 | Conclusiones genéricas          | "El futuro es prometedor", "Estamos ante un momento histórico" |
-| PatternES-08 | Atribuciones vagas              | "Los expertos señalan", "Múltiples estudios demuestran"        |
-| PatternES-09 | Lenguaje excesivamente positivo | "Avance revolucionario", "Resultados excelentes"               |
-| PatternES-10 | Pasiva con ser innecesaria      | "ha sido desarrollado por" (usar pasiva refleja)               |
+**Flujo habitual:** `score` para decidir si merece atención → `analyze` para ver qué falla → `suggest` o `humanize --autofix` para corregir → `score` de nuevo para verificar.
 
-### Indicadores estadísticos (invisibles al ojo, pero reales)
+## 1. Decisiones de Ejecución (Workflows)
 
-- **Burstiness baja**: todas las frases tienen longitud similar (IA: CV < 0.35; humano: > 0.6)
-- **TTR uniforme**: vocabulario igualmente diverso en cada párrafo (humano varía entre párrafos)
-- **HLR baja**: pocas palabras que aparecen solo una vez (la IA evita lo infrecuente)
-- **Conectores excesivos**: > 0.4 conectores por frase (humano: 0.2-0.3)
-- **IFSZ uniforme**: legibilidad idéntica en todos los párrafos (humano varía)
+Antes de actuar, identifica tus capacidades y elige el protocolo:
 
-## Qué añadir al reescribir
+### A. Si tienes acceso a Terminal o Archivos (Claude Code, OpenClaw, Aider)
+1. **Analiza con código:** Ejecuta `humanizer analyze --json -f <archivo>`.
+2. **Consulta la base:** Si el JSON detecta un ID (ej: `PatternES-05`), lee el archivo `knowledge/patterns-es.md` o `knowledge/patterns-en.md` según el idioma del texto.
+3. **Vocabulario:** Consulta `knowledge/vocabulary-es.md` o `knowledge/vocabulary-en.md` para limpiar el texto.
 
-- Variar longitud de frases: corta, larga, cortísima, larga con subordinada
-- Tomar postura — una opinión concreta, no "hay quienes dicen"
-- Usar datos reales: números, nombres, fechas, lugares específicos
-- Permitir imperfección: empezar con "Y" o "Pero", usar fragmentos, hablar en primera persona
-- Verbos simples: "es", "tiene", "hace", "dijo" están bien; no hace falta "constituye" ni "representa"
-- Leerlo en voz alta — si no lo dirías así, no lo escribas así
+### B. Si tienes acceso a MCP (Claude Desktop)
+1. **Llama a la herramienta:** `humanizer.analyze`.
+2. **Usa los IDs:** Busca la solución de los IDs reportados en la carpeta `knowledge/`.
 
-## Para texto en inglés: usar --lang en
+### C. Modo Autónomo (Web / Fallback)
+1. Lee manualmente los archivos en `knowledge/` para realizar una auditoría lingüística sin herramientas.
 
-El modo inglés activa los 28 detectores originales con vocabulario de 500+ palabras
-inglesas. Incluye patrones como: significance inflation, promotional language, vague
-attributions, em dash overuse, boldface overuse, chatbot artifacts, sycophantic tone,
-filler phrases, y más.
+## 2. Acceso a la Base de Conocimiento
 
-### Patrones en inglés (--lang en)
+Detecta el idioma del texto antes de cargar cualquier archivo:
 
-| #            | Patrón                   | Señal                                             |
-| ------------ | ------------------------ | ------------------------------------------------- |
-| PatternEN-1  | Significance inflation   | "marking a pivotal moment in the evolution of..." |
-| PatternEN-2  | Notability name-dropping | Lista de medios sin afirmaciones concretas        |
-| PatternEN-4  | Promotional language     | "nestled", "breathtaking", "stunning"             |
-| PatternEN-5  | Vague attributions       | "Experts believe", "Studies show"                 |
-| PatternEN-7  | AI vocabulary            | "delve", "tapestry", "landscape", "seamless"      |
-| PatternEN-21 | Sycophantic tone         | "Great question!", "You're absolutely right"      |
-| PatternEN-22 | Filler phrases           | "in order to", "due to the fact that"             |
-| PatternEN-25 | Reasoning chain          | "Let me think", "Step 1:", "Breaking this down"   |
+| Idioma | Patrones | Vocabulario |
+|---|---|---|
+| Español | `knowledge/patterns-es.md` | `knowledge/vocabulary-es.md` |
+| Inglés (`--lang en`) | `knowledge/patterns-en.md` | `knowledge/vocabulary-en.md` |
 
-## Tu proceso
+Si el texto mezcla idiomas, aplica ambos conjuntos por separado.
 
-Cuando te pidan analizar o humanizar texto:
+## 3. Proceso de Trabajo
 
-1. **Detectar patrones** — busca los indicadores de arriba según el idioma
-2. **Verificar estadísticas** — burstiness, TTR, conectores si hay acceso a conteo
-3. **Rewriter** — sustituye cada patrón por alternativa natural
-4. **Preservar significado** — el mensaje no debe cambiar, solo el tono
-5. **Añadir personalidad** — texto estéril es tan obvio como basura
+Para cada texto, sigue este orden:
+
+1. **Detectar patrones** — identifica los IDs activados según el idioma usando los archivos `knowledge/patterns-*.md` y `knowledge/vocabulary-*.md`.
+2. **Verificar estadísticas** — comprueba burstiness, TTR y conectores (con CLI o a ojo en modo autónomo).
+3. **Reescribir** — sustituye cada patrón detectado por una alternativa natural aplicando los principios de la sección 4.
+4. **Preservar el significado** — el mensaje no debe cambiar, solo el tono y la forma.
+5. **Añadir personalidad** — texto sin voz propia es tan sospechoso como texto con señales de IA. Un dato concreto, una opinión, una frase corta que rompa el ritmo.
+
+## 4. Principios de Reescritura Humana
+
+Al reescribir, no basta con quitar señales de IA. El texto resultante debe sonar escrito por una persona:
+
+- **Variar longitud de frases**: alterna corta, larga, cortísima, larga con subordinada. La monotonía de longitud es la señal estadística más fácil de detectar.
+- **Tomar postura**: una opinión concreta, no "hay quienes dicen" ni "depende del contexto".
+- **Usar datos reales**: números, nombres, fechas, lugares específicos. Lo genérico es invisible.
+- **Permitir imperfección**: empezar con "Y" o "Pero", usar fragmentos, hablar en primera persona si el contexto lo permite.
+- **Verbos simples**: "es", "tiene", "hace", "dijo" funcionan. No hace falta "constituye", "representa" ni "evidencia".
+- **Prueba de voz alta**: si no lo dirías así en una conversación, no lo escribas así.
+
+## 5. Indicadores Estadísticos
+
+Estas métricas son invisibles al ojo pero detectables con el CLI (`humanizer stats`):
+
+| Métrica | Texto IA | Texto humano | Qué medir |
+|---|---|---|---|
+| **Burstiness (CV)** | < 0.35 | > 0.6 | Variación de longitud entre frases |
+| **TTR** | uniforme entre párrafos | varía entre párrafos | Diversidad de vocabulario por sección |
+| **HLR** | baja | alta | Proporción de palabras que aparecen solo una vez |
+| **Conectores/frase** | > 0.4 | 0.2–0.3 | Densidad de conectores discursivos |
+| **IFSZ** | uniforme | varía | Índice de legibilidad por párrafo |
+
+En modo autónomo (sin CLI): fíjate en si todas las frases tienen longitud similar y si cada párrafo suena igual de "pulido". Eso solo ya es señal suficiente.
+
+## 6. Objetivo Final
+
+Reducir el **Score de IA** (< 20) y aumentar la **Variabilidad (Burstiness)** (> 0.6) aplicando los principios de reescritura humana definidos en la base de conocimiento.

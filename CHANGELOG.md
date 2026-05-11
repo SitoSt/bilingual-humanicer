@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.2.0] - 2026-05-11
+
+### Added
+
+- Modular skill structure: `SKILL.md` + `knowledge/` (patterns-es, patterns-en, vocabulary-es, vocabulary-en)
+- 49 pattern detectors documented in `knowledge/` (20 ES + 29 EN)
+- IDs estandarizados: `PatternES-01`–`PatternES-20`, `PatternEN-1`–`PatternEN-29`
+- CI workflow: auto-publish to ClawHub on changes to `SKILL.md` or `knowledge/`
+- `.clawhubignore` to control what gets published to ClawHub
+
+### Changed
+
+- `SKILL.md` reescrito: 6 correcciones de calidad, sección de modos de operación, principios de reescritura humana, indicadores estadísticos
+- Documentación reducida: eliminados `docs/PATTERNS.md`, `docs/IMPROVEMENTS.md`, `docs/EXAMPLES.md`, `references/ai-vocabulary.md`, `references/patterns.md`
+- `docs/INTEGRATIONS.md` y `README.md` actualizados: ClawHub es solo para OpenClaw; otros agentes clonan repo
+- Versión sincronizada en `SKILL.md` y `package.json`
+
+---
+
 ## [1.0.0] - 2026-02-01
 
 ### Added

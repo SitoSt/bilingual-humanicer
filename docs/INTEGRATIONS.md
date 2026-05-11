@@ -1,166 +1,152 @@
-# Humanizer integrations
+# Integraciones
 
-Use humanizer with Claude, ChatGPT, VS Code, OpenClaw, or your own app.
+Bilingual Humanizer funciona en tres niveles según el agente y el entorno. Elige el que corresponda a tu caso.
 
-## Integration options
+## ¿Qué instalar según tu agente?
 
-| Method            | Platforms                | Setup  | Best for                          |
-| ----------------- | ------------------------ | ------ | --------------------------------- |
-| MCP server        | Claude, ChatGPT, VS Code | Medium | Shared tool access across clients |
-| OpenAI Custom GPT | ChatGPT Plus             | Easy   | ChatGPT-only workflow             |
-| HTTP API          | Any client               | Medium | Custom apps and automations       |
-| SKILL.md          | OpenClaw                 | Easy   | OpenClaw-native workflows         |
+| Agente | Cómo instalar la skill | CLI / MCP |
+| --- | --- | --- |
+| OpenClaw | `clawhub install bilingual-humanicer` | `npm install -g bilingual-humanizer` |
+| Claude Code | Clonar repo + copiar `SKILL.md` y `knowledge/` | `npm install -g bilingual-humanizer` |
+| Claude Desktop | Clonar repo + copiar `SKILL.md` y `knowledge/` | Configurar MCP server |
+| Web / cualquier agente | Clonar repo + copiar `SKILL.md` y `knowledge/` | — |
 
-## Big Node codebase (CI-friendly scan)
+---
 
-For monorepos, set scan defaults once and keep CI calls short.
+## Nivel 1 — Skill (autónoma)
 
-`.humanizer.json`:
+Instala la skill y su base de conocimiento de patrones. Funciona sin código externo — el agente aplica los patrones de `knowledge/` directamente.
 
-```json
-{
-  "scan": {
-    "extensions": ["md", "txt"],
-    "minWords": 30,
-    "failAbove": 45,
-    "ignoreDirs": ["generated", "vendor", "fixtures"]
-  }
-}
-```
-
-CI command:
+### OpenClaw
 
 ```bash
-npx humanizer scan . --config .humanizer.json
+clawhub install bilingual-humanicer
 ```
 
-Need a one-off override for a noisy subtree?
+ClawHub descarga automáticamente `SKILL.md` y la carpeta `knowledge/` al directorio de skills de OpenClaw.
+
+### Claude Code, Claude Desktop y otros agentes
+
+Clona el repositorio y copia los archivos de skill al directorio que tu agente reconoce:
 
 ```bash
-npx humanizer scan . --config .humanizer.json --ignore-dirs generated,vendor,tmp
+git clone https://github.com/SitoSt/bilingual-humanicer.git
 ```
 
-## MCP server (recommended)
+Copia `SKILL.md` y la carpeta `knowledge/` a la ubicación de skills de tu agente:
 
-### Install
+- **Claude Code**: directorio de skills de tu instalación (p.ej. `~/.claude/skills/bilingual-humanicer/`)
+- **Claude Desktop**: directorio de skills configurado en tu instalación
+- **Otros agentes**: directorio que el agente reconoce como base de conocimiento
+
+El agente tendrá acceso a `SKILL.md` y a los 49 detectores de patrones en `knowledge/`. Para análisis estadístico preciso (burstiness, TTR, score numérico), añade el nivel 2.
+
+---
+
+## Nivel 2a — CLI (Claude Code, OpenClaw, terminal)
+
+Instala el CLI para que el agente pueda ejecutar análisis desde la terminal:
 
 ```bash
-cd humanizer/mcp-server
-npm install
+npm install -g bilingual-humanizer
 ```
 
-### Claude Desktop config
+El agente usa los comandos vía JSON para integrar los resultados con la skill:
 
-Add this to `~/Library/Application Support/Claude/claude_desktop_config.json`:
+```bash
+humanizer score -f texto.md --json
+humanizer analyze -f texto.md --json
+humanizer suggest -f texto.md --json
+```
+
+Ver todos los comandos disponibles en [GUIDE.md](GUIDE.md).
+
+---
+
+## Nivel 2b — MCP server (Claude Desktop)
+
+Instala el MCP server y configúralo en Claude Desktop:
+
+```bash
+npm install -g bilingual-humanizer
+```
+
+Añade a `~/Library/Application Support/Claude/claude_desktop_config.json`:
 
 ```json
 {
   "mcpServers": {
     "humanizer": {
       "command": "node",
-      "args": ["/path/to/humanizer/mcp-server/index.js"]
+      "args": ["/ruta/absoluta/a/bilingual-humanicer/mcp-server/index.js"]
     }
   }
 }
 ```
 
-### VS Code config
+Herramientas disponibles tras reiniciar Claude Desktop:
 
-Add this to `.vscode/settings.json`:
+| Herramienta | Equivalente CLI | Descripción |
+| --- | --- | --- |
+| `humanizer.score` | `humanizer score` | Puntuación rápida (0-100) |
+| `humanizer.analyze` | `humanizer analyze` | Análisis completo con patrones |
+| `humanizer.humanize` | `humanizer humanize` | Sugerencias + autofix opcional |
+| `humanizer.stats` | `humanizer stats` | Métricas estadísticas crudas |
 
-```json
-{
-  "mcp.servers": {
-    "humanizer": {
-      "command": "node",
-      "args": ["${workspaceFolder}/humanizer/mcp-server/index.js"]
-    }
-  }
-}
+---
+
+## Uso en CI/CD
+
+### Gate básico con GitHub Actions
+
+```yaml
+name: AI writing gate
+on: [pull_request]
+
+jobs:
+  humanizer:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm install -g bilingual-humanizer
+      - run: humanizer scan docs --ext md --fail-above 50 --ignore-code
 ```
 
-### MCP tools exposed
-
-- `score` — quick score (0-100)
-- `analyze` — full pattern + stats report
-- `humanize` — suggestions, optional auto-fix
-- `stats` — statistical analysis only
-
-## OpenAI Custom GPT
-
-1. Go to <https://chat.openai.com/gpts/editor>
-2. Create a GPT
-3. Paste instructions from `openai-gpt/instructions.md`
-4. Name it (for example, "Humanizer")
-5. Optional: add Actions using `api-server/openapi.yaml`
-
-### With Actions API
-
-1. Deploy the API server
-2. In GPT editor, open **Configure** → **Create new action**
-3. Import the schema from your deployed `/api/openapi` endpoint
-
-## HTTP API server
-
-### Run locally
+### Gate de regresiones (sin bloquear deuda existente)
 
 ```bash
-cd humanizer
+# Guardar baseline en main
+humanizer scan docs --json > .humanizer-baseline.json
+
+# En cada PR: solo fallar si algo empeora
+humanizer scan docs --baseline .humanizer-baseline.json --fail-on-regression
+```
+
+Códigos de salida: `0` éxito · `1` error · `2` fail-above · `3` regresión.
+
+---
+
+## API HTTP (integraciones custom)
+
+Para aplicaciones propias, el servidor HTTP expone los mismos endpoints:
+
+```bash
 node api-server/server.js
 ```
 
-### Deploy (Cloudflare Workers example)
-
-```bash
-npx wrangler deploy
-```
-
-### Endpoints
-
-| Endpoint        | Method | Purpose                               |
-| --------------- | ------ | ------------------------------------- |
-| `/api/score`    | POST   | Return score only                     |
-| `/api/analyze`  | POST   | Return full analysis                  |
-| `/api/humanize` | POST   | Return suggestions + optional autofix |
-| `/api/stats`    | POST   | Return stats only                     |
-| `/api/openapi`  | GET    | Return OpenAPI schema                 |
-
-### API example
+| Endpoint | Método | Descripción |
+| --- | --- | --- |
+| `/api/score` | POST | Puntuación rápida |
+| `/api/analyze` | POST | Análisis completo |
+| `/api/humanize` | POST | Sugerencias + autofix |
+| `/api/stats` | POST | Solo estadísticas |
+| `/api/openapi` | GET | Schema OpenAPI |
 
 ```bash
 curl -X POST http://localhost:3000/api/score \
   -H "Content-Type: application/json" \
-  -d '{"text": "This draft needs tighter wording and more specifics."}'
+  -d '{"text": "En el contexto actual, es importante destacar...", "lang": "es"}'
 ```
-
-## OpenClaw skill
-
-Install from ClawHub:
-
-```bash
-clawhub install ai-humanizer
-```
-
-Or copy manually:
-
-```bash
-cp SKILL.md ~/.config/openclaw/skills/humanizer.md
-```
-
-## Troubleshooting
-
-### MCP server is not connecting
-
-1. Verify the path is absolute
-2. Run `node mcp-server/index.js` manually
-3. Check Claude or VS Code logs
-
-### API returns 500
-
-1. Confirm Node version is 18+
-2. Check module format compatibility
-3. Review server logs for stack traces
-
-### Score looks off
-
-Run `analyze --verbose` and review exactly which patterns fired.
