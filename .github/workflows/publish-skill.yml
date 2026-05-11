@@ -60,6 +60,8 @@ jobs:
 
       - name: Publish skill
         run: |
-          clawhub skill publish . \
+          clawhub skill publish "$GITHUB_WORKSPACE" \
+            --slug bilingual-humanizer \
+            --name "Bilingual AI Humanizer — Español & English" \
             --version ${{ steps.meta.outputs.version }} \
             --changelog "Release ${{ steps.meta.outputs.version }}"
