@@ -1,0 +1,65 @@
+name: Publish Skill to ClawHub
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'SKILL.md'
+      - 'knowledge/**'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'SKILL.md'
+      - 'knowledge/**'
+  workflow_dispatch:
+
+jobs:
+  validate:
+    name: Dry-run (PR preview)
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install ClawHub CLI
+        run: npm install -g clawhub
+      - name: Show what would be published
+        run: clawhub sync --root . --dry-run
+
+  publish:
+    name: Publish to ClawHub
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install ClawHub CLI
+        run: npm install -g clawhub
+
+      - name: Login to ClawHub
+        run: clawhub login --token "$CLAWHUB_TOKEN" --no-browser
+        env:
+          CLAWHUB_TOKEN: ${{ secrets.CLAWHUB_TOKEN }}
+
+      - name: Extract version from SKILL.md
+        id: meta
+        run: |
+          VERSION=$(grep '^version:' SKILL.md | head -1 | awk '{print $2}')
+          if [ -z "$VERSION" ]; then
+            echo "Error: no se encontró campo 'version' en SKILL.md"
+            exit 1
+          fi
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Publicando versión $VERSION"
+
+      - name: Publish skill
+        run: |
+          clawhub skill publish . \
+            --version ${{ steps.meta.outputs.version }} \
+            --changelog "Release ${{ steps.meta.outputs.version }}"
