@@ -56,6 +56,10 @@ describe('analyze — pure data contract', () => {
     expect(analyze('text', { lang: 'es' }).lang).toBe('es');
   });
 
+  it('throws on unsupported lang values', () => {
+    expect(() => analyze('text', { lang: 'fr' })).toThrow('Unsupported language "fr"');
+  });
+
   it('returns empty result for empty text', () => {
     const result = analyze('');
     expect(result.score).toBe(0);

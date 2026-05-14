@@ -6,6 +6,7 @@ const { computeStats, computeUniformityScore } = require('./stats');
 const { CATEGORY_LABELS, DEFAULT_LANG } = require('../constants');
 
 const RELIABILITY_RECOMMENDED_WORDS = 150;
+const SUPPORTED_LANGS = new Set(['en', 'es']);
 
 function analyze(text, opts = {}) {
   const {
@@ -15,6 +16,10 @@ function analyze(text, opts = {}) {
     ignoreCode = false,
     lang = DEFAULT_LANG,
   } = opts;
+
+  if (!SUPPORTED_LANGS.has(lang)) {
+    throw new Error(`Unsupported language "${lang}". Use "en" or "es".`);
+  }
 
   if (!text || typeof text !== 'string') return emptyResult();
 
